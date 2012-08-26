@@ -1,0 +1,12 @@
+{
+
+	"localAddress" : "mainlan:12345",
+	"remoteAddress" : "datalan:54321",
+
+	"list" : [
+  		{
+			"id" : "123"
+		}
+    ]
+
+}

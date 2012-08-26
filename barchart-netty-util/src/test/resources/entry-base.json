@@ -1,0 +1,18 @@
+{
+	
+	"id" : "123",
+	
+	"localAddress" : "mainlan:12345",
+	
+	"isActive" : true,
+	
+	"relay" : {
+	
+		"from" : "start",
+		
+		"size" : 1234
+	
+	}
+	
+
+}

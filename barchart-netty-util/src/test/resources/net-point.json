@@ -1,0 +1,8 @@
+{
+	
+	"id" : "123",
+	
+	"localAddress" : "mainlan:12345",
+	"remoteAddress" : "datalan:54321"
+
+}
