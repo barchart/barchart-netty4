@@ -28,6 +28,8 @@
 			<arg value="--activate-profiles" />
 			<arg value="build-jenkins" />
 
+			<arg value="--errors" />
+
 		</exec>
 		
 	</target>

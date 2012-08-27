@@ -74,8 +74,20 @@ public class TestOSGI implements EventHandler {
 						.artifactId("carrot-osgi-anno-scr-core")
 						.versionAsInProject(),
 
+				//
+
+				mavenBundle().groupId("io.netty").artifactId("netty")
+						.versionAsInProject(),
+
+				mavenBundle().groupId("com.typesafe").artifactId("config")
+						.versionAsInProject(),
+
 				mavenBundle().groupId("com.barchart.osgi")
 						.artifactId("barchart-osgi-event").versionAsInProject(),
+
+				mavenBundle().groupId("com.barchart.osgi")
+						.artifactId("barchart-osgi-factory")
+						.versionAsInProject(),
 
 				mavenBundle().groupId("org.apache.sling")
 						.artifactId("org.apache.sling.commons.threads")

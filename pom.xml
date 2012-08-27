@@ -22,8 +22,8 @@
 
 	<modules>
 
-		<module>barchart-netty-util</module>
-		<module>barchart-netty-host</module>
+		<!-- <module>barchart-netty-util</module> -->
+		<!-- <module>barchart-netty-host</module> -->
 
 	</modules>
 
@@ -43,29 +43,35 @@
 
 			<dependency>
 				<groupId>io.netty</groupId>
-				<artifactId>netty-common</artifactId>
+				<artifactId>netty</artifactId>
 				<version>${projectNettyVersion}</version>
 			</dependency>
-			<dependency>
-				<groupId>io.netty</groupId>
-				<artifactId>netty-buffer</artifactId>
-				<version>${projectNettyVersion}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.netty</groupId>
-				<artifactId>netty-codec</artifactId>
-				<version>${projectNettyVersion}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.netty</groupId>
-				<artifactId>netty-handler</artifactId>
-				<version>${projectNettyVersion}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.netty</groupId>
-				<artifactId>netty-transport</artifactId>
-				<version>${projectNettyVersion}</version>
-			</dependency>
+
+			<!-- <dependency> -->
+			<!-- <groupId>io.netty</groupId> -->
+			<!-- <artifactId>netty-common</artifactId> -->
+			<!-- <version>${projectNettyVersion}</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>io.netty</groupId> -->
+			<!-- <artifactId>netty-buffer</artifactId> -->
+			<!-- <version>${projectNettyVersion}</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>io.netty</groupId> -->
+			<!-- <artifactId>netty-codec</artifactId> -->
+			<!-- <version>${projectNettyVersion}</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>io.netty</groupId> -->
+			<!-- <artifactId>netty-handler</artifactId> -->
+			<!-- <version>${projectNettyVersion}</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>io.netty</groupId> -->
+			<!-- <artifactId>netty-transport</artifactId> -->
+			<!-- <version>${projectNettyVersion}</version> -->
+			<!-- </dependency> -->
 
 			<!-- osgi anno -->
 			<dependency>

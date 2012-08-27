@@ -26,16 +26,43 @@
 
 		<!-- MAIN -->
 
+		<!-- netty -->
 		<dependency>
-			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-event</artifactId>
-			<version>1.0.2</version>
+			<groupId>io.netty</groupId>
+			<artifactId>netty</artifactId>
 		</dependency>
 
+		<!-- executor service -->
 		<dependency>
 			<groupId>com.barchart.osgi</groupId>
 			<artifactId>barchart-osgi-factory</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.sling</groupId>
+			<artifactId>org.apache.sling.commons.threads</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-event</artifactId>
+			<version>1.0.2</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>com.barchart.conf</groupId> -->
+		<!-- <artifactId>barchart-conf-util</artifactId> -->
+		<!-- <version>1.0.2</version> -->
+		<!-- </dependency> -->
+
+		<dependency>
+			<groupId>com.typesafe</groupId>
+			<artifactId>config</artifactId>
+			<version>0.5.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -43,29 +70,6 @@
 			<artifactId>barchart-netty-util</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-util</artifactId>
-			<version>1.0.2</version>
-		</dependency>
-
-		<!-- netty -->
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-transport</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-handler</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>io.netty</groupId> -->
-		<!-- <artifactId>netty-transport-sctp</artifactId> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
 
 		<!-- TEST -->
 
