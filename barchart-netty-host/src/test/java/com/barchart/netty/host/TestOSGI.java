@@ -29,6 +29,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -37,11 +38,11 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.barchart.netty.dot.DotMulticast;
+import com.barchart.netty.host.api.NettyDot;
+import com.barchart.netty.host.api.NettyHost;
 import com.barchart.osgi.event.api.EventService;
 import com.barchart.osgi.event.api.EventUtil;
-import com.barchart.osgi.factory.test.Tidget;
-import com.barchart.osgi.factory.test.TidgetComponent1;
-import com.barchart.osgi.factory.test.TidgetManager;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
@@ -57,8 +58,6 @@ public class TestOSGI implements EventHandler {
 				systemTimeout(5 * 1000),
 
 				junitBundles(),
-
-				autoWrap(),
 
 				mavenBundle().groupId("org.apache.felix")
 						.artifactId("org.apache.felix.configadmin")
@@ -78,8 +77,8 @@ public class TestOSGI implements EventHandler {
 
 				//
 
-				mavenBundle().groupId("io.netty").artifactId("netty")
-						.versionAsInProject(),
+				wrappedBundle(mavenBundle().groupId("io.netty")
+						.artifactId("netty").versionAsInProject()),
 
 				mavenBundle().groupId("com.typesafe").artifactId("config")
 						.versionAsInProject(),
@@ -117,8 +116,11 @@ public class TestOSGI implements EventHandler {
 	@Inject
 	private EventService eventService;
 
+	// @Inject
+	// private TidgetManager manager;
+
 	@Inject
-	private TidgetManager manager;
+	private NettyHost manager;
 
 	@Before
 	public void init() {
@@ -151,21 +153,24 @@ public class TestOSGI implements EventHandler {
 
 		{
 
-			final Map<String, String> propsIn = new HashMap<String, String>();
-
-			final Tidget tidget = manager.create(TidgetComponent1.FACTORY,
-					propsIn);
-
-			assertNotNull(tidget);
-
-			final Map<String, String> propsOut = tidget.getProps();
-
-			log.debug("### propsOut : {}", propsOut);
-
 			final Map<String, String> descriptor = manager
-					.getFactoryDescriptor(TidgetComponent1.FACTORY);
+					.getFactoryDescriptor(DotMulticast.FACTORY);
 
 			log.debug("### descriptor : {}", descriptor);
+
+			final Map<String, String> propsIn = new HashMap<String, String>();
+
+			propsIn.put(Constants.SERVICE_PID, "multicast-0");
+			propsIn.put(NettyDot.PROP_NET_POINT_CONIFG,
+					"{ localAddress : localhost/12345, remoteAddress : \"239.1.2.3.4/55555\" }");
+
+			final NettyDot service = manager.create(DotMulticast.FACTORY,
+					propsIn);
+
+			assertNotNull(service);
+
+			// final Map<String, String> propsOut = tidget.getProps();
+			// log.debug("### propsOut : {}", propsOut);
 
 		}
 

@@ -10,21 +10,24 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executor;
 
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.barchart.netty.dot.BaseServiceProvider;
+import com.barchart.netty.dot.DotMulticast;
+import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyHost;
-import com.barchart.netty.host.api.NettyService;
 import com.barchart.netty.util.point.NetPoint;
 import com.barchart.osgi.factory.api.FidgetManagerBase;
 
 /** TODO enable SCTP */
 
-@Component
-public class NettyHostProvider extends FidgetManagerBase<NettyService>
-		implements NettyHost {
+@Component(immediate = true)
+public class NettyHostProvider extends FidgetManagerBase<NettyDot> implements
+		NettyHost {
 
 	static {
 		/** use slf4j for internal netty LoggingHandler */
@@ -36,10 +39,10 @@ public class NettyHostProvider extends FidgetManagerBase<NettyService>
 
 	//
 
-	private final ConcurrentMap<NetPoint, BaseServiceProvider> serviceMap = //
-	new ConcurrentHashMap<NetPoint, BaseServiceProvider>();
+	private final ConcurrentMap<NetPoint, NettyDot> serviceMap = //
+	new ConcurrentHashMap<NetPoint, NettyDot>();
 
-	public BaseServiceProvider getService(final NetPoint point) {
+	public NettyDot getService(final NetPoint point) {
 		return serviceMap.get(point);
 	}
 
@@ -65,14 +68,14 @@ public class NettyHostProvider extends FidgetManagerBase<NettyService>
 
 	//
 
-	public BaseServiceProvider makeService(final NetPoint point) {
+	public DotMulticast makeService(final NetPoint point) {
 
 		if (point == null) {
 			log.error("point", new Exception("unexpected"));
 			return null;
 		}
 
-		final BaseServiceProvider service = null;
+		final DotMulticast service = null;
 
 		// final ChannelFactory channelFactory;
 		//
@@ -123,25 +126,37 @@ public class NettyHostProvider extends FidgetManagerBase<NettyService>
 
 	//
 
-	public void activate() {
+	@Override
+	@Activate
+	protected void activate(final ComponentContext c) {
 
-		for (final BaseServiceProvider service : serviceMap.values()) {
-			service.activate();
-		}
+		log.debug("@@@ ACTIVE");
 
-	}
+		super.activate(c);
 
-	public void deactivate() {
-
-		for (final BaseServiceProvider service : serviceMap.values()) {
-			service.deactivate();
+		for (final NettyDot service : serviceMap.values()) {
+			// service.activate();
 		}
 
 	}
 
 	@Override
-	protected Class<NettyService> getFidgetInterface() {
-		return NettyService.class;
+	@Deactivate
+	protected void deactivate(final ComponentContext c) {
+
+		log.debug("@@@ INACTIVE");
+
+		super.deactivate(c);
+
+		for (final NettyDot service : serviceMap.values()) {
+			// service.deactivate();
+		}
+
+	}
+
+	@Override
+	protected Class<NettyDot> getFidgetInterface() {
+		return NettyDot.class;
 	}
 
 }
