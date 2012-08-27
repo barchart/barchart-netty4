@@ -40,7 +40,8 @@ import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.dot.DotMulticast;
 import com.barchart.netty.host.api.NettyDot;
-import com.barchart.netty.host.api.NettyHost;
+import com.barchart.netty.host.api.NettyManager;
+import com.barchart.netty.matrix.api.Matrix;
 import com.barchart.osgi.event.api.EventService;
 import com.barchart.osgi.event.api.EventUtil;
 
@@ -120,7 +121,10 @@ public class TestOSGI implements EventHandler {
 	// private TidgetManager manager;
 
 	@Inject
-	private NettyHost manager;
+	private NettyManager manager;
+
+	@Inject
+	private Matrix matrix;
 
 	@Before
 	public void init() {
@@ -148,6 +152,8 @@ public class TestOSGI implements EventHandler {
 		assertNotNull(eventService);
 
 		assertNotNull(manager);
+
+		assertNotNull(matrix);
 
 		//
 

@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.dot.DotMulticast;
 import com.barchart.netty.host.api.NettyDot;
-import com.barchart.netty.host.api.NettyHost;
+import com.barchart.netty.host.api.NettyManager;
 import com.barchart.netty.util.point.NetPoint;
 import com.barchart.osgi.factory.api.FidgetManagerBase;
 
@@ -27,7 +27,7 @@ import com.barchart.osgi.factory.api.FidgetManagerBase;
 
 @Component(immediate = true)
 public class NettyHostProvider extends FidgetManagerBase<NettyDot> implements
-		NettyHost {
+		NettyManager {
 
 	static {
 		/** use slf4j for internal netty LoggingHandler */

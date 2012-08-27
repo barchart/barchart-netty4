@@ -3,7 +3,9 @@ package com.barchart.netty.matrix.impl;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -14,7 +16,8 @@ import com.barchart.netty.matrix.api.Matrix;
 import com.barchart.netty.matrix.api.MatrixConfig;
 import com.barchart.netty.matrix.api.MatrixTarget;
 
-@Component(immediate = true, servicefactory = true)
+/** one per bundle */
+@Component(servicefactory = true)
 public class MatrixProvider implements Matrix {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -155,6 +158,16 @@ public class MatrixProvider implements Matrix {
 
 		this.targetFilter = targetFilter;
 
+	}
+
+	@Activate
+	protected void activate() {
+		log.debug("activate");
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		log.debug("deactivate");
 	}
 
 }
