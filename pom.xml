@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.barchart.base</groupId>
 		<artifactId>barchart-archon</artifactId>
-		<version>2.2.0</version>
+		<version>2.2.1-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.barchart.netty</groupId>
@@ -21,8 +21,10 @@
 	</scm>
 
 	<modules>
+
 		<module>barchart-netty-util</module>
 		<module>barchart-netty-host</module>
+
 	</modules>
 
 	<properties>
@@ -30,10 +32,6 @@
 		<barchartJavaVersion>1.7</barchartJavaVersion>
 
 		<projectNettyVersion>4.0.0.Alpha2</projectNettyVersion>
-
-		<projectFelixVersion>4.0.3</projectFelixVersion>
-		<projectPaxExamVersion>2.5.0</projectPaxExamVersion>
-		<projectPaxUrlVersion>1.4.2</projectPaxUrlVersion>
 
 	</properties>
 
@@ -78,75 +76,6 @@
 
 			<!-- TEST -->
 
-			<!-- config admin run time -->
-			<dependency>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.configadmin</artifactId>
-				<version>1.4.0</version>
-				<scope>test</scope>
-			</dependency>
-
-			<!-- scr run time -->
-			<dependency>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.scr</artifactId>
-				<version>1.6.0</version>
-				<scope>test</scope>
-			</dependency>
-
-			<!-- event admin run time -->
-			<dependency>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.eventadmin</artifactId>
-				<version>1.2.14</version>
-				<scope>test</scope>
-			</dependency>
-
-			<!-- Pax Exam -->
-			<dependency>
-				<groupId>org.ops4j.pax.exam</groupId>
-				<artifactId>pax-exam-junit4</artifactId>
-				<version>${projectPaxExamVersion}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.ops4j.pax.exam</groupId>
-				<artifactId>pax-exam-spi</artifactId>
-				<version>${projectPaxExamVersion}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.ops4j.pax.exam</groupId>
-				<artifactId>pax-exam-container-native</artifactId>
-				<version>${projectPaxExamVersion}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.ops4j.pax.exam</groupId>
-				<artifactId>pax-exam-link-assembly</artifactId>
-				<version>${projectPaxExamVersion}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.ops4j.pax.url</groupId>
-				<artifactId>pax-url-aether</artifactId>
-				<version>${projectPaxUrlVersion}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.ops4j.pax.url</groupId>
-				<artifactId>pax-url-wrap</artifactId>
-				<version>${projectPaxUrlVersion}</version>
-				<scope>test</scope>
-			</dependency>
-
-			<!-- osgi framework -->
-			<dependency>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.framework</artifactId>
-				<version>${projectFelixVersion}</version>
-				<scope>test</scope>
-			</dependency>
 
 		</dependencies>
 
@@ -159,6 +88,7 @@
 		<dependency>
 			<groupId>com.carrotgarden.osgi</groupId>
 			<artifactId>carrot-osgi-anno-scr-core</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -173,49 +103,6 @@
 		</dependency>
 
 		<!-- TEST -->
-
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.framework</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.configadmin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.eventadmin</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.ops4j.pax.exam</groupId>
-			<artifactId>pax-exam-junit4</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.exam</groupId>
-			<artifactId>pax-exam-spi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.exam</groupId>
-			<artifactId>pax-exam-container-native</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.exam</groupId>
-			<artifactId>pax-exam-link-assembly</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.url</groupId>
-			<artifactId>pax-url-aether</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.url</groupId>
-			<artifactId>pax-url-wrap</artifactId>
-		</dependency>
 
 	</dependencies>
 

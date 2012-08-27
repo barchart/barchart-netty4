@@ -21,13 +21,12 @@
 		</condition>
 
 		<exec executable="${executable}">
-
-			<arg value="clean" />
-			<arg value="install" />
 			
-			<arg value="--activate-profiles" />
-			<arg value="build-jenkins" />
-
+			<arg value="versions:use-latest-releases" />
+			
+			<arg value="--define" />
+			<arg value="includes=com.barchart.*" />
+			
 		</exec>
 		
 	</target>
