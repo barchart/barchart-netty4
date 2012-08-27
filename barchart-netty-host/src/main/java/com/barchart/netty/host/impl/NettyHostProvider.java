@@ -1,4 +1,4 @@
-package com.barchart.netty.host;
+package com.barchart.netty.host.impl;
 
 import io.netty.channel.socket.nio.NioEventLoopGroup;
 import io.netty.logging.InternalLoggerFactory;
@@ -10,11 +10,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executor;
 
-import com.barchart.netty.part.BasePart;
+import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.barchart.netty.dot.BaseServiceProvider;
+import com.barchart.netty.host.api.NettyHost;
+import com.barchart.netty.host.api.NettyService;
 import com.barchart.netty.util.point.NetPoint;
+import com.barchart.osgi.factory.api.FidgetManagerBase;
 
 /** TODO enable SCTP */
-public class BaseHost extends BasePart {
+
+@Component
+public class NettyHostProvider extends FidgetManagerBase<NettyService>
+		implements NettyHost {
 
 	static {
 		/** use slf4j for internal netty LoggingHandler */
@@ -22,12 +32,14 @@ public class BaseHost extends BasePart {
 		InternalLoggerFactory.setDefaultFactory(defaultFactory);
 	}
 
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+
 	//
 
-	private final ConcurrentMap<NetPoint, BaseService> serviceMap = //
-	new ConcurrentHashMap<NetPoint, BaseService>();
+	private final ConcurrentMap<NetPoint, BaseServiceProvider> serviceMap = //
+	new ConcurrentHashMap<NetPoint, BaseServiceProvider>();
 
-	public BaseService getService(final NetPoint point) {
+	public BaseServiceProvider getService(final NetPoint point) {
 		return serviceMap.get(point);
 	}
 
@@ -53,14 +65,14 @@ public class BaseHost extends BasePart {
 
 	//
 
-	public BaseService makeService(final NetPoint point) {
+	public BaseServiceProvider makeService(final NetPoint point) {
 
 		if (point == null) {
 			log.error("point", new Exception("unexpected"));
 			return null;
 		}
 
-		final BaseService service = null;
+		final BaseServiceProvider service = null;
 
 		// final ChannelFactory channelFactory;
 		//
@@ -99,7 +111,7 @@ public class BaseHost extends BasePart {
 
 		// }
 
-		service.bind(point);
+		// service.bind(point);
 
 		// service.bind(pipelineFactory);
 
@@ -111,26 +123,25 @@ public class BaseHost extends BasePart {
 
 	//
 
-	@Override
-	public synchronized void start() {
+	public void activate() {
 
-		super.start();
+		for (final BaseServiceProvider service : serviceMap.values()) {
+			service.activate();
+		}
 
-		for (final BaseService service : serviceMap.values()) {
-			service.start();
+	}
+
+	public void deactivate() {
+
+		for (final BaseServiceProvider service : serviceMap.values()) {
+			service.deactivate();
 		}
 
 	}
 
 	@Override
-	public synchronized void stop() {
-
-		for (final BaseService service : serviceMap.values()) {
-			service.stop();
-		}
-
-		super.stop();
-
+	protected Class<NettyService> getFidgetInterface() {
+		return NettyService.class;
 	}
 
 }

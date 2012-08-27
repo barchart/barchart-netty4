@@ -1,4 +1,4 @@
-package com.barchart.netty.host;
+package com.barchart.netty.dot;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.barchart.netty.part.BasePart;
 import com.barchart.netty.util.point.NetPoint;
 
-public abstract class BaseService extends BasePart {
+public abstract class BaseServiceProvider extends BasePart {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -96,16 +96,16 @@ public abstract class BaseService extends BasePart {
 	}
 
 	@Override
-	public synchronized void start() {
+	public synchronized void activate() {
 
-		super.start();
+		super.activate();
 
 	}
 
 	@Override
-	public synchronized void stop() {
+	public synchronized void deactivate() {
 
-		super.stop();
+		super.deactivate();
 
 	}
 

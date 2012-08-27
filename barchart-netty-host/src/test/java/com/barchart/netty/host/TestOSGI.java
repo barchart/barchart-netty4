@@ -58,6 +58,8 @@ public class TestOSGI implements EventHandler {
 
 				junitBundles(),
 
+				autoWrap(),
+
 				mavenBundle().groupId("org.apache.felix")
 						.artifactId("org.apache.felix.configadmin")
 						.versionAsInProject(),

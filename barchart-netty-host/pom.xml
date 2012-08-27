@@ -71,6 +71,18 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+		<!-- osgi spec -->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- TEST -->
 
 	</dependencies>

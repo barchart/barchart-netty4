@@ -11,33 +11,37 @@ public abstract class BasePart {
 
 	//
 
-	private volatile boolean isRunning;
+	private volatile boolean isActive;
 
-	public boolean isRunning() {
-		return isRunning;
+	public boolean isActive() {
+		return isActive;
 	}
 
 	//
 
 	@Activate
-	protected void start() {
+	protected void activate() {
 
-		if (isRunning) {
-			log.error("", new Exception("already running"));
+		if (isActive) {
+			log.error("", new Exception("already active"));
+		} else {
+			log.debug("activate");
 		}
 
-		isRunning = true;
+		isActive = true;
 
 	}
 
 	@Deactivate
-	protected void stop() {
+	protected void deactivate() {
 
-		if (!isRunning) {
-			log.error("", new Exception("was not running"));
+		if (!isActive) {
+			log.error("", new Exception("was not active"));
+		} else {
+			log.debug("deactivate");
 		}
 
-		isRunning = false;
+		isActive = false;
 
 	}
 
