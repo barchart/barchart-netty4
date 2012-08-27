@@ -21,12 +21,15 @@
 		</condition>
 
 		<exec executable="${executable}">
-			
+
 			<arg value="clean" />
 			<arg value="process-resources" />
-			
+
+			<arg value="--activate-profiles" />
+			<arg value="license" />
+
 		</exec>
-		
+
 	</target>
 
 </project>
