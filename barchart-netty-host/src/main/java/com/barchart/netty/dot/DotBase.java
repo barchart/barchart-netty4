@@ -34,8 +34,22 @@ public class DotBase implements NettyDot {
 		return netPoint;
 	}
 
+	protected void bootInit() throws Exception {
+	}
+
+	// protected final Runnable taskInit = new Runnable() {
+	// @Override
+	// public void run() {
+	// try {
+	// bootInit();
+	// } catch (final Exception e) {
+	// log.error("", e);
+	// }
+	// }
+	// };
+
 	@Activate
-	protected void activate(final Map<String, String> props) {
+	protected void activate(final Map<String, String> props) throws Exception {
 
 		// log.debug("### props : {}", props);
 
@@ -52,14 +66,31 @@ public class DotBase implements NettyDot {
 
 	}
 
+	protected void bootDone() throws Exception {
+	}
+
+	// protected final Runnable taskDone = new Runnable() {
+	// @Override
+	// public void run() {
+	// try {
+	// bootDone();
+	// } catch (final Exception e) {
+	// log.error("", e);
+	// }
+	// }
+	// };
+
 	@Deactivate
-	protected void deactivate(final Map<String, String> props) {
+	protected void deactivate(final Map<String, String> props) throws Exception {
+
+		instanceId = null;
+		netPoint = null;
 
 	}
 
 	private EventLoopGroup group;
 
-	protected EventLoopGroup getGroup() {
+	protected EventLoopGroup group() {
 		return group;
 	}
 

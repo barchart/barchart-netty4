@@ -1,25 +1,21 @@
 package com.barchart.netty.dot;
 
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.socket.DatagramChannel;
-import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.NetworkConstants;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 
+import com.barchart.netty.host.impl.OperatingSystem;
 import com.barchart.netty.util.point.NetAddress;
 import com.barchart.osgi.factory.api.FactoryDescriptor;
 
 @Component(factory = DotMulticast.FACTORY)
-public class DotMulticast extends DotBase {
+public class DotMulticast extends DotUnicast {
 
 	public static final String FACTORY = "barchart.netty.dot.multicast";
 
@@ -32,73 +28,76 @@ public class DotMulticast extends DotBase {
 				"multicast reader end point service");
 	}
 
+	/** valid interface or local host */
+	protected NetworkInterface getBindInteface() {
+		try {
+			return NetworkInterface.getByInetAddress(//
+					getLocalAddress().getAddress());
+		} catch (final Throwable e) {
+			log.error("fatal: can not resolve bind interface", e);
+			return NetworkConstants.LOOPBACK_IF;
+		}
+	}
+
 	/** multicast reader group address */
 	protected NetAddress getGroupAddress() {
 		return getNetPoint().getRemoteAddress();
 	}
 
-	/** default bind address */
-	protected NetAddress getBindAddress() {
+	protected NetAddress getLocalAddress() {
 		return getNetPoint().getLocalAddress();
 	}
 
-	private Bootstrap boot;
-
-	private NioDatagramChannel channel;
-
-	protected NioDatagramChannel getChannel() {
-		return channel;
-	}
-
-	protected ChannelInitializer<DatagramChannel> getHandler() {
-		return new ChannelInitializer<DatagramChannel>() {
-			@Override
-			public void initChannel(final DatagramChannel ch) throws Exception {
-				ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+	/** valid bind address or local host */
+	protected NetAddress getBindAddress() {
+		try {
+			/**
+			 * allows to avoid duplicate packets when multiple multicast groups
+			 * share the same port
+			 */
+			final InetAddress bindAddr;
+			final int bindPort = getGroupAddress().getPort();
+			switch (OperatingSystem.CURRENT) {
+			case LINUX:
+				bindAddr = getGroupAddress().getAddress();
+				break;
+			case WINDOWS:
+				bindAddr = getLocalAddress().getAddress();
+				break;
+			default:
+				log.error("", new Exception(
+						"possible bind problem - o/s not tested"));
+				bindAddr = InetAddress.getByName("0.0.0.0");
+				break;
 			}
-		};
+			return new NetAddress(bindAddr, bindPort);
+		} catch (final Throwable e) {
+			log.error("fatal: can not resolve bind address", e);
+			return new NetAddress(NetworkConstants.LOCALHOST, 0);
+		}
 	}
 
 	@Override
-	@Activate
-	public void activate(final Map<String, String> props) {
+	protected void bootInit() throws Exception {
 
-		super.activate(props);
+		boot().localAddress(getBindAddress());
 
-		channel = new NioDatagramChannel();
+		boot().remoteAddress(getGroupAddress());
 
-		boot = new Bootstrap();
+		boot().option(ChannelOption.SO_REUSEADDR, true);
 
-		boot.localAddress(getNetPoint().getLocalAddress());
+		boot().option(ChannelOption.IP_MULTICAST_TTL,
+				getNetPoint().getPacketTTL());
 
-		boot.remoteAddress(getNetPoint().getRemoteAddress());
+		boot().group(group());
 
-		boot.option(ChannelOption.IP_MULTICAST_TTL, getNetPoint()
-				.getPacketTTL());
+		boot().channel(channel());
 
-		boot.option(ChannelOption.IP_MULTICAST_ADDR, getNetPoint()
-				.getRemoteAddress().getAddress());
+		boot().handler(handler());
 
-		boot.group(getGroup());
+		boot().bind().sync();
 
-		boot.channel(getChannel());
-
-		boot.handler(getHandler());
-
-		boot.bind();
-
-	}
-
-	@Override
-	@Deactivate
-	public void deactivate(final Map<String, String> props) {
-
-		channel.close();
-		channel = null;
-
-		boot = null;
-
-		super.deactivate(props);
+		channel().joinGroup(getGroupAddress(), getBindInteface()).sync();
 
 	}
 

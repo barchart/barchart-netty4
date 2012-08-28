@@ -56,7 +56,9 @@ public class TestOSGI implements EventHandler {
 
 		return options(
 
-				systemTimeout(5 * 1000),
+				systemTimeout(3 * 1000),
+
+				systemProperty("java.net.preferIPv4Stack").value("true"),
 
 				junitBundles(),
 
@@ -159,24 +161,30 @@ public class TestOSGI implements EventHandler {
 
 		{
 
-			final Map<String, String> descriptor = manager
-					.getFactoryDescriptor(DotMulticast.FACTORY);
-
-			log.debug("### descriptor : {}", descriptor);
-
 			final Map<String, String> propsIn = new HashMap<String, String>();
 
 			propsIn.put(Constants.SERVICE_PID, "multicast-0");
 			propsIn.put(NettyDot.PROP_NET_POINT_CONIFG,
-					"{ localAddress : localhost/12345, remoteAddress : \"239.1.2.3.4/55555\" }");
+					"{ localAddress : localhost, remoteAddress : \"239.1.2.3/55555\" }");
 
 			final NettyDot service = manager.create(DotMulticast.FACTORY,
 					propsIn);
 
 			assertNotNull(service);
 
-			// final Map<String, String> propsOut = tidget.getProps();
-			// log.debug("### propsOut : {}", propsOut);
+		}
+		{
+
+			final Map<String, String> propsIn = new HashMap<String, String>();
+
+			propsIn.put(Constants.SERVICE_PID, "multicast-1");
+			propsIn.put(NettyDot.PROP_NET_POINT_CONIFG,
+					"{ localAddress : localhost, remoteAddress : \"239.1.2.3/55555\" }");
+
+			final NettyDot service = manager.create(DotMulticast.FACTORY,
+					propsIn);
+
+			assertNotNull(service);
 
 		}
 
