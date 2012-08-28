@@ -49,6 +49,7 @@ public class DotMulticast extends DotUnicast {
 	}
 
 	/** valid bind address or local host */
+	/** FIXME slow dns lookup */
 	protected NetAddress getBindAddress() {
 		try {
 			/**
@@ -80,7 +81,7 @@ public class DotMulticast extends DotUnicast {
 	@Override
 	protected void bootInit() throws Exception {
 
-		boot().localAddress(getBindAddress());
+		boot().localAddress(getLocalAddress()); // XXX bind address
 
 		boot().remoteAddress(getGroupAddress());
 
@@ -98,6 +99,15 @@ public class DotMulticast extends DotUnicast {
 		boot().bind().sync();
 
 		channel().joinGroup(getGroupAddress(), getBindInteface()).sync();
+
+	}
+
+	@Override
+	protected void bootDone() throws Exception {
+
+		channel().leaveGroup(getGroupAddress(), getBindInteface()).sync();
+
+		channel().close().sync();
 
 	}
 
