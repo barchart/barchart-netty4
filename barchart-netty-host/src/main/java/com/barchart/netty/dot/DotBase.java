@@ -34,6 +34,7 @@ public class DotBase implements NettyDot {
 		return netPoint;
 	}
 
+	/** bootstrap starup */
 	protected void bootActivate() throws Exception {
 	}
 
@@ -55,6 +56,7 @@ public class DotBase implements NettyDot {
 
 	}
 
+	/** bootstrap shutdown */
 	protected void bootDeactivate() throws Exception {
 	}
 

@@ -2,8 +2,6 @@ package com.barchart.netty.dot;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.DatagramChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +31,12 @@ public class DotMulticastMatrix extends DotMulticast {
 		return new ChannelInitializer<DatagramChannel>() {
 			@Override
 			public void initChannel(final DatagramChannel ch) throws Exception {
-				ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+
+				final MatrixHandler handler = //
+				new MatrixHandler(getInstanceId(), matrix);
+
+				ch.pipeline().addLast(handler);
+
 			}
 		};
 	}
