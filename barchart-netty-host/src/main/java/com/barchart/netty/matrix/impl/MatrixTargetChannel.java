@@ -24,7 +24,6 @@ public class MatrixTargetChannel implements MatrixTarget {
 
 	@Override
 	public String getFilter() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

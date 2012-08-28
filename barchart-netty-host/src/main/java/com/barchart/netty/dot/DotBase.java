@@ -34,19 +34,8 @@ public class DotBase implements NettyDot {
 		return netPoint;
 	}
 
-	protected void bootInit() throws Exception {
+	protected void bootActivate() throws Exception {
 	}
-
-	// protected final Runnable taskInit = new Runnable() {
-	// @Override
-	// public void run() {
-	// try {
-	// bootInit();
-	// } catch (final Exception e) {
-	// log.error("", e);
-	// }
-	// }
-	// };
 
 	@Activate
 	protected void activate(final Map<String, String> props) throws Exception {
@@ -66,19 +55,8 @@ public class DotBase implements NettyDot {
 
 	}
 
-	protected void bootDone() throws Exception {
+	protected void bootDeactivate() throws Exception {
 	}
-
-	// protected final Runnable taskDone = new Runnable() {
-	// @Override
-	// public void run() {
-	// try {
-	// bootDone();
-	// } catch (final Exception e) {
-	// log.error("", e);
-	// }
-	// }
-	// };
 
 	@Deactivate
 	protected void deactivate(final Map<String, String> props) throws Exception {

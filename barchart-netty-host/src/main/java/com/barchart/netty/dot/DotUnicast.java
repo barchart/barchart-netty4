@@ -53,7 +53,7 @@ public class DotUnicast extends DotBase {
 	}
 
 	@Override
-	protected void bootInit() throws Exception {
+	protected void bootActivate() throws Exception {
 
 		boot().localAddress(getNetPoint().getLocalAddress());
 
@@ -83,13 +83,12 @@ public class DotUnicast extends DotBase {
 		channel = new NioDatagramChannel();
 		boot = new Bootstrap();
 
-		// group().next().execute(taskInit);
-		bootInit();
+		bootActivate();
 
 	}
 
 	@Override
-	protected void bootDone() throws Exception {
+	protected void bootDeactivate() throws Exception {
 
 		channel().close().sync();
 
@@ -99,8 +98,7 @@ public class DotUnicast extends DotBase {
 	@Deactivate
 	public void deactivate(final Map<String, String> props) throws Exception {
 
-		// group().next().execute(taskDone);
-		bootDone();
+		bootDeactivate();
 
 		channel = null;
 		boot = null;

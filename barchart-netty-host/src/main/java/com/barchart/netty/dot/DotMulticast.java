@@ -79,7 +79,7 @@ public class DotMulticast extends DotUnicast {
 	}
 
 	@Override
-	protected void bootInit() throws Exception {
+	protected void bootActivate() throws Exception {
 
 		boot().localAddress(getLocalAddress()); // XXX bind address
 
@@ -103,7 +103,7 @@ public class DotMulticast extends DotUnicast {
 	}
 
 	@Override
-	protected void bootDone() throws Exception {
+	protected void bootDeactivate() throws Exception {
 
 		channel().leaveGroup(getGroupAddress(), getBindInteface()).sync();
 
