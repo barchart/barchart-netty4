@@ -3,20 +3,21 @@ package com.barchart.netty.dot;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.socket.DatagramChannel;
-import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 
 import com.barchart.osgi.factory.api.FactoryDescriptor;
 
-@Component(factory = DotUnicast.FACTORY)
-public class DotUnicast extends DotBase {
+@Component(factory = DotStreamClient.FACTORY)
+public class DotStreamClient extends DotBase {
 
 	public static final String FACTORY = "barchart.netty.dot.unicast";
 
@@ -35,16 +36,16 @@ public class DotUnicast extends DotBase {
 		return boot;
 	}
 
-	private NioDatagramChannel channel;
+	private NioSocketChannel channel;
 
-	protected NioDatagramChannel channel() {
+	protected NioSocketChannel channel() {
 		return channel;
 	}
 
-	protected ChannelInitializer<DatagramChannel> handler() {
-		return new ChannelInitializer<DatagramChannel>() {
+	protected ChannelInitializer<NioSocketChannel> handler() {
+		return new ChannelInitializer<NioSocketChannel>() {
 			@Override
-			public void initChannel(final DatagramChannel ch) throws Exception {
+			public void initChannel(final NioSocketChannel ch) throws Exception {
 				ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
 			}
 		};
@@ -53,17 +54,11 @@ public class DotUnicast extends DotBase {
 	@Override
 	protected void activateBoot() throws Exception {
 
-		boot = new Bootstrap();
-		channel = new NioDatagramChannel();
-
 		boot().localAddress(getNetPoint().getLocalAddress());
 
 		boot().remoteAddress(getNetPoint().getRemoteAddress());
 
 		boot().option(ChannelOption.SO_REUSEADDR, true);
-
-		boot().option(ChannelOption.IP_MULTICAST_TTL,
-				getNetPoint().getPacketTTL());
 
 		boot().group(group());
 
@@ -76,12 +71,35 @@ public class DotUnicast extends DotBase {
 	}
 
 	@Override
+	@Activate
+	public void activate(final Map<String, String> props) throws Exception {
+
+		super.activate(props);
+
+		boot = new Bootstrap();
+		channel = new NioSocketChannel();
+
+		activateBoot();
+
+	}
+
+	@Override
 	protected void deactivateBoot() throws Exception {
 
 		channel().close().sync();
 
+	}
+
+	@Override
+	@Deactivate
+	public void deactivate(final Map<String, String> props) throws Exception {
+
+		deactivateBoot();
+
 		channel = null;
 		boot = null;
+
+		super.deactivate(props);
 
 	}
 

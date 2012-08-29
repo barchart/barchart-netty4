@@ -29,10 +29,8 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
@@ -100,10 +98,6 @@ public class TestOSGI implements EventHandler {
 				mavenBundle().groupId("com.barchart.netty")
 						.artifactId("barchart-netty-util").versionAsInProject(),
 
-				// workingDirectory("/work/git/barchart-osgi/barchart-osgi-factory/target/exam"),
-
-				// keepCaches(),
-
 				bundle("reference:file:target/classes")
 
 		);
@@ -114,13 +108,7 @@ public class TestOSGI implements EventHandler {
 	private BundleContext context;
 
 	@Inject
-	private EventAdmin eventAdmin;
-
-	@Inject
 	private EventService eventService;
-
-	// @Inject
-	// private TidgetManager manager;
 
 	@Inject
 	private NettyManager manager;
@@ -149,8 +137,6 @@ public class TestOSGI implements EventHandler {
 			log.info("### active bundle : " + bundle.getSymbolicName());
 		}
 
-		assertNotNull(eventAdmin);
-
 		assertNotNull(eventService);
 
 		assertNotNull(manager);
@@ -163,9 +149,9 @@ public class TestOSGI implements EventHandler {
 
 			final Map<String, String> propsIn = new HashMap<String, String>();
 
-			propsIn.put(Constants.SERVICE_PID, "multicast-0");
-			propsIn.put(NettyDot.PROP_NET_POINT_CONIFG,
-					"{ localAddress : localhost, remoteAddress : \"239.1.2.3/55555\" }");
+			propsIn.put(
+					NettyDot.PROP_NET_POINT_CONIFG,
+					"{ id = multicast-0,  localAddress = localhost, remoteAddress = \"239.1.2.3/50001\" }");
 
 			final NettyDot service = manager.create(DotMulticast.FACTORY,
 					propsIn);
@@ -177,9 +163,9 @@ public class TestOSGI implements EventHandler {
 
 			final Map<String, String> propsIn = new HashMap<String, String>();
 
-			propsIn.put(Constants.SERVICE_PID, "multicast-1");
-			propsIn.put(NettyDot.PROP_NET_POINT_CONIFG,
-					"{ localAddress : localhost, remoteAddress : \"239.1.2.3/55555\" }");
+			propsIn.put(
+					NettyDot.PROP_NET_POINT_CONIFG,
+					"{ id = multicast-1,  localAddress = localhost, remoteAddress = \"239.1.2.3/50002\" }");
 
 			final NettyDot service = manager.create(DotMulticast.FACTORY,
 					propsIn);

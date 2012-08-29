@@ -4,7 +4,6 @@ import io.netty.channel.EventLoopGroup;
 
 import java.util.Map;
 
-import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
@@ -20,13 +19,11 @@ public class DotBase implements NettyDot {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	private String instanceId;
-
 	private NetPoint netPoint;
 
 	@Override
 	public String getInstanceId() {
-		return instanceId;
+		return netPoint.getId();
 	}
 
 	@Override
@@ -35,7 +32,7 @@ public class DotBase implements NettyDot {
 	}
 
 	/** bootstrap starup */
-	protected void bootActivate() throws Exception {
+	protected void activateBoot() throws Exception {
 	}
 
 	@Activate
@@ -43,27 +40,24 @@ public class DotBase implements NettyDot {
 
 		// log.debug("### props : {}", props);
 
-		instanceId = props.get(Constants.SERVICE_PID);
-
-		log.debug("### instanceId : {}", instanceId);
-
 		final String pointConfig = props.get(PROP_NET_POINT_CONIFG);
 
 		netPoint = NetPoint.from(ConfigFactory.parseString(pointConfig));
 
-		log.debug("### netPoint.local : {}", netPoint.getLocalAddress());
-		log.debug("### netPoint.remote : {}", netPoint.getRemoteAddress());
+		log.debug("### netPoint : {}", netPoint);
 
+		activateBoot();
 	}
 
 	/** bootstrap shutdown */
-	protected void bootDeactivate() throws Exception {
+	protected void deactivateBoot() throws Exception {
 	}
 
 	@Deactivate
 	protected void deactivate(final Map<String, String> props) throws Exception {
 
-		instanceId = null;
+		deactivateBoot();
+
 		netPoint = null;
 
 	}
