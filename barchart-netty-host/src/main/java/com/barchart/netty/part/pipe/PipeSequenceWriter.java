@@ -15,7 +15,7 @@ import com.barchart.netty.part.hand.SequenceWriter;
 @Component(name = PipeSequenceWriter.NAME, immediate = true)
 public class PipeSequenceWriter implements NettyPipe {
 
-	public static final String NAME = "barchart.netty.pipe.sequence.wirter";
+	public static final String NAME = "barchart.netty.pipe.sequence.writer";
 
 	@Override
 	public String getName() {

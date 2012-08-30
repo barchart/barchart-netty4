@@ -209,7 +209,7 @@ public class TestOSGI implements EventHandler {
 
 		assertNotNull(service);
 
-		Thread.sleep(200);
+		Thread.sleep(1000);
 
 	}
 
