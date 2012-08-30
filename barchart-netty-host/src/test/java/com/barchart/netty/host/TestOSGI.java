@@ -42,6 +42,8 @@ import com.barchart.netty.matrix.api.Matrix;
 import com.barchart.netty.part.dot.DotCastMulti;
 import com.barchart.osgi.event.api.EventService;
 import com.barchart.osgi.event.api.EventUtil;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
@@ -116,20 +118,13 @@ public class TestOSGI implements EventHandler {
 	@Inject
 	private Matrix matrix;
 
+	@SuppressWarnings("rawtypes")
+	private ServiceRegistration regEventHandler;
+
 	@Before
 	public void init() {
-	}
 
-	@After
-	public void done() {
-	}
-
-	static final String TOPIC = UUID.randomUUID().toString();
-
-	@Test
-	public void test() throws Exception {
-
-		log.info("################################");
+		log.info("#######################################################################");
 
 		log.info("### curren bundle " + context.getBundle().getSymbolicName());
 
@@ -143,55 +138,64 @@ public class TestOSGI implements EventHandler {
 
 		assertNotNull(matrix);
 
-		//
-
 		{
-
-			final Map<String, String> propsIn = new HashMap<String, String>();
-
-			propsIn.put(
-					NettyDot.PROP_NET_POINT_CONIFG,
-					"{ id = multicast-0,  local-address = localhost, remote-address = \"239.1.2.3/50001\" }");
-
-			final NettyDot service = manager.create(DotCastMulti.FACTORY,
-					propsIn);
-
-			assertNotNull(service);
-
-		}
-		{
-
-			final Map<String, String> propsIn = new HashMap<String, String>();
-
-			propsIn.put(
-					NettyDot.PROP_NET_POINT_CONIFG,
-					"{ id = multicast-1,  local-address = localhost, remote-address = \"239.1.2.3/50002\" }");
-
-			final NettyDot service = manager.create(DotCastMulti.FACTORY,
-					propsIn);
-
-			assertNotNull(service);
-
-		}
-
-		{
+			/** events */
 
 			final Dictionary<String, Object> props = new Hashtable<String, Object>();
 			props.put(EventConstants.EVENT_TOPIC, TOPIC);
 
-			@SuppressWarnings("rawtypes")
-			final ServiceRegistration reg = context.registerService(
+			regEventHandler = context.registerService(
 					EventHandler.class.getName(), this, props);
-
-			eventService.send(TOPIC);
-
-			assertEquals(eventCount, 1);
-
-			reg.unregister();
 
 		}
 
-		log.info("################################");
+	}
+
+	@After
+	public void done() {
+
+		{
+
+			regEventHandler.unregister();
+
+		}
+
+		log.info("#######################################################################");
+
+	}
+
+	static final String TOPIC = UUID.randomUUID().toString();
+
+	// @Test
+	public void testEvent() throws Exception {
+
+		eventService.send(TOPIC);
+
+		assertEquals(eventCount, 1);
+
+	}
+
+	@Test
+	public void testMulticast() throws Exception {
+
+		//
+
+		final Config config = ConfigFactory.load("case-01/point-0.conf")
+				.getConfig("point");
+
+		final String hocon = config.root().render();
+
+		log.info("@@@ text : \n{}", hocon);
+
+		final Map<String, String> props = new HashMap<String, String>();
+
+		props.put(NettyDot.PROP_NET_POINT, hocon);
+
+		final NettyDot service = manager.create(DotCastMulti.FACTORY, props);
+
+		assertNotNull(service);
+
+		Thread.sleep(200);
 
 	}
 

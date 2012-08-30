@@ -7,7 +7,7 @@ public interface NettyDot extends NettyAny {
 
 	/* props */
 
-	String PROP_NET_POINT_CONIFG = "net-point-config";
+	String PROP_NET_POINT = "net-point";
 
 	/* */
 

@@ -19,6 +19,9 @@ public class NettyPipeProvider implements NettyPipeManager {
 
 	@Override
 	public NettyPipe findPipe(final String pipeName) {
+		if (pipeName == null) {
+			return null;
+		}
 		return pipeMap.get(pipeName);
 	}
 

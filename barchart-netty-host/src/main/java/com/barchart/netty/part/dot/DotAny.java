@@ -104,7 +104,7 @@ public class DotAny implements NettyDot {
 
 		log.debug("### activate : {}", props);
 
-		final String pointConfig = props.get(PROP_NET_POINT_CONIFG);
+		final String pointConfig = props.get(PROP_NET_POINT);
 
 		netPoint = NetPoint.from(ConfigFactory.parseString(pointConfig));
 
