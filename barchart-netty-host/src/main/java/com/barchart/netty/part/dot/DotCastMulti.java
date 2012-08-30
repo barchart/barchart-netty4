@@ -1,6 +1,5 @@
-package com.barchart.netty.dot;
+package com.barchart.netty.part.dot;
 
-import io.netty.channel.ChannelOption;
 import io.netty.util.NetworkConstants;
 
 import java.net.InetAddress;
@@ -14,10 +13,20 @@ import com.barchart.netty.host.impl.OperatingSystem;
 import com.barchart.netty.util.point.NetAddress;
 import com.barchart.osgi.factory.api.FactoryDescriptor;
 
-@Component(factory = DotMulticast.FACTORY)
-public class DotMulticast extends DotUnicast {
+/**
+ * parent for multicast end points
+ * 
+ * handles multicast join / leave;
+ */
+@Component(factory = DotCastMulti.FACTORY)
+public class DotCastMulti extends DotCast {
 
-	public static final String FACTORY = "barchart.netty.dot.multicast";
+	public static final String FACTORY = "barchart.netty.dot.cast.multi";
+
+	@Override
+	public String getFactoryId() {
+		return FACTORY;
+	}
 
 	@FactoryDescriptor
 	private static final Map<String, String> descriptor;
@@ -25,14 +34,14 @@ public class DotMulticast extends DotUnicast {
 		descriptor = new HashMap<String, String>();
 		descriptor.put(PROP_FACTORY_ID, FACTORY);
 		descriptor.put(PROP_FACTORY_DESCRIPTION,
-				"multicast reader end point service");
+				"multicast reader/writer end point service");
 	}
 
 	/** valid interface or local host */
 	protected NetworkInterface getBindInteface() {
 		try {
 			return NetworkInterface.getByInetAddress(//
-					getLocalAddress().getAddress());
+					localAddress().getAddress());
 		} catch (final Throwable e) {
 			log.error("fatal: can not resolve bind interface", e);
 			return NetworkConstants.LOOPBACK_IF;
@@ -42,10 +51,6 @@ public class DotMulticast extends DotUnicast {
 	/** multicast reader group address */
 	protected NetAddress getGroupAddress() {
 		return getNetPoint().getRemoteAddress();
-	}
-
-	protected NetAddress getLocalAddress() {
-		return getNetPoint().getLocalAddress();
 	}
 
 	/** valid bind address or local host */
@@ -63,7 +68,7 @@ public class DotMulticast extends DotUnicast {
 				bindAddr = getGroupAddress().getAddress();
 				break;
 			case WINDOWS:
-				bindAddr = getLocalAddress().getAddress();
+				bindAddr = localAddress().getAddress();
 				break;
 			default:
 				log.error("", new Exception(
@@ -81,22 +86,7 @@ public class DotMulticast extends DotUnicast {
 	@Override
 	protected void activateBoot() throws Exception {
 
-		boot().localAddress(getLocalAddress()); // XXX bind address
-
-		boot().remoteAddress(getGroupAddress());
-
-		boot().option(ChannelOption.SO_REUSEADDR, true);
-
-		boot().option(ChannelOption.IP_MULTICAST_TTL,
-				getNetPoint().getPacketTTL());
-
-		boot().group(group());
-
-		boot().channel(channel());
-
-		boot().handler(handler());
-
-		boot().bind().sync();
+		super.activateBoot();
 
 		channel().joinGroup(getGroupAddress(), getBindInteface()).sync();
 
@@ -107,7 +97,7 @@ public class DotMulticast extends DotUnicast {
 
 		channel().leaveGroup(getGroupAddress(), getBindInteface()).sync();
 
-		channel().close().sync();
+		super.deactivateBoot();
 
 	}
 

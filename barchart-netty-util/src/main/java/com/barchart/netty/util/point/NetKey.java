@@ -2,16 +2,20 @@ package com.barchart.netty.util.point;
 
 public interface NetKey {
 
-	String KEY_LOCAL_ADDRESS = "localAddress";
+	String KEY_LOCAL_ADDRESS = "local-address";
 
-	String KEY_REMOTE_ADDRESS = "remoteAddress";
+	String KEY_REMOTE_ADDRESS = "remote-address";
 
+	String KEY_PACKET_TTL = "packet-ttl";
+
+	String KEY_RECV_BUF_SIZE = "receive-buffer-size";
+
+	String KEY_SEND_BUF_SIZE = "send-buffer-size";
+
+	/** parent */
 	String KEY_PIPELINE = "pipeline";
 
-	String KEY_PACKET_TTL = "packetTTL";
-
-	String KEY_RECV_BUF_SIZE = "receiveBufferSize";
-
-	String KEY_SEND_BUF_SIZE = "sendBufferSize";
+	/** child */
+	String KEY_MANAGED_PIPELINE = "managed-pipeline";
 
 }

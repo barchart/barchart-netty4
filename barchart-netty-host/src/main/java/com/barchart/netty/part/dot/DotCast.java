@@ -1,12 +1,8 @@
-package com.barchart.netty.dot;
+package com.barchart.netty.part.dot;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +11,22 @@ import org.osgi.service.component.annotations.Component;
 
 import com.barchart.osgi.factory.api.FactoryDescriptor;
 
-@Component(factory = DotUnicast.FACTORY)
-public class DotUnicast extends DotBase {
+/**
+ * parent for datagram based connection-less end points;
+ * 
+ * such as:
+ * 
+ * anycast, broadcast, unicast, multicast, etc;
+ */
+@Component(factory = DotCast.FACTORY)
+public class DotCast extends DotAny {
 
-	public static final String FACTORY = "barchart.netty.dot.unicast";
+	public static final String FACTORY = "barchart.netty.dot.cast";
+
+	@Override
+	public String getFactoryId() {
+		return FACTORY;
+	}
 
 	@FactoryDescriptor
 	private static final Map<String, String> descriptor;
@@ -26,7 +34,7 @@ public class DotUnicast extends DotBase {
 		descriptor = new HashMap<String, String>();
 		descriptor.put(PROP_FACTORY_ID, FACTORY);
 		descriptor.put(PROP_FACTORY_DESCRIPTION,
-				"unicast reader/writer end point service");
+				"datagram reader/writer end point service");
 	}
 
 	private Bootstrap boot;
@@ -41,24 +49,15 @@ public class DotUnicast extends DotBase {
 		return channel;
 	}
 
-	protected ChannelInitializer<DatagramChannel> handler() {
-		return new ChannelInitializer<DatagramChannel>() {
-			@Override
-			public void initChannel(final DatagramChannel ch) throws Exception {
-				ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
-			}
-		};
-	}
-
 	@Override
 	protected void activateBoot() throws Exception {
 
 		boot = new Bootstrap();
 		channel = new NioDatagramChannel();
 
-		boot().localAddress(getNetPoint().getLocalAddress());
+		boot().localAddress(localAddress());
 
-		boot().remoteAddress(getNetPoint().getRemoteAddress());
+		boot().remoteAddress(remoteAddress());
 
 		boot().option(ChannelOption.SO_REUSEADDR, true);
 
@@ -69,7 +68,7 @@ public class DotUnicast extends DotBase {
 
 		boot().channel(channel());
 
-		boot().handler(handler());
+		boot().handler(handler(pipeline()));
 
 		boot().bind().sync();
 

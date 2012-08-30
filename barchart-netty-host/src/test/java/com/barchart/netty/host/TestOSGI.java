@@ -36,10 +36,10 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.barchart.netty.dot.DotMulticast;
 import com.barchart.netty.host.api.NettyDot;
-import com.barchart.netty.host.api.NettyManager;
+import com.barchart.netty.host.api.NettyDotManager;
 import com.barchart.netty.matrix.api.Matrix;
+import com.barchart.netty.part.dot.DotCastMulti;
 import com.barchart.osgi.event.api.EventService;
 import com.barchart.osgi.event.api.EventUtil;
 
@@ -111,7 +111,7 @@ public class TestOSGI implements EventHandler {
 	private EventService eventService;
 
 	@Inject
-	private NettyManager manager;
+	private NettyDotManager manager;
 
 	@Inject
 	private Matrix matrix;
@@ -153,7 +153,7 @@ public class TestOSGI implements EventHandler {
 					NettyDot.PROP_NET_POINT_CONIFG,
 					"{ id = multicast-0,  localAddress = localhost, remoteAddress = \"239.1.2.3/50001\" }");
 
-			final NettyDot service = manager.create(DotMulticast.FACTORY,
+			final NettyDot service = manager.create(DotCastMulti.FACTORY,
 					propsIn);
 
 			assertNotNull(service);
@@ -167,7 +167,7 @@ public class TestOSGI implements EventHandler {
 					NettyDot.PROP_NET_POINT_CONIFG,
 					"{ id = multicast-1,  localAddress = localhost, remoteAddress = \"239.1.2.3/50002\" }");
 
-			final NettyDot service = manager.create(DotMulticast.FACTORY,
+			final NettyDot service = manager.create(DotCastMulti.FACTORY,
 					propsIn);
 
 			assertNotNull(service);

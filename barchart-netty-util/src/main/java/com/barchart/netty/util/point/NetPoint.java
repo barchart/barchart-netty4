@@ -43,6 +43,10 @@ public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey {
 		return getNetAddress(KEY_REMOTE_ADDRESS);
 	}
 
+	public String getManagedPipeline() {
+		return load(KEY_MANAGED_PIPELINE);
+	}
+
 	public String getPipeline() {
 		return load(KEY_PIPELINE);
 	}
@@ -75,6 +79,10 @@ public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey {
 		setNetAddress(KEY_REMOTE_ADDRESS, remoteAddress);
 	}
 
+	public void setManagedPipeline(final String pipeline) {
+		save(KEY_MANAGED_PIPELINE, pipeline);
+	}
+
 	public void setPipeline(final String pipeline) {
 		save(KEY_PIPELINE, pipeline);
 	}
@@ -84,7 +92,7 @@ public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey {
 	}
 
 	public String identity() {
-		return getPipeline() + ";" + getLocalAddress() + ";"
+		return getManagedPipeline() + ";" + getLocalAddress() + ";"
 				+ getRemoteAddress();
 	}
 

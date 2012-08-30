@@ -50,7 +50,7 @@ public class TestNetUtil {
 
 		assertEquals(33, point.getPacketTTL());
 
-		assertEquals("advanced", point.getPipeline());
+		assertEquals("advanced", point.getManagedPipeline());
 
 		assertEquals("signature", point.load("custom1"));
 

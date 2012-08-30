@@ -32,7 +32,14 @@
 			<artifactId>netty</artifactId>
 		</dependency>
 
-		<!-- executor service -->
+		<!-- config admin -->
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-conf</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
+		<!-- scr factory -->
 		<dependency>
 			<groupId>com.barchart.osgi</groupId>
 			<artifactId>barchart-osgi-factory</artifactId>
