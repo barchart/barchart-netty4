@@ -151,7 +151,7 @@ public class TestOSGI implements EventHandler {
 
 			propsIn.put(
 					NettyDot.PROP_NET_POINT_CONIFG,
-					"{ id = multicast-0,  localAddress = localhost, remoteAddress = \"239.1.2.3/50001\" }");
+					"{ id = multicast-0,  local-address = localhost, remote-address = \"239.1.2.3/50001\" }");
 
 			final NettyDot service = manager.create(DotCastMulti.FACTORY,
 					propsIn);
@@ -165,7 +165,7 @@ public class TestOSGI implements EventHandler {
 
 			propsIn.put(
 					NettyDot.PROP_NET_POINT_CONIFG,
-					"{ id = multicast-1,  localAddress = localhost, remoteAddress = \"239.1.2.3/50002\" }");
+					"{ id = multicast-1,  local-address = localhost, remote-address = \"239.1.2.3/50002\" }");
 
 			final NettyDot service = manager.create(DotCastMulti.FACTORY,
 					propsIn);
