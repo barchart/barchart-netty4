@@ -18,7 +18,7 @@ import com.barchart.netty.host.api.NettyHand;
 @Component(factory = HandAny.FACTORY)
 public class HandAny extends ChannelHandlerAdapter implements NettyHand {
 
-	public static final String FACTORY = "barchart.netty.handl.any";
+	public static final String FACTORY = "barchart.netty.hand.any";
 
 	@Override
 	public String getFactoryId() {

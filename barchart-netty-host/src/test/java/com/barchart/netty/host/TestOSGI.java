@@ -40,6 +40,7 @@ import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyDotManager;
 import com.barchart.netty.matrix.api.Matrix;
 import com.barchart.netty.part.dot.DotCastMulti;
+import com.barchart.osgi.conf.api.ConfigAdminService;
 import com.barchart.osgi.event.api.EventService;
 import com.barchart.osgi.event.api.EventUtil;
 import com.typesafe.config.Config;
@@ -59,6 +60,9 @@ public class TestOSGI implements EventHandler {
 				systemTimeout(3 * 1000),
 
 				systemProperty("java.net.preferIPv4Stack").value("true"),
+
+				// systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level")
+				// .value("INFO"),
 
 				junitBundles(),
 
@@ -87,6 +91,9 @@ public class TestOSGI implements EventHandler {
 						.versionAsInProject(),
 
 				mavenBundle().groupId("com.barchart.osgi")
+						.artifactId("barchart-osgi-conf").versionAsInProject(),
+
+				mavenBundle().groupId("com.barchart.osgi")
 						.artifactId("barchart-osgi-event").versionAsInProject(),
 
 				mavenBundle().groupId("com.barchart.osgi")
@@ -99,6 +106,8 @@ public class TestOSGI implements EventHandler {
 
 				mavenBundle().groupId("com.barchart.netty")
 						.artifactId("barchart-netty-util").versionAsInProject(),
+
+				//
 
 				bundle("reference:file:target/classes")
 
@@ -113,6 +122,9 @@ public class TestOSGI implements EventHandler {
 	private EventService eventService;
 
 	@Inject
+	private ConfigAdminService configAdmin;
+
+	@Inject
 	private NettyDotManager manager;
 
 	@Inject
@@ -122,7 +134,7 @@ public class TestOSGI implements EventHandler {
 	private ServiceRegistration regEventHandler;
 
 	@Before
-	public void init() {
+	public void init() throws Exception {
 
 		log.info("#######################################################################");
 
@@ -131,6 +143,8 @@ public class TestOSGI implements EventHandler {
 		for (final Bundle bundle : context.getBundles()) {
 			log.info("### active bundle : " + bundle.getSymbolicName());
 		}
+
+		assertNotNull(configAdmin);
 
 		assertNotNull(eventService);
 
