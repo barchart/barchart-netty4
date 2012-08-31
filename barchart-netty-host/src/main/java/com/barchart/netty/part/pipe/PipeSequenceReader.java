@@ -9,6 +9,7 @@ import io.netty.util.CharsetUtil;
 import org.osgi.service.component.annotations.Component;
 
 import com.barchart.netty.host.api.NettyPipe;
+import com.barchart.netty.part.hand.DatagramPacketReader;
 import com.barchart.netty.part.hand.SequenceReader;
 
 /**  */
@@ -26,6 +27,8 @@ public class PipeSequenceReader implements NettyPipe {
 	public void apply(final Channel channel) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
+
+		pipeline.addLast("datagram-reader", new DatagramPacketReader());
 
 		pipeline.addLast("decode-string", new StringEncoder(CharsetUtil.UTF_8));
 

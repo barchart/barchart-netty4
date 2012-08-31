@@ -3,6 +3,7 @@ package com.barchart.netty.part.dot;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
+import io.netty.util.AttributeKey;
 
 import java.util.Map;
 
@@ -48,6 +49,14 @@ public class DotAny implements NettyDot {
 	public NetPoint getNetPoint() {
 		return netPoint;
 	}
+
+	//
+
+	public static final AttributeKey<NetAddress> //
+	LOCAL_ADDRESS = new AttributeKey<NetAddress>("local-address");
+
+	public static final AttributeKey<NetAddress> //
+	REMOTE_ADDRESS = new AttributeKey<NetAddress>("remote-address");
 
 	//
 

@@ -70,8 +70,6 @@ public class SequenceWriter extends ChannelHandlerAdapter {
 
 		ctx.write(makeSequence());
 
-		ctx.flush();
-
 	}
 
 	protected String makeSequence() {

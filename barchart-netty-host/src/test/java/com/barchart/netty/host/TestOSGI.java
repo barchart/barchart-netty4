@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyDotManager;
 import com.barchart.netty.matrix.api.Matrix;
-import com.barchart.netty.part.dot.DotCastMulti;
 import com.barchart.osgi.conf.api.ConfigAdminService;
 import com.barchart.osgi.event.api.EventService;
 import com.barchart.osgi.event.api.EventUtil;
@@ -166,7 +165,9 @@ public class TestOSGI implements EventHandler {
 	}
 
 	@After
-	public void done() {
+	public void done() throws Exception {
+
+		Thread.sleep(10 * 1000);
 
 		{
 
@@ -192,24 +193,47 @@ public class TestOSGI implements EventHandler {
 	@Test
 	public void testMulticast() throws Exception {
 
-		//
+		{
 
-		final Config config = ConfigFactory.load("case-01/point-0.conf")
-				.getConfig("point");
+			final Config config = ConfigFactory.load("case-01/point-0.conf")
+					.getConfig("point");
 
-		final String hocon = config.root().render();
+			final String hocon = config.root().render();
 
-		log.info("@@@ text : \n{}", hocon);
+			log.info("@@@ point-0 : \n{}", hocon);
 
-		final Map<String, String> props = new HashMap<String, String>();
+			final Map<String, String> props = new HashMap<String, String>();
 
-		props.put(NettyDot.PROP_NET_POINT, hocon);
+			props.put(NettyDot.PROP_NET_POINT, hocon);
 
-		final NettyDot service = manager.create(DotCastMulti.FACTORY, props);
+			final String type = config.getString("type");
 
-		assertNotNull(service);
+			final NettyDot service = manager.create(type, props);
 
-		Thread.sleep(1000);
+			assertNotNull(service);
+
+		}
+
+		{
+
+			final Config config = ConfigFactory.load("case-01/point-1.conf")
+					.getConfig("point");
+
+			final String hocon = config.root().render();
+
+			log.info("@@@ point-1 : \n{}", hocon);
+
+			final Map<String, String> props = new HashMap<String, String>();
+
+			props.put(NettyDot.PROP_NET_POINT, hocon);
+
+			final String type = config.getString("type");
+
+			final NettyDot service = manager.create(type, props);
+
+			assertNotNull(service);
+
+		}
 
 	}
 
