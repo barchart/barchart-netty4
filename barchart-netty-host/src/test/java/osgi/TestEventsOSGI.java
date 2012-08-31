@@ -5,15 +5,13 @@
  *
  * http://www.opensource.org/licenses/bsd-license.php
  */
-package com.barchart.netty.host;
+package osgi;
 
 import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -36,20 +34,18 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyDotManager;
 import com.barchart.netty.matrix.api.Matrix;
 import com.barchart.osgi.conf.api.ConfigAdminService;
 import com.barchart.osgi.event.api.EventService;
 import com.barchart.osgi.event.api.EventUtil;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
-public class TestOSGI implements EventHandler {
+public class TestEventsOSGI implements EventHandler {
 
-	private final static Logger log = LoggerFactory.getLogger(TestOSGI.class);
+	private final static Logger log = LoggerFactory
+			.getLogger(TestEventsOSGI.class);
 
 	@Configuration
 	public Option[] config() {
@@ -170,8 +166,6 @@ public class TestOSGI implements EventHandler {
 	@After
 	public void done() throws Exception {
 
-		Thread.sleep(10 * 1000);
-
 		{
 
 			regEventHandler.unregister();
@@ -184,55 +178,12 @@ public class TestOSGI implements EventHandler {
 
 	static final String TOPIC = UUID.randomUUID().toString();
 
-	// @Test
-	public void testEvent() throws Exception {
+	@Test
+	public void testEvents() throws Exception {
 
 		eventService.send(TOPIC);
 
 		assertEquals(eventCount, 1);
-
-	}
-
-	@Test
-	public void testMulticast() throws Exception {
-
-		{
-
-			final Config config = ConfigFactory.load("case-01/point-0.conf")
-					.getConfig("point");
-
-			final String hocon = config.root().render();
-
-			final Map<String, String> props = new HashMap<String, String>();
-
-			props.put(NettyDot.PROP_NET_POINT, hocon);
-
-			final String type = config.getString("type");
-
-			final NettyDot service = manager.create(type, props);
-
-			assertNotNull(service);
-
-		}
-
-		{
-
-			final Config config = ConfigFactory.load("case-01/point-1.conf")
-					.getConfig("point");
-
-			final String hocon = config.root().render();
-
-			final Map<String, String> props = new HashMap<String, String>();
-
-			props.put(NettyDot.PROP_NET_POINT, hocon);
-
-			final String type = config.getString("type");
-
-			final NettyDot service = manager.create(type, props);
-
-			assertNotNull(service);
-
-		}
 
 	}
 
