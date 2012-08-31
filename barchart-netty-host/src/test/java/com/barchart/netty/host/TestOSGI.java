@@ -137,6 +137,9 @@ public class TestOSGI implements EventHandler {
 
 		log.info("#######################################################################");
 
+		log.info("### java.net.preferIPv4Stack={}",
+				System.getProperty("java.net.preferIPv4Stack"));
+
 		log.info("### curren bundle " + context.getBundle().getSymbolicName());
 
 		for (final Bundle bundle : context.getBundles()) {
@@ -200,8 +203,6 @@ public class TestOSGI implements EventHandler {
 
 			final String hocon = config.root().render();
 
-			log.info("@@@ point-0 : \n{}", hocon);
-
 			final Map<String, String> props = new HashMap<String, String>();
 
 			props.put(NettyDot.PROP_NET_POINT, hocon);
@@ -220,8 +221,6 @@ public class TestOSGI implements EventHandler {
 					.getConfig("point");
 
 			final String hocon = config.root().render();
-
-			log.info("@@@ point-1 : \n{}", hocon);
 
 			final Map<String, String> props = new HashMap<String, String>();
 

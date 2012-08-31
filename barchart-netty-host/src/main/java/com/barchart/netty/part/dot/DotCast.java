@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.barchart.netty.host.api.NettyDot;
 import com.barchart.osgi.factory.api.FactoryDescriptor;
 
 /**
@@ -49,18 +50,28 @@ public class DotCast extends DotAny {
 		return channel;
 	}
 
+	protected void updateAttributes() {
+
+		channel().attr(NettyDot.ATTR_LOCAL_ADDRESS).set(localAddress());
+		channel().attr(NettyDot.ATTR_REMOTE_ADDRESS).set(remoteAddress());
+
+	}
+
 	@Override
 	protected void activateBoot() throws Exception {
 
 		boot = new Bootstrap();
 		channel = new NioDatagramChannel();
 
-		channel().attr(LOCAL_ADDRESS).set(localAddress());
-		channel().attr(REMOTE_ADDRESS).set(remoteAddress());
+		updateAttributes();
 
 		boot().localAddress(localAddress());
-
 		boot().remoteAddress(remoteAddress());
+
+		boot().option(ChannelOption.SO_SNDBUF,
+				getNetPoint().getSendBufferSize());
+		boot().option(ChannelOption.SO_RCVBUF,
+				getNetPoint().getReceiveBufferSize());
 
 		boot().option(ChannelOption.SO_REUSEADDR, true);
 

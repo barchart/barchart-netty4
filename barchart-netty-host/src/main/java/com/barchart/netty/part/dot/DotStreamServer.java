@@ -2,6 +2,7 @@ package com.barchart.netty.part.dot;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 import java.util.HashMap;
@@ -58,14 +59,24 @@ public class DotStreamServer extends DotStream {
 
 		boot().localAddress(localAddress());
 
+		boot().option(ChannelOption.SO_SNDBUF,
+				getNetPoint().getSendBufferSize());
+		boot().option(ChannelOption.SO_RCVBUF,
+				getNetPoint().getReceiveBufferSize());
+
+		boot().childOption(ChannelOption.SO_SNDBUF,
+				getNetPoint().getSendBufferSize());
+		boot().childOption(ChannelOption.SO_RCVBUF,
+				getNetPoint().getReceiveBufferSize());
+
 		boot().group(group());
 
 		boot().channel(channel());
 
-		/** acceptor */
+		/** acceptor aka server aka parent */
 		boot().handler(handler(pipeline()));
 
-		/** connector */
+		/** connector aka client aka child */
 		boot().childHandler(handler(managedPipeline()));
 
 		activateFuture = boot().bind();

@@ -44,7 +44,7 @@ public class SequenceWriter extends ChannelHandlerAdapter {
 	protected void writeActive() {
 
 		writeFuture = ctx.channel().eventLoop()
-				.scheduleAtFixedRate(writeTask, 0, 1, TimeUnit.SECONDS);
+				.scheduleAtFixedRate(writeTask, 1, 1, TimeUnit.SECONDS);
 
 	}
 

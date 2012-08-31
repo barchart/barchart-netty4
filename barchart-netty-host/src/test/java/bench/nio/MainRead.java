@@ -31,7 +31,7 @@ public class MainRead {
 
 		//
 
-		InetAddress ifaceAddr = InetAddress.getByName("mainlan");
+		final InetAddress ifaceAddr = InetAddress.getByName("localhost");
 		final NetworkInterface iface = NetworkInterface
 				.getByInetAddress(ifaceAddr);
 
@@ -39,7 +39,7 @@ public class MainRead {
 
 		//
 
-		final String groupAddr = "239.10.11.1";
+		final String groupAddr = "239.1.2.3";
 		final int groupPort = 12345;
 
 		//

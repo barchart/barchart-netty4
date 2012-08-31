@@ -3,7 +3,6 @@ package com.barchart.netty.part.dot;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
-import io.netty.util.AttributeKey;
 
 import java.util.Map;
 
@@ -52,12 +51,6 @@ public class DotAny implements NettyDot {
 
 	//
 
-	public static final AttributeKey<NetAddress> //
-	LOCAL_ADDRESS = new AttributeKey<NetAddress>("local-address");
-
-	public static final AttributeKey<NetAddress> //
-	REMOTE_ADDRESS = new AttributeKey<NetAddress>("remote-address");
-
 	//
 
 	protected ChannelInitializer<Channel> handler(final String pipeName) {
@@ -68,7 +61,8 @@ public class DotAny implements NettyDot {
 				final NettyPipe pipe = pipeManager().findPipe(pipeName);
 
 				if (pipe == null) {
-					log.error("missing pipeline : {}", pipeName);
+					log.error("missing pipeline", //
+							new IllegalArgumentException(pipeName));
 					return;
 				}
 

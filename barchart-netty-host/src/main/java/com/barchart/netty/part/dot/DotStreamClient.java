@@ -58,10 +58,14 @@ public class DotStreamClient extends DotStream {
 		channel = new NioSocketChannel();
 
 		boot().localAddress(localAddress());
-
 		boot().remoteAddress(remoteAddress());
 
 		boot().option(ChannelOption.SO_REUSEADDR, true);
+
+		boot().option(ChannelOption.SO_SNDBUF,
+				getNetPoint().getSendBufferSize());
+		boot().option(ChannelOption.SO_RCVBUF,
+				getNetPoint().getReceiveBufferSize());
 
 		boot().group(group());
 

@@ -8,7 +8,8 @@ import com.barchart.netty.util.entry.Entry;
 import com.typesafe.config.Config;
 
 /** network end point */
-public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey {
+public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey,
+		NetConst {
 
 	public static List<NetPoint> form(final List<? extends Config> confList) {
 
@@ -70,7 +71,7 @@ public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey {
 	}
 
 	public int getPacketTTL() {
-		return getInt(KEY_PACKET_TTL);
+		return getInt(KEY_PACKET_TTL, DEFAULT_PACKET_TTL);
 	}
 
 	public String getPipeline() {
@@ -78,7 +79,7 @@ public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey {
 	}
 
 	public int getReceiveBufferSize() {
-		return getInt(KEY_RECV_BUF_SIZE);
+		return getInt(KEY_RECV_BUF_SIZE, DEFAULT_BUFFER_SIZE);
 	}
 
 	public NetAddress getRemoteAddress() {
@@ -86,7 +87,7 @@ public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey {
 	}
 
 	public int getSendBufferSize() {
-		return getInt(KEY_SEND_BUF_SIZE);
+		return getInt(KEY_SEND_BUF_SIZE, DEFAULT_BUFFER_SIZE);
 	}
 
 	public String getType() {

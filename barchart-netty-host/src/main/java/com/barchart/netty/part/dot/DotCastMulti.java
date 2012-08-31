@@ -38,34 +38,52 @@ public class DotCastMulti extends DotCast {
 	}
 
 	/** valid interface or local host */
-	protected NetworkInterface getBindInteface() {
+	protected NetworkInterface bindInteface() {
 		try {
-			return NetworkInterface.getByInetAddress(//
-					localAddress().getAddress());
+
+			final InetAddress address = getNetPoint().getLocalAddress()
+					.getAddress();
+
+			final NetworkInterface iface = NetworkInterface
+					.getByInetAddress(address);
+
+			if (iface == null) {
+				throw new IllegalArgumentException(
+						"address is not assigned to any iterface : " + address);
+			}
+
+			return iface;
+
 		} catch (final Throwable e) {
 			log.error("fatal: can not resolve bind interface", e);
 			return NetworkConstants.LOOPBACK_IF;
 		}
 	}
 
-	/** multicast reader group address */
-	protected NetAddress getGroupAddress() {
+	/** multicast reader bind address: listen on any local with group port */
+	@Override
+	protected NetAddress localAddress() {
+		return new NetAddress("0.0.0.0", groupAddress().getPort());
+	}
+
+	/** multicast reader group address : */
+	protected NetAddress groupAddress() {
 		return getNetPoint().getRemoteAddress();
 	}
 
 	/** valid bind address or local host */
 	/** FIXME slow dns lookup */
-	protected NetAddress getBindAddress() {
+	protected NetAddress bindAddress() {
 		try {
 			/**
 			 * allows to avoid duplicate packets when multiple multicast groups
 			 * share the same port
 			 */
 			final InetAddress bindAddr;
-			final int bindPort = getGroupAddress().getPort();
+			final int bindPort = groupAddress().getPort();
 			switch (OperatingSystem.CURRENT) {
 			case LINUX:
-				bindAddr = getGroupAddress().getAddress();
+				bindAddr = groupAddress().getAddress();
 				break;
 			case WINDOWS:
 				bindAddr = localAddress().getAddress();
@@ -88,14 +106,14 @@ public class DotCastMulti extends DotCast {
 
 		super.activateBoot();
 
-		channel().joinGroup(getGroupAddress(), getBindInteface()).sync();
+		channel().joinGroup(groupAddress(), bindInteface()).sync();
 
 	}
 
 	@Override
 	protected void deactivateBoot() throws Exception {
 
-		channel().leaveGroup(getGroupAddress(), getBindInteface()).sync();
+		channel().leaveGroup(groupAddress(), bindInteface()).sync();
 
 		super.deactivateBoot();
 

@@ -64,6 +64,14 @@ public abstract class Entry {
 		return 0;
 	}
 
+	public int getInt(final String key, final int defaultValue) {
+		final Object value = load(key);
+		if (value instanceof Number) {
+			return ((Number) value).intValue();
+		}
+		return defaultValue;
+	}
+
 	@Override
 	public String toString() {
 		return props.toString();

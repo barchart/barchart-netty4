@@ -7,6 +7,8 @@ import io.netty.handler.logging.MessageLoggingHandler;
 import io.netty.util.CharsetUtil;
 
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.part.hand.DatagramPacketWriter;
@@ -17,6 +19,8 @@ import com.barchart.netty.part.hand.SequenceWriter;
 public class PipeSequenceWriter implements NettyPipe {
 
 	public static final String NAME = "barchart.netty.pipe.sequence.writer";
+
+	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public String getName() {

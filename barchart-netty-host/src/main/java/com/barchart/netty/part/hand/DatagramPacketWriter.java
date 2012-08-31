@@ -15,7 +15,7 @@ import java.net.InetSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.barchart.netty.part.dot.DotAny;
+import com.barchart.netty.host.api.NettyDot;
 
 public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 		ChannelOutboundMessageHandler<Object> {
@@ -28,8 +28,8 @@ public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
 
-		localAddress = ctx.channel().attr(DotAny.LOCAL_ADDRESS).get();
-		remoteAddress = ctx.channel().attr(DotAny.REMOTE_ADDRESS).get();
+		localAddress = ctx.channel().attr(NettyDot.ATTR_LOCAL_ADDRESS).get();
+		remoteAddress = ctx.channel().attr(NettyDot.ATTR_REMOTE_ADDRESS).get();
 
 		super.channelActive(ctx);
 
