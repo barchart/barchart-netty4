@@ -9,60 +9,64 @@ package osgi;
 
 import static org.junit.Assert.*;
 
-import java.util.UUID;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
-import org.osgi.service.event.Event;
 
-import com.barchart.osgi.event.api.EventUtil;
+import com.barchart.netty.host.api.NettyDot;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
-public class TestEventsOSGI extends TestAny {
-
-	static final String TOPIC = UUID.randomUUID().toString();
+public class TestStreams extends TestAny {
 
 	@Override
 	public void testActivate() throws Exception {
 
 		super.testActivate();
 
-		registerTopic(TOPIC);
-
 	}
 
 	@Override
 	public void testDeactivate() throws Exception {
+
+		Thread.sleep(3 * 1000);
 
 		super.testDeactivate();
 
 	}
 
 	@Test
-	public void testEvents() throws Exception {
+	public void testStreams() throws Exception {
 
-		eventService.send(TOPIC);
+		{
 
-		assertEquals(eventCount, 1);
+			/** echo server */
 
-	}
+			final Config config = ConfigFactory.load("case-02/point-0.conf")
+					.getConfig("point");
 
-	private int eventCount;
+			final NettyDot service = manager.create(config);
 
-	@Override
-	public void handleEvent(final Event event) {
+			assertNotNull(service);
 
-		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-		super.handleEvent(event);
-		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		}
 
-		assertTrue(EventUtil.is(event, TOPIC));
+		{
 
-		eventCount++;
+			/** echo client */
+
+			final Config config = ConfigFactory.load("case-02/point-1.conf")
+					.getConfig("point");
+
+			final NettyDot service = manager.create(config);
+
+			assertNotNull(service);
+
+		}
 
 	}
 

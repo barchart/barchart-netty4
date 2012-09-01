@@ -1,5 +1,6 @@
 package com.barchart.netty.host.api;
 
+import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 
 import com.barchart.netty.util.point.NetAddress;
@@ -28,5 +29,8 @@ public interface NettyDot extends NettyAny {
 
 	/** net point that were used to configure this channel */
 	NetPoint getNetPoint();
+
+	/** netty channel associated with this dot */
+	Channel getChannel();
 
 }

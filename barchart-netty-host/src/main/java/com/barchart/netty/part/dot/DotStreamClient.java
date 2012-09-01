@@ -44,6 +44,7 @@ public class DotStreamClient extends DotStream {
 
 	private NioSocketChannel channel;
 
+	@Override
 	protected NioSocketChannel channel() {
 		return channel;
 	}

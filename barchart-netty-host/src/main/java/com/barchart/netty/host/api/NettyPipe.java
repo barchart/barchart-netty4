@@ -11,15 +11,15 @@ public interface NettyPipe {
 	/**
 	 * default / parent pipeline applicator;
 	 * 
-	 * build a new pipeline and apply it to the channel
+	 * build a new pipeline and apply it to the parent channel
 	 */
-	void apply(Channel channel);
+	void apply(NettyDot dot, Channel channel);
 
 	/**
 	 * derived / managed pipeline applicator;
 	 * 
-	 * build a new pipeline and apply it to the channel
+	 * build a new pipeline and apply it to the child channel
 	 */
-	void applyChild(Channel channel);
+	void applyChild(NettyDot dot, Channel channel);
 
 }

@@ -21,7 +21,7 @@ import com.typesafe.config.ConfigFactory;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
-public class TestStreamsOSGI extends TestAny {
+public class TestMulticast extends TestAny {
 
 	@Override
 	public void testActivate() throws Exception {
@@ -40,13 +40,13 @@ public class TestStreamsOSGI extends TestAny {
 	}
 
 	@Test
-	public void testStreams() throws Exception {
+	public void testMulticast() throws Exception {
 
 		{
 
-			/** echo server */
+			/** sequence writer */
 
-			final Config config = ConfigFactory.load("case-02/point-0.conf")
+			final Config config = ConfigFactory.load("case-01/point-0.conf")
 					.getConfig("point");
 
 			final NettyDot service = manager.create(config);
@@ -57,9 +57,9 @@ public class TestStreamsOSGI extends TestAny {
 
 		{
 
-			/** echo client */
+			/** sequence reader */
 
-			final Config config = ConfigFactory.load("case-02/point-1.conf")
+			final Config config = ConfigFactory.load("case-01/point-1.conf")
 					.getConfig("point");
 
 			final NettyDot service = manager.create(config);

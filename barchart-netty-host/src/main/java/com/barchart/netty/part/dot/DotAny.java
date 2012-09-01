@@ -48,6 +48,15 @@ public class DotAny implements NettyDot {
 		return netPoint;
 	}
 
+	@Override
+	public Channel getChannel() {
+		return channel();
+	}
+
+	protected Channel channel() {
+		throw new IllegalStateException("expecting override");
+	}
+
 	//
 
 	/**
@@ -68,7 +77,7 @@ public class DotAny implements NettyDot {
 					return;
 				}
 
-				pipe.apply(channel);
+				pipe.apply(DotAny.this, channel);
 
 			}
 		};
@@ -92,7 +101,7 @@ public class DotAny implements NettyDot {
 					return;
 				}
 
-				pipe.applyChild(channel);
+				pipe.applyChild(DotAny.this, channel);
 
 			}
 		};
@@ -100,7 +109,7 @@ public class DotAny implements NettyDot {
 
 	//
 
-	/** pipeline singleton name */
+	/** pipeline builder name */
 	protected String pipeName() {
 		return getNetPoint().getPipeline();
 	}

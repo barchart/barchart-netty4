@@ -45,6 +45,7 @@ public class DotCast extends DotAny {
 
 	private NioDatagramChannel channel;
 
+	@Override
 	protected NioDatagramChannel channel() {
 		return channel;
 	}

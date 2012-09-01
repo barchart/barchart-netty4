@@ -14,6 +14,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.barchart.netty.host.api.NettyDot;
+import com.barchart.netty.host.api.NettyDotManager;
 import com.barchart.netty.host.api.NettyHandManager;
 import com.barchart.netty.host.api.NettyPipe;
 
@@ -54,7 +56,7 @@ public class PipeAny implements NettyPipe {
 	//
 
 	@Override
-	public void apply(final Channel channel) {
+	public void apply(final NettyDot dot, final Channel channel) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
@@ -63,7 +65,7 @@ public class PipeAny implements NettyPipe {
 	}
 
 	@Override
-	public void applyChild(final Channel channel) {
+	public void applyChild(final NettyDot dot, final Channel channel) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
@@ -86,6 +88,23 @@ public class PipeAny implements NettyPipe {
 
 	protected void unbind(final NettyHandManager s) {
 		handlerManager = null;
+	}
+
+	//
+
+	private NettyDotManager channelManager;
+
+	protected NettyDotManager channelManager() {
+		return channelManager;
+	}
+
+	@Reference
+	protected void bind(final NettyDotManager s) {
+		channelManager = s;
+	}
+
+	protected void unbind(final NettyDotManager s) {
+		channelManager = null;
 	}
 
 }

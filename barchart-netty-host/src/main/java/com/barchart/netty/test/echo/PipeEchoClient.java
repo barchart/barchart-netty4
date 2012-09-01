@@ -6,6 +6,7 @@ import io.netty.handler.logging.LoggingHandler;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.part.pipe.PipeAny;
 
 /**  */
@@ -20,7 +21,7 @@ public class PipeEchoClient extends PipeAny {
 	}
 
 	@Override
-	public void apply(final Channel channel) {
+	public void apply(final NettyDot dot, final Channel channel) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
