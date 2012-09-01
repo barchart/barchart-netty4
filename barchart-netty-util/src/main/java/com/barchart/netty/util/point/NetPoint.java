@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.barchart.netty.util.entry.Entry;
 import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 /** network end point */
 public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey,
@@ -25,10 +26,17 @@ public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey,
 
 	}
 
+	/** make net point from well formed config entry */
 	public static NetPoint from(final Config conf) {
 		return from(conf.root().unwrapped());
 	}
 
+	/** make net point from well formed json text */
+	public static NetPoint from(final String confText) {
+		return from(ConfigFactory.parseString(confText));
+	}
+
+	/** make net point from well formed map */
 	public static NetPoint from(final Map<String, Object> map) {
 		final NetPoint entry = new NetPoint();
 		entry.props().putAll(map);

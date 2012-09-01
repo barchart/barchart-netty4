@@ -8,7 +8,7 @@ public interface NettyPipe {
 	/** UUID of this pipeline builder */
 	String getName();
 
-	/** build new pipeline and apply to the channel */
+	/** build a new pipeline and apply it to the channel */
 	void apply(Channel channel);
 
 }

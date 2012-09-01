@@ -20,7 +20,6 @@ import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.host.api.NettyPipeManager;
 import com.barchart.netty.util.point.NetAddress;
 import com.barchart.netty.util.point.NetPoint;
-import com.typesafe.config.ConfigFactory;
 
 /**
  * parent for "dot" (end point) netty components
@@ -28,14 +27,14 @@ import com.typesafe.config.ConfigFactory;
 @Component(factory = DotAny.FACTORY)
 public class DotAny implements NettyDot {
 
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+
 	public static final String FACTORY = "barchart.netty.dot.any";
 
 	@Override
 	public String getFactoryId() {
 		return FACTORY;
 	}
-
-	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	private NetPoint netPoint;
 
@@ -51,8 +50,7 @@ public class DotAny implements NettyDot {
 
 	//
 
-	//
-
+	/** pipeline builder */
 	protected ChannelInitializer<Channel> handler(final String pipeName) {
 		return new ChannelInitializer<Channel>() {
 			@Override
@@ -74,23 +72,27 @@ public class DotAny implements NettyDot {
 
 	//
 
+	/** default / parent pipeline */
 	protected String pipeline() {
 		return getNetPoint().getPipeline();
 	}
 
+	/** derived / children pipeline */
 	protected String managedPipeline() {
 		return getNetPoint().getManagedPipeline();
 	}
 
+	/** net point local address */
 	protected NetAddress localAddress() {
 		return getNetPoint().getLocalAddress();
 	}
 
+	/** net point remote address */
 	protected NetAddress remoteAddress() {
 		return getNetPoint().getRemoteAddress();
 	}
 
-	/** bootstrap starup */
+	/** bootstrap startup */
 	protected void activateBoot() throws Exception {
 		//
 	}
@@ -107,11 +109,7 @@ public class DotAny implements NettyDot {
 
 		log.debug("### activate : {}", props);
 
-		final String pointConfig = props.get(PROP_NET_POINT);
-
-		netPoint = NetPoint.from(ConfigFactory.parseString(pointConfig));
-
-		log.debug("### netPoint : {}", netPoint);
+		netPoint = NetPoint.from(props.get(PROP_NET_POINT));
 
 		activateBoot();
 
@@ -170,5 +168,10 @@ public class DotAny implements NettyDot {
 	}
 
 	//
+
+	@Override
+	public String toString() {
+		return "dot : " + getNetPoint();
+	}
 
 }

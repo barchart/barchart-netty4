@@ -72,15 +72,15 @@ public class SequenceReader extends ChannelHandlerAdapter implements
 
 	static final String PREFIX = "sequence=";
 
-	private void readSequence(final String packet) {
+	private void readSequence(final String message) {
 
-		if (packet.startsWith(PREFIX)) {
+		if (message.startsWith(PREFIX)) {
 
-			final String text = packet.replaceAll(PREFIX, "");
+			log.info("reader message : {}", message);
+
+			final String text = message.replaceAll(PREFIX, "");
 
 			final long sequence = Long.parseLong(text);
-
-			log.info("sequence : {}", sequence);
 
 		}
 

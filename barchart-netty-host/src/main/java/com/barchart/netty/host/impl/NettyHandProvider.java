@@ -16,11 +16,10 @@ import com.barchart.osgi.factory.api.FidgetManagerBase;
 
 /**
  * handler factory manager
- * 
  */
 @Component(immediate = true)
-public class NettyHandProvider extends FidgetManagerBase<NettyHand>
-		implements NettyHandManager {
+public class NettyHandProvider extends FidgetManagerBase<NettyHand> implements
+		NettyHandManager {
 
 	static {
 		new NettySetup();

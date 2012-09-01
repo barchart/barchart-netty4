@@ -34,10 +34,10 @@ public class DotCastMulti extends DotCast {
 		descriptor = new HashMap<String, String>();
 		descriptor.put(PROP_FACTORY_ID, FACTORY);
 		descriptor.put(PROP_FACTORY_DESCRIPTION,
-				"multicast reader/writer end point service");
+				"multicast reader end point service");
 	}
 
-	/** valid interface or local host */
+	/** valid interface or loop back interface for error */
 	protected NetworkInterface bindInteface() {
 		try {
 
@@ -60,7 +60,10 @@ public class DotCastMulti extends DotCast {
 		}
 	}
 
-	/** multicast reader bind address: listen on any local with group port */
+	/**
+	 * multicast reader bind address: listen on any local address with a
+	 * multicast group port
+	 */
 	@Override
 	protected NetAddress localAddress() {
 		return new NetAddress("0.0.0.0", groupAddress().getPort());
@@ -71,7 +74,7 @@ public class DotCastMulti extends DotCast {
 		return getNetPoint().getRemoteAddress();
 	}
 
-	/** valid bind address or local host */
+	/** valid bind address or local host for error */
 	/** FIXME slow dns lookup */
 	protected NetAddress bindAddress() {
 		try {

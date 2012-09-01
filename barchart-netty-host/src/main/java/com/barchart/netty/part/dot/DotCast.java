@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.barchart.netty.host.api.NettyDot;
 import com.barchart.osgi.factory.api.FactoryDescriptor;
 
 /**
@@ -52,8 +51,8 @@ public class DotCast extends DotAny {
 
 	protected void updateAttributes() {
 
-		channel().attr(NettyDot.ATTR_LOCAL_ADDRESS).set(localAddress());
-		channel().attr(NettyDot.ATTR_REMOTE_ADDRESS).set(remoteAddress());
+		channel().attr(ATTR_LOCAL_ADDRESS).set(localAddress());
+		channel().attr(ATTR_REMOTE_ADDRESS).set(remoteAddress());
 
 	}
 

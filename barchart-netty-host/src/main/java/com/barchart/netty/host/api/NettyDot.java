@@ -10,6 +10,10 @@ public interface NettyDot extends NettyAny {
 
 	/* properties */
 
+	/**
+	 * contract: dot factory must inject end point configuration as this
+	 * property; see #NetPoint
+	 */
 	String PROP_NET_POINT = "net-point";
 
 	/* attributes */
@@ -20,7 +24,7 @@ public interface NettyDot extends NettyAny {
 	public static final AttributeKey<NetAddress> //
 	ATTR_REMOTE_ADDRESS = new AttributeKey<NetAddress>("remote-address");
 
-	/* */
+	/* methods */
 
 	/** net point that were used to configure this channel */
 	NetPoint getNetPoint();

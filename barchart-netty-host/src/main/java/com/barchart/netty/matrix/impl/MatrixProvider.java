@@ -128,7 +128,10 @@ public class MatrixProvider implements Matrix {
 
 	}
 
-	@Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
+	@Reference( //
+	policy = ReferencePolicy.DYNAMIC, //
+	cardinality = ReferenceCardinality.MULTIPLE //
+	)
 	protected void bind(final MatrixTarget handler) {
 
 		if (!isRecognized(handler)) {

@@ -19,17 +19,16 @@ import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
-import io.netty.channel.socket.DatagramPacket;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.barchart.netty.matrix.api.Matrix;
 
-/** handler provide injection into matix */
+/** handler provides injection into matrix */
 @Component(factory = HandMatrix.FACTORY)
 public class HandMatrix extends HandAny implements
-		ChannelInboundMessageHandler<DatagramPacket> {
+		ChannelInboundMessageHandler<Object> {
 
 	public static final String FACTORY = "barchart.netty.hand.matrix";
 
@@ -38,48 +37,40 @@ public class HandMatrix extends HandAny implements
 		return FACTORY;
 	}
 
-	private final String sourceId;
-
-	public HandMatrix(final String sourceId, final Matrix matrix) {
-
-		this.sourceId = sourceId;
-
-		this.matrix = matrix;
-
-	}
+	private String sourceId;
 
 	public void messageReceived(final ChannelHandlerContext ctx,
-			final DatagramPacket packet) throws Exception {
+			final Object packet) throws Exception {
 
 		matrix.process(sourceId, packet);
 
 	}
 
 	@Override
-	public MessageBuf<DatagramPacket> newInboundBuffer(
-			final ChannelHandlerContext ctx) throws Exception {
+	public MessageBuf<Object> newInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
 		return Unpooled.messageBuffer();
 	}
 
 	@Override
 	public final void inboundBufferUpdated(final ChannelHandlerContext ctx)
 			throws Exception {
-		final MessageBuf<DatagramPacket> in = ctx.inboundMessageBuffer();
-		for (;;) {
-			final DatagramPacket msg = in.poll();
-			if (msg == null) {
+
+		final MessageBuf<Object> source = ctx.inboundMessageBuffer();
+
+		while (true) {
+			final Object message = source.poll();
+			if (message == null) {
 				break;
 			}
-			try {
-				messageReceived(ctx, msg);
-			} catch (final Throwable t) {
-				ctx.fireExceptionCaught(t);
-			}
+			messageReceived(ctx, message);
 		}
+
 	}
 
 	private Matrix matrix;
 
+	/** FIXME add bind filter */
 	@Reference
 	protected void bind(final Matrix s) {
 		matrix = s;

@@ -7,7 +7,12 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SequenceWriter extends ChannelHandlerAdapter {
+
+	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final AtomicLong counter = new AtomicLong(0);
 
@@ -68,13 +73,19 @@ public class SequenceWriter extends ChannelHandlerAdapter {
 			return;
 		}
 
-		ctx.write(makeSequence());
+		final String message = makeSequence();
+
+		log.info("wirter message : {}", message);
+
+		ctx.write(message);
 
 	}
 
+	static final String PREFIX = "sequence=";
+
 	protected String makeSequence() {
 
-		return "sequence=" + counter.getAndIncrement();
+		return PREFIX + counter.getAndIncrement();
 
 	}
 

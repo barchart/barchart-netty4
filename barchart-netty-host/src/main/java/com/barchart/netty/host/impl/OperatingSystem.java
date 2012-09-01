@@ -1,5 +1,6 @@
 package com.barchart.netty.host.impl;
 
+/** o/s detector */
 public enum OperatingSystem {
 
 	UNKNOWN("unknown"), //

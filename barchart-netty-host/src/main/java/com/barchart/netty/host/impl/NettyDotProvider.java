@@ -5,6 +5,8 @@ import io.netty.channel.socket.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadFactory;
 
 import org.osgi.service.component.ComponentContext;
@@ -17,7 +19,9 @@ import org.slf4j.LoggerFactory;
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyDotManager;
 import com.barchart.netty.host.api.NettyGroup;
+import com.barchart.netty.util.point.NetPoint;
 import com.barchart.osgi.factory.api.FidgetManagerBase;
+import com.typesafe.config.Config;
 
 /**
  * dot factory manager
@@ -96,6 +100,21 @@ public class NettyDotProvider extends FidgetManagerBase<NettyDot> implements
 	@Override
 	public EventLoopGroup getGroup() {
 		return group;
+	}
+
+	@Override
+	public NettyDot create(final Config config) {
+
+		final String type = config.getString(NetPoint.KEY_TYPE);
+
+		final String hocon = config.root().render();
+
+		final Map<String, String> props = new HashMap<String, String>();
+
+		props.put(NettyDot.PROP_NET_POINT, hocon);
+
+		return create(type, props);
+
 	}
 
 }

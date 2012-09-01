@@ -13,7 +13,7 @@ import org.osgi.service.component.annotations.Component;
 import com.barchart.osgi.factory.api.FactoryDescriptor;
 
 /**
- * parent for connection oriented end point servers
+ * parent for connection oriented server end points
  * 
  * such as tcp, sctp
  */
@@ -73,10 +73,10 @@ public class DotStreamServer extends DotStream {
 
 		boot().channel(channel());
 
-		/** acceptor aka server aka parent */
+		/** acceptor a.k.a server a.k.a parent */
 		boot().handler(handler(pipeline()));
 
-		/** connector aka client aka child */
+		/** connector a.k.a client a.k.a child */
 		boot().childHandler(handler(managedPipeline()));
 
 		activateFuture = boot().bind();

@@ -34,9 +34,9 @@ public class PipeSequenceReader implements NettyPipe {
 
 		pipeline.addLast("logger", new MessageLoggingHandler());
 
-		pipeline.addLast("datagram-reader", new DatagramPacketReader());
+		pipeline.addLast("packet-reader", new DatagramPacketReader());
 
-		pipeline.addLast("decode-string", new StringDecoder(CharsetUtil.UTF_8));
+		pipeline.addLast("string-decoder", new StringDecoder(CharsetUtil.UTF_8));
 
 		pipeline.addLast("sequence-reader", new SequenceReader());
 

@@ -11,9 +11,7 @@ import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -192,15 +190,7 @@ public class TestMulticastOSGI implements EventHandler {
 			final Config config = ConfigFactory.load("case-01/point-0.conf")
 					.getConfig("point");
 
-			final String hocon = config.root().render();
-
-			final Map<String, String> props = new HashMap<String, String>();
-
-			props.put(NettyDot.PROP_NET_POINT, hocon);
-
-			final String type = config.getString("type");
-
-			final NettyDot service = manager.create(type, props);
+			final NettyDot service = manager.create(config);
 
 			assertNotNull(service);
 
@@ -211,15 +201,7 @@ public class TestMulticastOSGI implements EventHandler {
 			final Config config = ConfigFactory.load("case-01/point-1.conf")
 					.getConfig("point");
 
-			final String hocon = config.root().render();
-
-			final Map<String, String> props = new HashMap<String, String>();
-
-			props.put(NettyDot.PROP_NET_POINT, hocon);
-
-			final String type = config.getString("type");
-
-			final NettyDot service = manager.create(type, props);
+			final NettyDot service = manager.create(config);
 
 			assertNotNull(service);
 

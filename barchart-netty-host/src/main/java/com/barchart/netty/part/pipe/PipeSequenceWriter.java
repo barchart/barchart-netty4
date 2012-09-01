@@ -34,9 +34,9 @@ public class PipeSequenceWriter implements NettyPipe {
 
 		pipeline.addLast("logger", new MessageLoggingHandler());
 
-		pipeline.addLast("datagram-writer", new DatagramPacketWriter());
+		pipeline.addLast("packet-writer", new DatagramPacketWriter());
 
-		pipeline.addLast("encode-string", new StringEncoder(CharsetUtil.UTF_8));
+		pipeline.addLast("string-encoder", new StringEncoder(CharsetUtil.UTF_8));
 
 		pipeline.addLast("sequence-writer", new SequenceWriter());
 

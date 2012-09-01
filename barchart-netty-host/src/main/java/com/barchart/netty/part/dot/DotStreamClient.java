@@ -13,7 +13,7 @@ import org.osgi.service.component.annotations.Component;
 import com.barchart.osgi.factory.api.FactoryDescriptor;
 
 /**
- * parent for connection oriented end point clients
+ * parent for connection oriented client end points
  * 
  * such as tcp, sctp
  */

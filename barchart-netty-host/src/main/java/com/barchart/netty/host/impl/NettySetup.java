@@ -3,6 +3,7 @@ package com.barchart.netty.host.impl;
 import io.netty.logging.InternalLoggerFactory;
 import io.netty.logging.Slf4JLoggerFactory;
 
+/** provides static initializer for netty */
 class NettySetup {
 
 	static {

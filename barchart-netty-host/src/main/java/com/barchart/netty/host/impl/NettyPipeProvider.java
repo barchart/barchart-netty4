@@ -11,6 +11,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.host.api.NettyPipeManager;
 
+/** pipeline collector */
 @Component(immediate = true)
 public class NettyPipeProvider implements NettyPipeManager {
 

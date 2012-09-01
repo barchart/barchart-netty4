@@ -3,7 +3,8 @@ package com.barchart.netty.host.impl;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class NettyThreadFactory implements ThreadFactory {
+/** FIXME temporary; replace with pools */
+class NettyThreadFactory implements ThreadFactory {
 
 	private final static AtomicLong count = new AtomicLong(0);
 

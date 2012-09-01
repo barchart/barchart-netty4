@@ -2,7 +2,7 @@ package com.barchart.netty.part.pipe;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.logging.MessageLoggingHandler;
 
 import java.util.Map;
 
@@ -56,7 +56,7 @@ public class PipeAny implements NettyPipe {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
-		pipeline.addLast("logger", new LoggingHandler());
+		pipeline.addLast("logger", new MessageLoggingHandler());
 
 	}
 
