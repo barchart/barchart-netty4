@@ -1,4 +1,4 @@
-package com.barchart.netty.part.hand;
+package com.barchart.netty.test.sequence;
 
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
@@ -9,7 +9,7 @@ import io.netty.channel.ChannelInboundMessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SequenceReader extends ChannelHandlerAdapter implements
+public class HandSequenceReader extends ChannelHandlerAdapter implements
 		ChannelInboundMessageHandler<Object> {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());

@@ -72,9 +72,9 @@ public class DotStreamClient extends DotStream {
 		boot().channel(channel());
 
 		/** connector */
-		boot().handler(handler(pipeline()));
+		boot().handler(pipeApply());
 
-		activateFuture = boot().bind();
+		activateFuture = boot().connect();
 
 	}
 

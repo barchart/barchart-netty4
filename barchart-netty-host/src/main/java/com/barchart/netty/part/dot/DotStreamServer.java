@@ -73,11 +73,11 @@ public class DotStreamServer extends DotStream {
 
 		boot().channel(channel());
 
-		/** acceptor a.k.a server a.k.a parent */
-		boot().handler(handler(pipeline()));
+		/** acceptor a.k.a server a.k.a parent a.k.a default */
+		boot().handler(pipeApply());
 
-		/** connector a.k.a client a.k.a child */
-		boot().childHandler(handler(managedPipeline()));
+		/** connector a.k.a client a.k.a child a.k.a managed */
+		boot().childHandler(pipeApplyChild());
 
 		activateFuture = boot().bind();
 

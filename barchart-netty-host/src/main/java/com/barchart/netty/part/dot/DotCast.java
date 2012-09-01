@@ -81,7 +81,7 @@ public class DotCast extends DotAny {
 
 		boot().channel(channel());
 
-		boot().handler(handler(pipeline()));
+		boot().handler(pipeApply());
 
 		boot().bind().sync();
 

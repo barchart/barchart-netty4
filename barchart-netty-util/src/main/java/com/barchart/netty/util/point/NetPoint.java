@@ -66,10 +66,6 @@ public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey,
 		return getNetAddress(KEY_LOCAL_ADDRESS);
 	}
 
-	public String getManagedPipeline() {
-		return load(KEY_MANAGED_PIPELINE);
-	}
-
 	public NetAddress getNetAddress(final String key) {
 		final Object address = load(key);
 		if (address instanceof String) {
@@ -108,8 +104,8 @@ public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey,
 	}
 
 	public String identity() {
-		return getManagedPipeline() + ";" + getLocalAddress() + ";"
-				+ getRemoteAddress();
+		return getType() + ";" + getPipeline() + ";" + getLocalAddress() + ";"
+				+ getRemoteAddress() + ";";
 	}
 
 	public boolean isValidDatagramReader() {
@@ -149,10 +145,6 @@ public class NetPoint extends Entry implements Comparable<NetPoint>, NetKey,
 
 	public void setLocalAddress(final NetAddress localAddress) {
 		setNetAddress(KEY_LOCAL_ADDRESS, localAddress);
-	}
-
-	public void setManagedPipeline(final String pipeline) {
-		save(KEY_MANAGED_PIPELINE, pipeline);
 	}
 
 	public void setNetAddress(final String key, final NetAddress address) {

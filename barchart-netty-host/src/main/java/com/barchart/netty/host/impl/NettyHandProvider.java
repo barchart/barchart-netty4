@@ -21,10 +21,6 @@ import com.barchart.osgi.factory.api.FidgetManagerBase;
 public class NettyHandProvider extends FidgetManagerBase<NettyHand> implements
 		NettyHandManager {
 
-	static {
-		new NettySetup();
-	}
-
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	//

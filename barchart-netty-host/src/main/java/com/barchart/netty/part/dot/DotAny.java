@@ -50,17 +50,21 @@ public class DotAny implements NettyDot {
 
 	//
 
-	/** pipeline builder */
-	protected ChannelInitializer<Channel> handler(final String pipeName) {
+	/**
+	 * default / parent
+	 * 
+	 * builder for transient pipeline applicator handler
+	 */
+	protected ChannelInitializer<Channel> pipeApply() {
 		return new ChannelInitializer<Channel>() {
 			@Override
 			public void initChannel(final Channel channel) throws Exception {
 
-				final NettyPipe pipe = pipeManager().findPipe(pipeName);
+				final NettyPipe pipe = pipeManager().findPipe(pipeName());
 
 				if (pipe == null) {
 					log.error("missing pipeline", //
-							new IllegalArgumentException(pipeName));
+							new IllegalArgumentException(pipeName()));
 					return;
 				}
 
@@ -70,16 +74,35 @@ public class DotAny implements NettyDot {
 		};
 	}
 
-	//
+	/**
+	 * derived / child
+	 * 
+	 * builder for transient pipeline applicator handler
+	 */
+	protected ChannelInitializer<Channel> pipeApplyChild() {
+		return new ChannelInitializer<Channel>() {
+			@Override
+			public void initChannel(final Channel channel) throws Exception {
 
-	/** default / parent pipeline */
-	protected String pipeline() {
-		return getNetPoint().getPipeline();
+				final NettyPipe pipe = pipeManager().findPipe(pipeName());
+
+				if (pipe == null) {
+					log.error("missing pipeline", //
+							new IllegalArgumentException(pipeName()));
+					return;
+				}
+
+				pipe.applyChild(channel);
+
+			}
+		};
 	}
 
-	/** derived / children pipeline */
-	protected String managedPipeline() {
-		return getNetPoint().getManagedPipeline();
+	//
+
+	/** pipeline singleton name */
+	protected String pipeName() {
+		return getNetPoint().getPipeline();
 	}
 
 	/** net point local address */
@@ -107,7 +130,7 @@ public class DotAny implements NettyDot {
 	@Activate
 	protected void activate(final Map<String, String> props) throws Exception {
 
-		log.debug("### activate : {}", props);
+		log.debug("activate : {}", props);
 
 		netPoint = NetPoint.from(props.get(PROP_NET_POINT));
 
@@ -118,14 +141,14 @@ public class DotAny implements NettyDot {
 	@Modified
 	protected void modified(final Map<String, String> props) throws Exception {
 
-		log.debug("### modified : {}", props);
+		log.debug("modified : {}", props);
 
 	}
 
 	@Deactivate
 	protected void deactivate(final Map<String, String> props) throws Exception {
 
-		log.debug("### deactivate : {}", props);
+		log.debug("deactivate : {}", props);
 
 		deactivateBoot();
 

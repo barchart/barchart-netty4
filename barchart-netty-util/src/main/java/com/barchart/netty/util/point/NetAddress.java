@@ -18,7 +18,7 @@ public class NetAddress extends InetSocketAddress {
 
 	static {
 		System.setProperty(PROP_IP4, "true");
-		log.warn("NOTE: {}={}", PROP_IP4, System.getProperty(PROP_IP4));
+		log.info("NOTE: {}={}", PROP_IP4, System.getProperty(PROP_IP4));
 	}
 
 	private final String host;

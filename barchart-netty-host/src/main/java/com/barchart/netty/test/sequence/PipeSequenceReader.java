@@ -1,4 +1,4 @@
-package com.barchart.netty.part.pipe;
+package com.barchart.netty.test.sequence;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
@@ -7,20 +7,15 @@ import io.netty.handler.logging.MessageLoggingHandler;
 import io.netty.util.CharsetUtil;
 
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.part.hand.DatagramPacketReader;
-import com.barchart.netty.part.hand.SequenceReader;
+import com.barchart.netty.part.pipe.PipeAny;
 
 /**  */
 @Component(name = PipeSequenceReader.NAME, immediate = true)
-public class PipeSequenceReader implements NettyPipe {
+public class PipeSequenceReader extends PipeAny {
 
 	public static final String NAME = "barchart.netty.pipe.sequence.reader";
-
-	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public String getName() {
@@ -38,7 +33,7 @@ public class PipeSequenceReader implements NettyPipe {
 
 		pipeline.addLast("string-decoder", new StringDecoder(CharsetUtil.UTF_8));
 
-		pipeline.addLast("sequence-reader", new SequenceReader());
+		pipeline.addLast("sequence-reader", new HandSequenceReader());
 
 	}
 

@@ -1,4 +1,4 @@
-package com.barchart.netty.part.hand;
+package com.barchart.netty.test.sequence;
 
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SequenceWriter extends ChannelHandlerAdapter {
+public class HandSequenceWriter extends ChannelHandlerAdapter {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 

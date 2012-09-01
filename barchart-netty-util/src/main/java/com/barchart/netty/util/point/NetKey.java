@@ -12,13 +12,10 @@ public interface NetKey {
 
 	String KEY_SEND_BUF_SIZE = "send-buffer-size";
 
-	/** end point type (dot factory) */
+	/** end point type (dot factory id) */
 	String KEY_TYPE = "type";
 
-	/** default(parent) channel pipeline */
+	/** pipeline name (pipe component name ) */
 	String KEY_PIPELINE = "pipeline";
-
-	/** managed(child) channel pipeline name */
-	String KEY_MANAGED_PIPELINE = "managed-pipeline";
 
 }

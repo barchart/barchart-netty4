@@ -2,7 +2,7 @@ package com.barchart.netty.part.pipe;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.logging.MessageLoggingHandler;
+import io.netty.handler.logging.LoggingHandler;
 
 import java.util.Map;
 
@@ -21,6 +21,8 @@ import com.barchart.netty.host.api.NettyPipe;
 @Component(name = PipeAny.NAME, immediate = true)
 public class PipeAny implements NettyPipe {
 
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+
 	public static final String NAME = "barchart.netty.pipe.any";
 
 	@Override
@@ -28,35 +30,44 @@ public class PipeAny implements NettyPipe {
 		return NAME;
 	}
 
-	protected final Logger log = LoggerFactory.getLogger(getClass());
-
 	@Activate
 	protected void activate(final Map<String, String> props) throws Exception {
 
-		log.debug("### activate : {}", props);
+		log.debug("activate : {}", props);
 
 	}
 
 	@Modified
 	protected void modified(final Map<String, String> props) throws Exception {
 
-		log.debug("### modified : {}", props);
+		log.debug("modified : {}", props);
 
 	}
 
 	@Deactivate
 	protected void deactivate(final Map<String, String> props) throws Exception {
 
-		log.debug("### deactivate : {}", props);
+		log.debug("deactivate : {}", props);
 
 	}
+
+	//
 
 	@Override
 	public void apply(final Channel channel) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
-		pipeline.addLast("logger", new MessageLoggingHandler());
+		pipeline.addLast("logger", new LoggingHandler());
+
+	}
+
+	@Override
+	public void applyChild(final Channel channel) {
+
+		final ChannelPipeline pipeline = channel.pipeline();
+
+		pipeline.addLast("logger", new LoggingHandler());
 
 	}
 
