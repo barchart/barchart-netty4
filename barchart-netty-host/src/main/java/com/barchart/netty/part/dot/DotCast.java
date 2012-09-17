@@ -39,20 +39,11 @@ public class DotCast extends DotAny {
 		return channel;
 	}
 
-	protected void updateAttributes() {
-
-		channel().attr(ATTR_LOCAL_ADDRESS).set(localAddress());
-		channel().attr(ATTR_REMOTE_ADDRESS).set(remoteAddress());
-
-	}
-
 	@Override
 	protected void activateBoot() throws Exception {
 
 		boot = new Bootstrap();
 		channel = new NioDatagramChannel();
-
-		updateAttributes();
 
 		boot().localAddress(localAddress());
 		boot().remoteAddress(remoteAddress());

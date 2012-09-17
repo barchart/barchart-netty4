@@ -46,7 +46,7 @@ public class TestStream extends TestAny {
 	}
 
 	@Test
-	public void testStreams() throws Exception {
+	public void testStream() throws Exception {
 
 		{
 

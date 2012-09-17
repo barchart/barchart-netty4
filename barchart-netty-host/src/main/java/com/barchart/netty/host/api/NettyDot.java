@@ -3,7 +3,6 @@ package com.barchart.netty.host.api;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 
-import com.barchart.netty.util.point.NetAddress;
 import com.barchart.netty.util.point.NetPoint;
 
 /** represents netty "dot" - end point / channel */
@@ -19,14 +18,8 @@ public interface NettyDot extends NettyAny {
 
 	/* attributes */
 
-	AttributeKey<NetPoint> ATTR_NET_POINT //
-	= new AttributeKey<NetPoint>("net-point");
-
-	AttributeKey<NetAddress> ATTR_LOCAL_ADDRESS //
-	= new AttributeKey<NetAddress>("local-address");
-
-	AttributeKey<NetAddress> ATTR_REMOTE_ADDRESS //
-	= new AttributeKey<NetAddress>("remote-address");
+	AttributeKey<NettyDot> ATTR_NETTY_DOT //
+	= new AttributeKey<NettyDot>("netty-dot");
 
 	/* methods */
 

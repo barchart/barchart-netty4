@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.barchart.netty.host.api.NettyDot;
+import com.barchart.netty.util.point.NetPoint;
 
 /**
  * duplicate message arbiter handler
@@ -36,8 +37,12 @@ public class HandArb extends ChannelHandlerAdapter implements
 
 		this.ctx = ctx;
 
-		localAddress = ctx.channel().attr(NettyDot.ATTR_LOCAL_ADDRESS).get();
-		remoteAddress = ctx.channel().attr(NettyDot.ATTR_REMOTE_ADDRESS).get();
+		final NettyDot dot = ctx.channel().attr(NettyDot.ATTR_NETTY_DOT).get();
+
+		final NetPoint point = dot.netPoint();
+
+		localAddress = point.getLocalAddress();
+		remoteAddress = point.getRemoteAddress();
 
 		super.channelActive(ctx);
 

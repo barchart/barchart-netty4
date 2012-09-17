@@ -7,7 +7,6 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundMessageHandler;
-import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramPacket;
 
 import java.net.InetSocketAddress;
@@ -16,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.host.api.NettyDot;
+import com.barchart.netty.util.point.NetPoint;
 
 public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 		ChannelOutboundMessageHandler<Object> {
@@ -28,8 +28,12 @@ public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
 
-		localAddress = ctx.channel().attr(NettyDot.ATTR_LOCAL_ADDRESS).get();
-		remoteAddress = ctx.channel().attr(NettyDot.ATTR_REMOTE_ADDRESS).get();
+		final NettyDot dot = ctx.channel().attr(NettyDot.ATTR_NETTY_DOT).get();
+
+		final NetPoint point = dot.netPoint();
+
+		localAddress = point.getLocalAddress();
+		remoteAddress = point.getRemoteAddress();
 
 		super.channelActive(ctx);
 

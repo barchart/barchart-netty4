@@ -59,20 +59,27 @@ public class DotAny implements NettyDot {
 	/**
 	 * builder for transient pipeline applicator handler
 	 */
-	protected ChannelInitializer<Channel> pipeApply(final NettyPipe.Mode mode) {
+	protected final ChannelInitializer<Channel> pipeApply(
+			final NettyPipe.Mode mode) {
 		return new ChannelInitializer<Channel>() {
 			@Override
 			public void initChannel(final Channel channel) throws Exception {
 
+				/** always link channel with owner dot */
+				channel.attr(ATTR_NETTY_DOT).set(DotAny.this);
+
 				final NettyPipe pipe = pipeManager().findPipe(pipeName());
 
 				if (pipe == null) {
+
 					log.error("missing pipeline", //
 							new IllegalArgumentException(pipeName()));
-					return;
-				}
 
-				pipe.apply(DotAny.this, channel, mode);
+				} else {
+
+					pipe.apply(DotAny.this, channel, mode);
+
+				}
 
 			}
 		};

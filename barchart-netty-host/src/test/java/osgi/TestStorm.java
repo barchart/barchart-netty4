@@ -46,7 +46,7 @@ public class TestStorm extends TestAny {
 	}
 
 	@Test
-	public void testStreams() throws Exception {
+	public void testStorm() throws Exception {
 
 		{
 
