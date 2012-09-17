@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -24,7 +25,7 @@ import com.barchart.netty.util.point.NetPoint;
 /**
  * parent for "dot" (end point) netty components
  */
-@Component(factory = DotAny.FACTORY)
+@Component(name = DotAny.FACTORY, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DotAny implements NettyDot {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -32,14 +33,14 @@ public class DotAny implements NettyDot {
 	public static final String FACTORY = "barchart.netty.dot.any";
 
 	@Override
-	public String getFactoryId() {
+	public String factoryId() {
 		return FACTORY;
 	}
 
 	private NetPoint netPoint;
 
 	@Override
-	public String getInstanceId() {
+	public String instanceId() {
 		return netPoint.getId();
 	}
 

@@ -11,20 +11,24 @@ import static org.junit.Assert.*;
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 
+import com.barchart.osgi.event.api.EventAdminService;
 import com.barchart.osgi.event.api.EventUtil;
 
 @RunWith(JUnit4TestRunner.class)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
-public class TestEvents extends TestAny {
+public class TestEvents extends TestAny implements EventHandler {
 
 	static final String TOPIC = UUID.randomUUID().toString();
+
+	@Inject
+	protected EventAdminService eventService;
 
 	@Override
 	public void testActivate() throws Exception {
@@ -57,7 +61,7 @@ public class TestEvents extends TestAny {
 	public void handleEvent(final Event event) {
 
 		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-		super.handleEvent(event);
+		log.info("### event topic : {}", event.getTopic());
 		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 
 		assertTrue(EventUtil.is(event, TOPIC));

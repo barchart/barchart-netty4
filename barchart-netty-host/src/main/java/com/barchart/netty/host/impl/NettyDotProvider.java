@@ -20,7 +20,7 @@ import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyDotManager;
 import com.barchart.netty.host.api.NettyGroup;
 import com.barchart.netty.util.point.NetPoint;
-import com.barchart.osgi.factory.api.FidgetManagerBase;
+import com.barchart.osgi.factory.api.CidgetManagerBase;
 import com.typesafe.config.Config;
 
 /**
@@ -29,7 +29,7 @@ import com.typesafe.config.Config;
  * FIXME get thread pool params from config admin
  */
 @Component(immediate = true)
-public class NettyDotProvider extends FidgetManagerBase<NettyDot> implements
+public class NettyDotProvider extends CidgetManagerBase<NettyDot> implements
 		NettyDotManager, NettyGroup {
 
 	static {
@@ -52,13 +52,13 @@ public class NettyDotProvider extends FidgetManagerBase<NettyDot> implements
 	@Activate
 	protected void activate(final ComponentContext c) {
 
+		super.activate(c);
+
 		log.debug("@@@ ACTIVE");
 
 		// threadPool = threadPoolManager.get(POOL_NAME);
 
 		group = new NioEventLoopGroup(10, threadFactory);
-
-		super.activate(c);
 
 	}
 
@@ -77,7 +77,7 @@ public class NettyDotProvider extends FidgetManagerBase<NettyDot> implements
 	}
 
 	@Override
-	protected Class<NettyDot> getFidgetInterface() {
+	protected Class<NettyDot> interfaceClass() {
 		return NettyDot.class;
 	}
 
@@ -105,15 +105,16 @@ public class NettyDotProvider extends FidgetManagerBase<NettyDot> implements
 	@Override
 	public NettyDot create(final Config config) {
 
-		final String type = config.getString(NetPoint.KEY_TYPE);
-
-		final String hocon = config.root().render();
-
 		final Map<String, String> props = new HashMap<String, String>();
 
-		props.put(NettyDot.PROP_NET_POINT, hocon);
+		final String pointHocon = config.root().render();
 
-		return create(type, props);
+		props.put(NettyDot.PROP_NET_POINT, pointHocon);
+
+		final String factoryId = config.getString(NetPoint.KEY_TYPE);
+		final String instanceId = config.getString(NetPoint.KEY_ID);
+
+		return instanceCreate(factoryId, instanceId, props);
 
 	}
 

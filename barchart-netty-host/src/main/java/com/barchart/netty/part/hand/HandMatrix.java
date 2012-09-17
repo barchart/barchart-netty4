@@ -21,19 +21,20 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 import com.barchart.netty.matrix.api.Matrix;
 
 /** handler provides injection into matrix */
-@Component(factory = HandMatrix.FACTORY)
+@Component(name = HandMatrix.FACTORY, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class HandMatrix extends HandAny implements
 		ChannelInboundMessageHandler<Object> {
 
 	public static final String FACTORY = "barchart.netty.hand.matrix";
 
 	@Override
-	public String getFactoryId() {
+	public String factoryId() {
 		return FACTORY;
 	}
 

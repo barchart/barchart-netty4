@@ -5,35 +5,22 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.osgi.service.component.annotations.Component;
-
-import com.barchart.osgi.factory.api.FactoryDescriptor;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 /**
  * parent for connection oriented server end points
  * 
  * such as tcp, sctp
  */
-@Component(factory = DotStreamServer.FACTORY)
+@Component(name = DotStreamServer.FACTORY, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DotStreamServer extends DotStream {
 
 	public static final String FACTORY = "barchart.netty.dot.stream.server";
 
 	@Override
-	public String getFactoryId() {
+	public String factoryId() {
 		return FACTORY;
-	}
-
-	@FactoryDescriptor
-	private static final Map<String, String> descriptor;
-	static {
-		descriptor = new HashMap<String, String>();
-		descriptor.put(PROP_FACTORY_ID, FACTORY);
-		descriptor.put(PROP_FACTORY_DESCRIPTION,
-				"unicast reader/writer end point service");
 	}
 
 	private ServerBootstrap boot;
@@ -72,7 +59,7 @@ public class DotStreamServer extends DotStream {
 
 		boot().group(group());
 
-		boot().channel(channel());
+		boot().channel(NioServerSocketChannel.class);
 
 		/** acceptor a.k.a server a.k.a parent a.k.a default */
 		boot().handler(pipeApply());

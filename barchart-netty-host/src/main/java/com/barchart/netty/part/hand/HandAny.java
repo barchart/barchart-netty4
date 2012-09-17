@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.slf4j.Logger;
@@ -15,23 +16,23 @@ import org.slf4j.LoggerFactory;
 import com.barchart.netty.host.api.NettyHand;
 
 /** parent for "hand" - netty handlers */
-@Component(factory = HandAny.FACTORY)
+@Component(name = HandAny.FACTORY, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class HandAny extends ChannelHandlerAdapter implements NettyHand {
 
 	public static final String FACTORY = "barchart.netty.hand.any";
 
 	@Override
-	public String getFactoryId() {
+	public String factoryId() {
 		return FACTORY;
 	}
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	private final String instanceId = getFactoryId() + "."
+	private final String instanceId = factoryId() + "."
 			+ UUID.randomUUID().toString();
 
 	@Override
-	public String getInstanceId() {
+	public String instanceId() {
 		return instanceId;
 	}
 

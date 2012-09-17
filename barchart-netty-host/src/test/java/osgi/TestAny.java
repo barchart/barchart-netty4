@@ -10,8 +10,10 @@ package osgi;
 import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 
+import java.net.URL;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Properties;
 
 import javax.inject.Inject;
 
@@ -19,54 +21,53 @@ import org.junit.After;
 import org.junit.Before;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.event.Event;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
+import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.barchart.netty.host.api.NettyDotManager;
-import com.barchart.netty.matrix.api.Matrix;
-import com.barchart.osgi.conf.api.ConfigAdminService;
-import com.barchart.osgi.event.api.EventService;
-
-/** shared test setup */
-public abstract class TestAny implements EventHandler {
+public class TestAny {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
+	private static final String PAX_LEVEL = "INFO";
+
 	@Configuration
 	public Option[] config() {
+
+		log.debug("### config");
 
 		return options(
 
 				systemTimeout(3 * 1000),
 
-				systemProperty("java.net.preferIPv4Stack").value("true"),
-
-				// systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level")
-				// .value("INFO"),
+				systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level")
+						.value(PAX_LEVEL),
 
 				junitBundles(),
 
 				mavenBundle().groupId("org.apache.felix")
 						.artifactId("org.apache.felix.configadmin")
 						.versionAsInProject(),
-
-				mavenBundle().groupId("org.apache.felix")
-						.artifactId("org.apache.felix.scr")
-						.versionAsInProject(),
-
 				mavenBundle().groupId("org.apache.felix")
 						.artifactId("org.apache.felix.eventadmin")
+						.versionAsInProject(),
+				mavenBundle().groupId("org.apache.felix")
+						.artifactId("org.apache.felix.scr")
 						.versionAsInProject(),
 
 				mavenBundle().groupId("com.carrotgarden.osgi")
 						.artifactId("carrot-osgi-anno-scr-core")
 						.versionAsInProject(),
+				//
 
+				mavenBundle().groupId("org.ops4j.pax.logging").artifactId(
+						"pax-logging-api"),
+				mavenBundle().groupId("org.ops4j.pax.logging").artifactId(
+						"pax-logging-service"),
 				//
 
 				wrappedBundle(mavenBundle().groupId("io.netty")
@@ -82,11 +83,7 @@ public abstract class TestAny implements EventHandler {
 						.artifactId("barchart-osgi-event").versionAsInProject(),
 
 				mavenBundle().groupId("com.barchart.osgi")
-						.artifactId("barchart-osgi-factory")
-						.versionAsInProject(),
-
-				mavenBundle().groupId("org.apache.sling")
-						.artifactId("org.apache.sling.commons.threads")
+						.artifactId("barchart-osgi-factory-cm")
 						.versionAsInProject(),
 
 				mavenBundle().groupId("com.barchart.netty")
@@ -101,48 +98,77 @@ public abstract class TestAny implements EventHandler {
 	}
 
 	@Inject
-	protected BundleContext context;
+	private BundleContext context;
 
 	@Inject
-	protected EventService eventService;
-
-	@Inject
-	protected ConfigAdminService configAdmin;
-
-	@Inject
-	protected NettyDotManager manager;
-
-	@Inject
-	protected Matrix matrix;
+	private ConfigurationAdmin configAdmin;
 
 	@Before
 	public void testActivate() throws Exception {
 
-		log.info("#######################################################################");
-
-		log.info("### java.net.preferIPv4Stack={}",
-				System.getProperty("java.net.preferIPv4Stack"));
-
-		log.info("### curren bundle " + context.getBundle().getSymbolicName());
-
-		for (final Bundle bundle : context.getBundles()) {
-			log.info("### active bundle : " + bundle.getSymbolicName());
-		}
-
+		assertNotNull(context);
 		assertNotNull(configAdmin);
 
-		assertNotNull(eventService);
+		loggingActivate(configAdmin);
 
-		assertNotNull(manager);
+		log.info("#########################################");
+		log.info("###              ACTIVATE             ###");
 
-		assertNotNull(matrix);
+		// for (final Bundle bundle : context.getBundles()) {
+		// log.info("### bundle : {}", bundle.getSymbolicName());
+		// }
 
 	}
 
 	@After
 	public void testDeactivate() throws Exception {
 
-		log.info("#######################################################################");
+		log.info("###             DEACTIVATE            ###");
+		log.info("#########################################");
+
+		loggingDeactivate(configAdmin);
+
+	}
+
+	private static final String PAX_PID = "org.ops4j.pax.logging";
+	private static final String PAX_SERVICE = "org.ops4j.pax.logging.PaxLoggingService";
+
+	private void loggingActivate(final ConfigurationAdmin configAdmin)
+			throws Exception {
+
+		final URL propsURL = TestAny.class.getResource("/log4j.properties");
+
+		final Properties props = new Properties();
+
+		props.load(propsURL.openStream());
+
+		final org.osgi.service.cm.Configuration config = configAdmin
+				.getConfiguration(PAX_PID, null);
+
+		config.update(props);
+
+		final ServiceTracker tracker = new ServiceTracker(context, PAX_SERVICE,
+				null);
+
+		tracker.open(true);
+
+		final Object service = tracker.waitForService(3 * 1000);
+
+		assertNotNull(service);
+
+		Thread.sleep(500);
+
+	}
+
+	private void loggingDeactivate(final ConfigurationAdmin configAdmin)
+			throws Exception {
+
+		final org.osgi.service.cm.Configuration config = configAdmin
+				.getConfiguration(PAX_PID, null);
+
+		config.delete();
+
+		Thread.sleep(500);
 
 	}
 
@@ -154,13 +180,6 @@ public abstract class TestAny implements EventHandler {
 		props.put(EventConstants.EVENT_TOPIC, topic);
 
 		context.registerService(name, this, props);
-
-	}
-
-	@Override
-	public void handleEvent(final Event event) {
-
-		log.info("### event topic : {}", event.getTopic());
 
 	}
 

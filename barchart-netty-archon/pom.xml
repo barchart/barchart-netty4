@@ -25,7 +25,7 @@
 
 		<barchartJavaVersion>1.7</barchartJavaVersion>
 
-		<projectNettyVersion>4.0.0.Alpha3</projectNettyVersion>
+		<projectNettyVersion>4.0.0.Alpha4</projectNettyVersion>
 
 	</properties>
 

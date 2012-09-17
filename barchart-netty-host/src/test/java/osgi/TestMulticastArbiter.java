@@ -9,20 +9,23 @@ package osgi;
 
 import static org.junit.Assert.*;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 
 import com.barchart.netty.host.api.NettyDot;
+import com.barchart.netty.host.api.NettyDotManager;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 /** FIXME add some traffic */
 @RunWith(JUnit4TestRunner.class)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class TestMulticastArbiter extends TestAny {
+
+	@Inject
+	private NettyDotManager manager;
 
 	@Override
 	public void testActivate() throws Exception {

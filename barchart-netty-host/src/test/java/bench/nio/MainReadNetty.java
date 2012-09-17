@@ -66,7 +66,7 @@ public class MainReadNetty {
 		boot.option(ChannelOption.IP_MULTICAST_TTL, 123);
 
 		boot.group(new NioEventLoopGroup());
-		boot.channel(channel);
+		boot.channel(NioDatagramChannel.class);
 		boot.handler(new MessageLoggingHandler());
 
 		boot.bind().sync();

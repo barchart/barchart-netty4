@@ -3,6 +3,8 @@ package bench.nio;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
@@ -49,13 +51,11 @@ public class MainWriteNetty {
 		final InetAddress group = InetAddress.getByName(groupAddr);
 		log.info("group = " + group);
 
-		final SocketAddress local = new InetSocketAddress("localhost", 0);
+		final SocketAddress local = new InetSocketAddress(host, 0);
 		log.info("bind  = " + local);
 
 		final InetSocketAddress remote = new InetSocketAddress(groupAddr,
 				groupPort);
-
-		final NioDatagramChannel channel = new NioDatagramChannel();
 
 		final Bootstrap boot = new Bootstrap();
 		boot.localAddress(local);
@@ -63,9 +63,11 @@ public class MainWriteNetty {
 		boot.option(ChannelOption.SO_REUSEADDR, true);
 		boot.option(ChannelOption.IP_MULTICAST_TTL, 123);
 		boot.group(new NioEventLoopGroup());
-		boot.channel(channel);
+		boot.channel(NioDatagramChannel.class);
 		boot.handler(new MessageLoggingHandler());
-		boot.bind().sync();
+		final ChannelFuture future = boot.bind().sync();
+
+		final Channel channel = future.channel();
 
 		for (int k = 0; k < 100; k++) {
 

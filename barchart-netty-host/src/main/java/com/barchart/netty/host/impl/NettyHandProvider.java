@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.host.api.NettyHand;
 import com.barchart.netty.host.api.NettyHandManager;
-import com.barchart.osgi.factory.api.FidgetManagerBase;
+import com.barchart.osgi.factory.api.CidgetManagerBase;
 
 /**
  * handler factory manager
  */
 @Component(immediate = true)
-public class NettyHandProvider extends FidgetManagerBase<NettyHand> implements
+public class NettyHandProvider extends CidgetManagerBase<NettyHand> implements
 		NettyHandManager {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -37,9 +37,9 @@ public class NettyHandProvider extends FidgetManagerBase<NettyHand> implements
 	@Activate
 	protected void activate(final ComponentContext c) {
 
-		log.debug("@@@ ACTIVE");
-
 		super.activate(c);
+
+		log.debug("@@@ ACTIVE");
 
 	}
 
@@ -54,7 +54,7 @@ public class NettyHandProvider extends FidgetManagerBase<NettyHand> implements
 	}
 
 	@Override
-	protected Class<NettyHand> getFidgetInterface() {
+	protected Class<NettyHand> interfaceClass() {
 		return NettyHand.class;
 	}
 

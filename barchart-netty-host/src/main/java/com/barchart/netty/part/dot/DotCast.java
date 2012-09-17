@@ -4,12 +4,8 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.osgi.service.component.annotations.Component;
-
-import com.barchart.osgi.factory.api.FactoryDescriptor;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 /**
  * parent for datagram based connection-less end points;
@@ -18,23 +14,14 @@ import com.barchart.osgi.factory.api.FactoryDescriptor;
  * 
  * anycast, broadcast, unicast, multicast, etc;
  */
-@Component(factory = DotCast.FACTORY)
+@Component(name = DotCast.FACTORY, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DotCast extends DotAny {
 
 	public static final String FACTORY = "barchart.netty.dot.cast";
 
 	@Override
-	public String getFactoryId() {
+	public String factoryId() {
 		return FACTORY;
-	}
-
-	@FactoryDescriptor
-	private static final Map<String, String> descriptor;
-	static {
-		descriptor = new HashMap<String, String>();
-		descriptor.put(PROP_FACTORY_ID, FACTORY);
-		descriptor.put(PROP_FACTORY_DESCRIPTION,
-				"datagram reader/writer end point service");
 	}
 
 	private Bootstrap boot;
@@ -80,7 +67,7 @@ public class DotCast extends DotAny {
 
 		boot().group(group());
 
-		boot().channel(channel());
+		boot().channelFactory(new FixedChannelFactory(channel()));
 
 		boot().handler(pipeApply());
 

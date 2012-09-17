@@ -52,7 +52,7 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 
 		final String sourceId = targetPoint.load(pointKey);
 
-		final NettyDot sourceDot = channelManager().getInstance(sourceId);
+		final NettyDot sourceDot = channelManager().instance(sourceId);
 
 		if (sourceDot == null) {
 			log.error("missing source", new IllegalStateException(sourceId));

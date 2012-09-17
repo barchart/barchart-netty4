@@ -44,7 +44,7 @@
 		<dependency>
 			<groupId>com.barchart.osgi</groupId>
 			<artifactId>barchart-osgi-conf</artifactId>
-			<version>1.0.2</version>
+			<version>1.1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -52,21 +52,15 @@
 		<dependency>
 			<groupId>com.barchart.osgi</groupId>
 			<artifactId>barchart-osgi-event</artifactId>
-			<version>1.0.2</version>
+			<version>1.1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<!-- scr factory -->
 		<dependency>
 			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-factory</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.sling</groupId>
-			<artifactId>org.apache.sling.commons.threads</artifactId>
-			<version>3.1.0</version>
+			<artifactId>barchart-osgi-factory-cm</artifactId>
+			<version>1.1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 

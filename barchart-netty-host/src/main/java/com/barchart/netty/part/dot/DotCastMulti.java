@@ -4,37 +4,26 @@ import io.netty.util.NetworkConstants;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.barchart.netty.host.impl.OperatingSystem;
 import com.barchart.netty.util.point.NetAddress;
-import com.barchart.osgi.factory.api.FactoryDescriptor;
 
 /**
  * parent for multicast end points
  * 
  * handles multicast join / leave;
  */
-@Component(factory = DotCastMulti.FACTORY)
+@Component(name = DotCastMulti.FACTORY, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DotCastMulti extends DotCast {
 
 	public static final String FACTORY = "barchart.netty.dot.cast.multi";
 
 	@Override
-	public String getFactoryId() {
+	public String factoryId() {
 		return FACTORY;
-	}
-
-	@FactoryDescriptor
-	private static final Map<String, String> descriptor;
-	static {
-		descriptor = new HashMap<String, String>();
-		descriptor.put(PROP_FACTORY_ID, FACTORY);
-		descriptor.put(PROP_FACTORY_DESCRIPTION,
-				"multicast reader end point service");
 	}
 
 	/** valid interface or loop back interface for error */

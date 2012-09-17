@@ -1,21 +1,15 @@
 package com.barchart.netty.host.api;
 
-import com.barchart.osgi.factory.api.Fidget;
+import com.barchart.osgi.factory.api.Cidget;
 
 /** shared constants */
-public interface NettyAny extends Fidget {
+public interface NettyAny extends Cidget {
 
 	/* props */
 
-	/** factory which created this component */
-	String PROP_FACTORY_ID = "factory-id";
-
 	/** human readable description of the factory */
-	String PROP_FACTORY_DESCRIPTION = "factory-description";
+	String PROP_FACTORY_DESCRIPTION = "factory.description";
 
 	/* */
-
-	/** UUID of the factory that made this instance */
-	String getFactoryId();
 
 }
