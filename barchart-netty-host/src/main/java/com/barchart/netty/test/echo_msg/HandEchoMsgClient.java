@@ -1,16 +1,18 @@
 package com.barchart.netty.test.echo_msg;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundByteHandlerAdapter;
+import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  */
-public class HandEchoMsgClient extends ChannelInboundByteHandlerAdapter {
+public class HandEchoMsgClient extends
+		ChannelInboundMessageHandlerAdapter<Object> {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -41,22 +43,6 @@ public class HandEchoMsgClient extends ChannelInboundByteHandlerAdapter {
 
 	}
 
-	@Override
-	public void inboundBufferUpdated(final ChannelHandlerContext ctx,
-			final ByteBuf source) {
-
-		final ByteBuf target = ctx.nextOutboundByteBuffer();
-
-		target.discardReadBytes();
-
-		target.writeBytes(source);
-
-		ctx.flush();
-
-		printStatus();
-
-	}
-
 	private long count;
 
 	private void printStatus() {
@@ -76,6 +62,20 @@ public class HandEchoMsgClient extends ChannelInboundByteHandlerAdapter {
 		log.error("unexpected", cause);
 
 		ctx.close();
+
+	}
+
+	@Override
+	public void messageReceived(final ChannelHandlerContext ctx,
+			final Object msg) throws Exception {
+
+		final MessageBuf<Object> out = ctx.nextOutboundMessageBuffer();
+
+		out.add(msg);
+
+		ctx.flush();
+
+		printStatus();
 
 	}
 

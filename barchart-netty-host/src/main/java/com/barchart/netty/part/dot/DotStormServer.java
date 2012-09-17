@@ -58,10 +58,10 @@ public class DotStormServer extends DotAny {
 		boot().childOption(ChannelOption.SCTP_NODELAY, true);
 
 		/** https://github.com/netty/netty/issues/610 */
-		// boot().childOption(ChannelOption.SO_SNDBUF,
-		// getNetPoint().getSendBufferSize());
-		// boot().childOption(ChannelOption.SO_RCVBUF,
-		// getNetPoint().getReceiveBufferSize());
+		boot().childOption(ChannelOption.SO_SNDBUF,
+				getNetPoint().getSendBufferSize());
+		boot().childOption(ChannelOption.SO_RCVBUF,
+				getNetPoint().getReceiveBufferSize());
 
 		boot().group(group());
 

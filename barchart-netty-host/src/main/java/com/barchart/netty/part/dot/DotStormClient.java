@@ -51,10 +51,10 @@ public class DotStormClient extends DotAny {
 		boot().option(ChannelOption.SCTP_NODELAY, true);
 
 		/** https://github.com/netty/netty/issues/610 */
-		// boot().option(ChannelOption.SO_SNDBUF,
-		// getNetPoint().getSendBufferSize());
-		// boot().option(ChannelOption.SO_RCVBUF,
-		// getNetPoint().getReceiveBufferSize());
+		boot().option(ChannelOption.SO_SNDBUF,
+				getNetPoint().getSendBufferSize());
+		boot().option(ChannelOption.SO_RCVBUF,
+				getNetPoint().getReceiveBufferSize());
 
 		boot().group(group());
 

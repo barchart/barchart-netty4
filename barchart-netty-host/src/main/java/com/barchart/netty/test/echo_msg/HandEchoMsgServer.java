@@ -1,33 +1,18 @@
 package com.barchart.netty.test.echo_msg;
 
-import io.netty.buffer.ByteBuf;
+import io.netty.buffer.MessageBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundByteHandlerAdapter;
+import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  */
-public class HandEchoMsgServer extends ChannelInboundByteHandlerAdapter {
+public class HandEchoMsgServer extends
+		ChannelInboundMessageHandlerAdapter<Object> {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
-
-	@Override
-	public void inboundBufferUpdated(final ChannelHandlerContext ctx,
-			final ByteBuf source) {
-
-		final ByteBuf target = ctx.nextOutboundByteBuffer();
-
-		target.discardReadBytes();
-
-		target.writeBytes(source);
-
-		ctx.flush();
-
-		printStatus();
-
-	}
 
 	@Override
 	public void exceptionCaught(final ChannelHandlerContext ctx,
@@ -48,6 +33,20 @@ public class HandEchoMsgServer extends ChannelInboundByteHandlerAdapter {
 		}
 
 		count++;
+
+	}
+
+	@Override
+	public void messageReceived(final ChannelHandlerContext ctx,
+			final Object msg) throws Exception {
+
+		final MessageBuf<Object> out = ctx.nextOutboundMessageBuffer();
+
+		out.add(msg);
+
+		ctx.flush();
+
+		printStatus();
 
 	}
 
