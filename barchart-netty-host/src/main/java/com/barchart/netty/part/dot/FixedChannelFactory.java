@@ -3,6 +3,9 @@ package com.barchart.netty.part.dot;
 import io.netty.bootstrap.AbstractBootstrap.ChannelFactory;
 import io.netty.channel.Channel;
 
+/**
+ * https://github.com/netty/netty/issues/609
+ */
 public class FixedChannelFactory implements ChannelFactory {
 
 	private final Channel channel;

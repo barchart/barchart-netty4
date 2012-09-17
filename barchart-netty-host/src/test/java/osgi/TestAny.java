@@ -33,7 +33,7 @@ public class TestAny {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	private static final String PAX_LEVEL = "INFO";
+	private static final String PAX_LEVEL = "DEBUG";
 
 	@Configuration
 	public Option[] config() {
@@ -43,6 +43,8 @@ public class TestAny {
 		return options(
 
 				systemTimeout(3 * 1000),
+
+				systemPackage("com.sun.nio.sctp"),
 
 				systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level")
 						.value(PAX_LEVEL),

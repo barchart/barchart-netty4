@@ -24,7 +24,7 @@ import com.typesafe.config.ConfigFactory;
 
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
-public class TestStreams extends TestAny {
+public class TestStream extends TestAny {
 
 	@Inject
 	private NettyDotManager manager;

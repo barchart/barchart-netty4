@@ -1,4 +1,4 @@
-package com.barchart.netty.test.echo;
+package com.barchart.netty.test.echo_byte;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  */
-public class HandEchoServer extends ChannelInboundByteHandlerAdapter {
+public class HandEchoByteServer extends ChannelInboundByteHandlerAdapter {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 

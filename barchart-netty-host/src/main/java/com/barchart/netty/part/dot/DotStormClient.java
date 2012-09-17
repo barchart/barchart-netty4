@@ -3,7 +3,7 @@ package com.barchart.netty.part.dot;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.socket.nio.NioSctpChannel;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -11,12 +11,12 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 /**
  * parent for connection oriented client end points
  * 
- * such as TCP
+ * such as SCTP
  */
-@Component(name = DotStreamClient.FACTORY, configurationPolicy = ConfigurationPolicy.REQUIRE)
-public class DotStreamClient extends DotAny {
+@Component(name = DotStormClient.FACTORY, configurationPolicy = ConfigurationPolicy.REQUIRE)
+public class DotStormClient extends DotAny {
 
-	public static final String FACTORY = "barchart.netty.dot.stream.client";
+	public static final String FACTORY = "barchart.netty.dot.storm.client";
 
 	@Override
 	public String factoryId() {
@@ -29,10 +29,10 @@ public class DotStreamClient extends DotAny {
 		return boot;
 	}
 
-	private NioSocketChannel channel;
+	private NioSctpChannel channel;
 
 	@Override
-	protected NioSocketChannel channel() {
+	protected NioSctpChannel channel() {
 		return channel;
 	}
 
@@ -43,17 +43,18 @@ public class DotStreamClient extends DotAny {
 	protected void activateBoot() throws Exception {
 
 		boot = new Bootstrap();
-		channel = new NioSocketChannel();
+		channel = new NioSctpChannel();
 
 		boot().localAddress(localAddress());
 		boot().remoteAddress(remoteAddress());
 
-		boot().option(ChannelOption.SO_REUSEADDR, true);
+		boot().option(ChannelOption.SCTP_NODELAY, true);
 
-		boot().option(ChannelOption.SO_SNDBUF,
-				getNetPoint().getSendBufferSize());
-		boot().option(ChannelOption.SO_RCVBUF,
-				getNetPoint().getReceiveBufferSize());
+		/** https://github.com/netty/netty/issues/610 */
+		// boot().option(ChannelOption.SO_SNDBUF,
+		// getNetPoint().getSendBufferSize());
+		// boot().option(ChannelOption.SO_RCVBUF,
+		// getNetPoint().getReceiveBufferSize());
 
 		boot().group(group());
 

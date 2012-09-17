@@ -1,4 +1,4 @@
-package com.barchart.netty.test.echo;
+package com.barchart.netty.test.echo_msg;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
@@ -10,8 +10,8 @@ import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.part.pipe.PipeAny;
 
 /**  */
-@Component(name = PipeEchoServer.NAME, immediate = true)
-public class PipeEchoServer extends PipeAny {
+@Component(name = PipeEchoMsgServer.NAME, immediate = true)
+public class PipeEchoMsgServer extends PipeAny {
 
 	public static final String NAME = "barchart.netty.pipe.echo.server";
 
@@ -38,7 +38,7 @@ public class PipeEchoServer extends PipeAny {
 
 		pipeline.addLast("logger", new LoggingHandler());
 
-		pipeline.addLast("echo-server", new HandEchoServer());
+		pipeline.addLast("echo-server", new HandEchoMsgServer());
 
 		log.debug("apply child : {}", channel);
 
