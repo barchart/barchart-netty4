@@ -21,26 +21,26 @@ public class PipeEchoByteServer extends PipeAny {
 	}
 
 	@Override
-	public void apply(final NettyDot dot, final Channel channel) {
+	protected void applyDefault(final NettyDot dot, final Channel channel) {
+
+		log.debug("apply parent : {}", channel);
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
 		pipeline.addLast("logger", new LoggingHandler());
 
-		log.debug("apply parent : {}", channel);
-
 	}
 
 	@Override
-	public void applyChild(final NettyDot dot, final Channel channel) {
+	protected void applyDerived(final NettyDot dot, final Channel channel) {
+
+		log.debug("apply child : {}", channel);
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
 		pipeline.addLast("logger", new LoggingHandler());
 
 		pipeline.addLast("echo-server", new HandEchoByteServer());
-
-		log.debug("apply child : {}", channel);
 
 	}
 

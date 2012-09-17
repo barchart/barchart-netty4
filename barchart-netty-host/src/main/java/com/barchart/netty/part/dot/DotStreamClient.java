@@ -8,6 +8,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.barchart.netty.host.api.NettyPipe;
+
 /**
  * parent for connection oriented client end points
  * 
@@ -32,7 +34,7 @@ public class DotStreamClient extends DotAny {
 	private NioSocketChannel channel;
 
 	@Override
-	protected NioSocketChannel channel() {
+	public NioSocketChannel channel() {
 		return channel;
 	}
 
@@ -50,17 +52,16 @@ public class DotStreamClient extends DotAny {
 
 		boot().option(ChannelOption.SO_REUSEADDR, true);
 
-		boot().option(ChannelOption.SO_SNDBUF,
-				getNetPoint().getSendBufferSize());
+		boot().option(ChannelOption.SO_SNDBUF, netPoint().getSendBufferSize());
 		boot().option(ChannelOption.SO_RCVBUF,
-				getNetPoint().getReceiveBufferSize());
+				netPoint().getReceiveBufferSize());
 
 		boot().group(group());
 
 		boot().channelFactory(new FixedChannelFactory(channel()));
 
 		/** connector */
-		boot().handler(pipeApply());
+		boot().handler(pipeApply(NettyPipe.Mode.DEFAULT));
 
 		activateFuture = boot().connect();
 

@@ -7,6 +7,8 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.barchart.netty.host.api.NettyPipe;
+
 /**
  * parent for datagram based connection-less end points;
  * 
@@ -33,7 +35,7 @@ public class DotCast extends DotAny {
 	private NioDatagramChannel channel;
 
 	@Override
-	protected NioDatagramChannel channel() {
+	public NioDatagramChannel channel() {
 		return channel;
 	}
 
@@ -55,21 +57,19 @@ public class DotCast extends DotAny {
 		boot().localAddress(localAddress());
 		boot().remoteAddress(remoteAddress());
 
-		boot().option(ChannelOption.SO_SNDBUF,
-				getNetPoint().getSendBufferSize());
+		boot().option(ChannelOption.SO_SNDBUF, netPoint().getSendBufferSize());
 		boot().option(ChannelOption.SO_RCVBUF,
-				getNetPoint().getReceiveBufferSize());
+				netPoint().getReceiveBufferSize());
 
 		boot().option(ChannelOption.SO_REUSEADDR, true);
 
-		boot().option(ChannelOption.IP_MULTICAST_TTL,
-				getNetPoint().getPacketTTL());
+		boot().option(ChannelOption.IP_MULTICAST_TTL, netPoint().getPacketTTL());
 
 		boot().group(group());
 
 		boot().channelFactory(new FixedChannelFactory(channel()));
 
-		boot().handler(pipeApply());
+		boot().handler(pipeApply(NettyPipe.Mode.DEFAULT));
 
 		boot().bind().sync();
 

@@ -18,12 +18,16 @@ public class PipeInvalid extends PipeAny {
 	}
 
 	@Override
-	public void apply(final NettyDot dot, final Channel channel) {
+	protected void applyDefault(final NettyDot dot, final Channel channel) {
+
+		log.debug("apply default : {}", channel);
 
 	}
 
 	@Override
-	public void applyChild(final NettyDot dot, final Channel channel) {
+	protected void applyDerived(final NettyDot dot, final Channel channel) {
+
+		log.debug("apply derived : {}", channel);
 
 	}
 

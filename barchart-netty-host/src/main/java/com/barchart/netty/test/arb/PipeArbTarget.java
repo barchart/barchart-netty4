@@ -24,7 +24,8 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 	}
 
 	@Override
-	public void apply(final NettyDot targetDot, final Channel targetChannel) {
+	public void apply(final NettyDot targetDot, final Channel targetChannel,
+			final Mode mode) {
 
 		final ChannelPipeline targetPipeline = targetChannel.pipeline();
 
@@ -48,7 +49,7 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 	protected void attachSource(final String pointKey,
 			final NettyDot targetDot, final ChannelPipeline targetPipeline) {
 
-		final NetPoint targetPoint = targetDot.getNetPoint();
+		final NetPoint targetPoint = targetDot.netPoint();
 
 		final String sourceId = targetPoint.load(pointKey);
 
@@ -59,8 +60,7 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 			return;
 		}
 
-		final ChannelPipeline sourcePipeline = sourceDot.getChannel()
-				.pipeline();
+		final ChannelPipeline sourcePipeline = sourceDot.channel().pipeline();
 
 		final ChannelHandler previous = sourcePipeline.get(ARBITER);
 

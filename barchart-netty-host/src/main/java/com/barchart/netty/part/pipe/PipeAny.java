@@ -56,7 +56,22 @@ public class PipeAny implements NettyPipe {
 	//
 
 	@Override
-	public void apply(final NettyDot dot, final Channel channel) {
+	public void apply(final NettyDot dot, final Channel channel, final Mode mode) {
+
+		switch (mode) {
+		case DEFAULT:
+			applyDefault(dot, channel);
+			break;
+		case DERIVED:
+			applyDerived(dot, channel);
+			break;
+		default:
+			log.error("wrong mode", new Exception());
+		}
+
+	}
+
+	protected void applyDefault(final NettyDot dot, final Channel channel) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
@@ -64,8 +79,7 @@ public class PipeAny implements NettyPipe {
 
 	}
 
-	@Override
-	public void applyChild(final NettyDot dot, final Channel channel) {
+	protected void applyDerived(final NettyDot dot, final Channel channel) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 

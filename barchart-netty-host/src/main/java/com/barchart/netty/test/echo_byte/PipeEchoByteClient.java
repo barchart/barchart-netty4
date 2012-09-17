@@ -21,15 +21,15 @@ public class PipeEchoByteClient extends PipeAny {
 	}
 
 	@Override
-	public void apply(final NettyDot dot, final Channel channel) {
+	public void apply(final NettyDot dot, final Channel channel, final Mode mode) {
+
+		log.debug("apply client : {}", channel);
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
 		pipeline.addLast("logger", new LoggingHandler());
 
 		pipeline.addLast("echo-client", new HandEchoByteClient(128));
-
-		log.debug("apply client : {}", channel);
 
 	}
 

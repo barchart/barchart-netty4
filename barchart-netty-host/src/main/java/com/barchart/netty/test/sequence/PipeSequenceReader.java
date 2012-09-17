@@ -24,7 +24,9 @@ public class PipeSequenceReader extends PipeAny {
 	}
 
 	@Override
-	public void apply(final NettyDot dot, final Channel channel) {
+	public void apply(final NettyDot dot, final Channel channel, final Mode mode) {
+
+		log.debug("apply : {}", channel);
 
 		final ChannelPipeline pipeline = channel.pipeline();
 

@@ -22,7 +22,7 @@ public class PipeArbSource extends PipeAny implements NameArb {
 	}
 
 	@Override
-	public void apply(final NettyDot dot, final Channel channel) {
+	public void apply(final NettyDot dot, final Channel channel, final Mode mode) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 

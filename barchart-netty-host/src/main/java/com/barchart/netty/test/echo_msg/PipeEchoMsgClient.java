@@ -22,7 +22,9 @@ public class PipeEchoMsgClient extends PipeAny {
 	}
 
 	@Override
-	public void apply(final NettyDot dot, final Channel channel) {
+	public void apply(final NettyDot dot, final Channel channel, final Mode mode) {
+
+		log.debug("apply client : {}", channel);
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
@@ -31,8 +33,6 @@ public class PipeEchoMsgClient extends PipeAny {
 		pipeline.addLast("sctp-codec", new SctpMessageCodec());
 
 		pipeline.addLast("echo-client", new HandEchoMsgClient(128));
-
-		log.debug("apply client : {}", channel);
 
 	}
 

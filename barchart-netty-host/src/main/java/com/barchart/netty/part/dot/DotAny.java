@@ -45,27 +45,21 @@ public class DotAny implements NettyDot {
 	}
 
 	@Override
-	public NetPoint getNetPoint() {
+	public NetPoint netPoint() {
 		return netPoint;
 	}
 
 	@Override
-	public Channel getChannel() {
-		return channel();
-	}
-
-	protected Channel channel() {
+	public Channel channel() {
 		throw new IllegalStateException("expecting override");
 	}
 
 	//
 
 	/**
-	 * default / parent
-	 * 
 	 * builder for transient pipeline applicator handler
 	 */
-	protected ChannelInitializer<Channel> pipeApply() {
+	protected ChannelInitializer<Channel> pipeApply(final NettyPipe.Mode mode) {
 		return new ChannelInitializer<Channel>() {
 			@Override
 			public void initChannel(final Channel channel) throws Exception {
@@ -78,31 +72,7 @@ public class DotAny implements NettyDot {
 					return;
 				}
 
-				pipe.apply(DotAny.this, channel);
-
-			}
-		};
-	}
-
-	/**
-	 * derived / child
-	 * 
-	 * builder for transient pipeline applicator handler
-	 */
-	protected ChannelInitializer<Channel> pipeApplyChild() {
-		return new ChannelInitializer<Channel>() {
-			@Override
-			public void initChannel(final Channel channel) throws Exception {
-
-				final NettyPipe pipe = pipeManager().findPipe(pipeName());
-
-				if (pipe == null) {
-					log.error("missing pipeline", //
-							new IllegalArgumentException(pipeName()));
-					return;
-				}
-
-				pipe.applyChild(DotAny.this, channel);
+				pipe.apply(DotAny.this, channel, mode);
 
 			}
 		};
@@ -112,17 +82,17 @@ public class DotAny implements NettyDot {
 
 	/** pipeline builder name */
 	protected String pipeName() {
-		return getNetPoint().getPipeline();
+		return netPoint().getPipeline();
 	}
 
 	/** net point local address */
 	protected NetAddress localAddress() {
-		return getNetPoint().getLocalAddress();
+		return netPoint().getLocalAddress();
 	}
 
 	/** net point remote address */
 	protected NetAddress remoteAddress() {
-		return getNetPoint().getRemoteAddress();
+		return netPoint().getRemoteAddress();
 	}
 
 	/** bootstrap startup */
@@ -204,7 +174,7 @@ public class DotAny implements NettyDot {
 
 	@Override
 	public String toString() {
-		return "dot : " + getNetPoint();
+		return "dot : " + netPoint();
 	}
 
 }

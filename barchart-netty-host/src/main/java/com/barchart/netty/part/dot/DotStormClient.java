@@ -8,6 +8,8 @@ import io.netty.channel.socket.nio.NioSctpChannel;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.barchart.netty.host.api.NettyPipe;
+
 /**
  * parent for connection oriented client end points
  * 
@@ -32,7 +34,7 @@ public class DotStormClient extends DotAny {
 	private NioSctpChannel channel;
 
 	@Override
-	protected NioSctpChannel channel() {
+	public NioSctpChannel channel() {
 		return channel;
 	}
 
@@ -51,17 +53,17 @@ public class DotStormClient extends DotAny {
 		boot().option(ChannelOption.SCTP_NODELAY, true);
 
 		/** https://github.com/netty/netty/issues/610 */
-		boot().option(ChannelOption.SO_SNDBUF,
-				getNetPoint().getSendBufferSize());
-		boot().option(ChannelOption.SO_RCVBUF,
-				getNetPoint().getReceiveBufferSize());
+		boot().option(ChannelOption.SO_SNDBUF, //
+				netPoint().getSendBufferSize());
+		boot().option(ChannelOption.SO_RCVBUF, //
+				netPoint().getReceiveBufferSize());
 
 		boot().group(group());
 
 		boot().channelFactory(new FixedChannelFactory(channel()));
 
 		/** connector */
-		boot().handler(pipeApply());
+		boot().handler(pipeApply(NettyPipe.Mode.DEFAULT));
 
 		activateFuture = boot().connect();
 

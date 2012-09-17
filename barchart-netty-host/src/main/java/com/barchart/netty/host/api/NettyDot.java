@@ -19,18 +19,21 @@ public interface NettyDot extends NettyAny {
 
 	/* attributes */
 
-	public static final AttributeKey<NetAddress> //
-	ATTR_LOCAL_ADDRESS = new AttributeKey<NetAddress>("local-address");
+	AttributeKey<NetPoint> ATTR_NET_POINT //
+	= new AttributeKey<NetPoint>("net-point");
 
-	public static final AttributeKey<NetAddress> //
-	ATTR_REMOTE_ADDRESS = new AttributeKey<NetAddress>("remote-address");
+	AttributeKey<NetAddress> ATTR_LOCAL_ADDRESS //
+	= new AttributeKey<NetAddress>("local-address");
+
+	AttributeKey<NetAddress> ATTR_REMOTE_ADDRESS //
+	= new AttributeKey<NetAddress>("remote-address");
 
 	/* methods */
 
 	/** net point that were used to configure this channel */
-	NetPoint getNetPoint();
+	NetPoint netPoint();
 
 	/** netty channel associated with this dot */
-	Channel getChannel();
+	Channel channel();
 
 }

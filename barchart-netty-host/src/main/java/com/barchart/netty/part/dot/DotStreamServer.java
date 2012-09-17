@@ -8,6 +8,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.barchart.netty.host.api.NettyPipe;
+
 /**
  * parent for connection oriented server end points
  * 
@@ -32,7 +34,7 @@ public class DotStreamServer extends DotAny {
 	private NioServerSocketChannel channel;
 
 	@Override
-	protected NioServerSocketChannel channel() {
+	public NioServerSocketChannel channel() {
 		return channel;
 	}
 
@@ -49,25 +51,24 @@ public class DotStreamServer extends DotAny {
 
 		boot().option(ChannelOption.SO_BACKLOG, 100);
 
-		boot().option(ChannelOption.SO_SNDBUF,
-				getNetPoint().getSendBufferSize());
+		boot().option(ChannelOption.SO_SNDBUF, netPoint().getSendBufferSize());
 		boot().option(ChannelOption.SO_RCVBUF,
-				getNetPoint().getReceiveBufferSize());
+				netPoint().getReceiveBufferSize());
 
 		boot().childOption(ChannelOption.SO_SNDBUF,
-				getNetPoint().getSendBufferSize());
+				netPoint().getSendBufferSize());
 		boot().childOption(ChannelOption.SO_RCVBUF,
-				getNetPoint().getReceiveBufferSize());
+				netPoint().getReceiveBufferSize());
 
 		boot().group(group());
 
 		boot().channelFactory(new FixedChannelFactory(channel()));
 
 		/** acceptor a.k.a server a.k.a parent a.k.a default */
-		boot().handler(pipeApply());
+		boot().handler(pipeApply(NettyPipe.Mode.DEFAULT));
 
 		/** connector a.k.a client a.k.a child a.k.a managed */
-		boot().childHandler(pipeApplyChild());
+		boot().childHandler(pipeApply(NettyPipe.Mode.DERIVED));
 
 		activateFuture = boot().bind();
 

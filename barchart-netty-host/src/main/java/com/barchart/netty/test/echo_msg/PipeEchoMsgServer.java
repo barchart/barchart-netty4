@@ -22,18 +22,20 @@ public class PipeEchoMsgServer extends PipeAny {
 	}
 
 	@Override
-	public void apply(final NettyDot dot, final Channel channel) {
+	protected void applyDefault(final NettyDot dot, final Channel channel) {
+
+		log.debug("apply parent : {}", channel);
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
 		pipeline.addLast("logger", new LoggingHandler());
 
-		log.debug("apply parent : {}", channel);
-
 	}
 
 	@Override
-	public void applyChild(final NettyDot dot, final Channel channel) {
+	protected void applyDerived(final NettyDot dot, final Channel channel) {
+
+		log.debug("apply child : {}", channel);
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
@@ -42,8 +44,6 @@ public class PipeEchoMsgServer extends PipeAny {
 		pipeline.addLast("sctp-codec", new SctpMessageCodec());
 
 		pipeline.addLast("echo-server", new HandEchoMsgServer());
-
-		log.debug("apply child : {}", channel);
 
 	}
 

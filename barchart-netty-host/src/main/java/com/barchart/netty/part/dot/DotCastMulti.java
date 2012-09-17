@@ -30,7 +30,7 @@ public class DotCastMulti extends DotCast {
 	protected NetworkInterface bindInteface() {
 		try {
 
-			final InetAddress address = getNetPoint().getLocalAddress()
+			final InetAddress address = netPoint().getLocalAddress()
 					.getAddress();
 
 			final NetworkInterface iface = NetworkInterface
@@ -60,7 +60,7 @@ public class DotCastMulti extends DotCast {
 
 	/** multicast reader group address : */
 	protected NetAddress groupAddress() {
-		return getNetPoint().getRemoteAddress();
+		return netPoint().getRemoteAddress();
 	}
 
 	/** valid bind address or local host for error */

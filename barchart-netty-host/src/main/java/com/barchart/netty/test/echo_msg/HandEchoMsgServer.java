@@ -40,9 +40,9 @@ public class HandEchoMsgServer extends
 	public void messageReceived(final ChannelHandlerContext ctx,
 			final Object msg) throws Exception {
 
-		final MessageBuf<Object> out = ctx.nextOutboundMessageBuffer();
+		final MessageBuf<Object> target = ctx.nextOutboundMessageBuffer();
 
-		out.add(msg);
+		target.add(msg);
 
 		ctx.flush();
 

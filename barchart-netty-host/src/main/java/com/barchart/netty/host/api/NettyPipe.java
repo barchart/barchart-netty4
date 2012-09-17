@@ -5,21 +5,22 @@ import io.netty.channel.Channel;
 /** represents netty pipeline builder */
 public interface NettyPipe {
 
+	enum Mode {
+
+		/** default or parent */
+		DEFAULT, //
+
+		/** derived or child */
+		DERIVED, //
+
+	}
+
 	/** UUID of this pipeline builder */
 	String getName();
 
 	/**
-	 * default / parent pipeline applicator;
-	 * 
-	 * build a new pipeline and apply it to the parent channel
+	 * build a new pipeline and apply it to the channel
 	 */
-	void apply(NettyDot dot, Channel channel);
-
-	/**
-	 * derived / managed pipeline applicator;
-	 * 
-	 * build a new pipeline and apply it to the child channel
-	 */
-	void applyChild(NettyDot dot, Channel channel);
+	void apply(NettyDot dot, Channel channel, Mode mode);
 
 }
