@@ -29,11 +29,29 @@ public class BlackHoleMessageHandler extends ChannelHandlerAdapter implements
 	public void inboundBufferUpdated(final ChannelHandlerContext ctx)
 			throws Exception {
 
+		final MessageBuf<Object> source = ctx.inboundMessageBuffer();
+
+		while (true) {
+			final Object entry = source.poll();
+			if (entry == null) {
+				break;
+			}
+		}
+
 	}
 
 	@Override
 	public void flush(final ChannelHandlerContext ctx,
 			final ChannelFuture future) throws Exception {
+
+		final MessageBuf<Object> source = ctx.outboundMessageBuffer();
+
+		while (true) {
+			final Object entry = source.poll();
+			if (entry == null) {
+				break;
+			}
+		}
 
 	}
 

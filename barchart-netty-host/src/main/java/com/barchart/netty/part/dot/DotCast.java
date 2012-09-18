@@ -48,8 +48,9 @@ public class DotCast extends DotAny {
 		boot().localAddress(localAddress());
 		boot().remoteAddress(remoteAddress());
 
-		boot().option(ChannelOption.SO_SNDBUF, netPoint().getSendBufferSize());
-		boot().option(ChannelOption.SO_RCVBUF,
+		boot().option(ChannelOption.SO_SNDBUF, //
+				netPoint().getSendBufferSize());
+		boot().option(ChannelOption.SO_RCVBUF, //
 				netPoint().getReceiveBufferSize());
 
 		boot().option(ChannelOption.SO_REUSEADDR, true);
