@@ -10,7 +10,7 @@ import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.part.hand.DatagramPacketReader;
 import com.barchart.netty.part.pipe.PipeAny;
 
-/** use for arbiter source end points */
+/**  */
 @Component(name = PipeWrapRecorder.NAME, immediate = true)
 public class PipeWrapRecorder extends PipeAny {
 
