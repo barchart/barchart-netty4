@@ -41,6 +41,10 @@
 
 	</dependencies>
 
+	<properties>
+		<featureName>${project.artifactId}-${project.version}</featureName>
+	</properties>
+
 	<build>
 
 		<plugins>
@@ -53,7 +57,7 @@
 				<configuration>
 					<installMode>auto</installMode>
 					<startLevel>90</startLevel>
-					<outputFile>target/feature/${project.artifactId}-${project.version}.xml</outputFile>
+					<outputFile>target/feature/${featureName}.xml</outputFile>
 				</configuration>
 			</plugin>
 

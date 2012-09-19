@@ -16,7 +16,7 @@ import com.barchart.conf.sync.api.ConfigManager;
 import com.barchart.conf.util.ConfigAny;
 import com.typesafe.config.Config;
 
-@Component(enabled = true)
+@Component(enabled = false, immediate = true)
 public class BaseApp implements EventHandler {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
