@@ -1,0 +1,86 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.base</groupId>
+		<artifactId>barchart-archon</artifactId>
+		<version>2.2.1</version>
+		<relativePath />
+	</parent>
+
+	<groupId>com.barcahrt.netty</groupId>
+	<artifactId>barchart-netty-feature</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>feature</packaging>
+
+	<scm>
+		<url>https://github.com/barchart/barchart-netty4</url>
+		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
+	</scm>
+
+	<dependencies>
+
+		<!-- MAIN -->
+
+		<dependency>
+			<groupId>com.barchart.netty</groupId>
+			<artifactId>barchart-netty-host</artifactId>
+			<version>4.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<!-- TEST -->
+
+	</dependencies>
+
+	<build>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.karaf.tooling</groupId>
+				<artifactId>karaf-maven-plugin</artifactId>
+				<version>3.0.0-SNAPSHOT</version>
+				<extensions>true</extensions>
+				<configuration>
+					<installMode>auto</installMode>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.karaf.tooling</groupId>
+										<artifactId>karaf-maven-plugin</artifactId>
+										<versionRange>[0,)
+										</versionRange>
+										<goals>
+											<goal>features-generate-descriptor</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+	</build>
+
+</project>
