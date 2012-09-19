@@ -23,7 +23,7 @@ import com.barchart.proto.buf.wrap.PacketWrapper.Builder;
 import com.google.protobuf.ByteString;
 
 /** record ByteBuf packets into file */
-public class HandPacketWrappwerWriter extends ChannelHandlerAdapter implements
+public class HandPacketWrapWriter extends ChannelHandlerAdapter implements
 		ChannelInboundMessageHandler<Object> {
 
 	@Override

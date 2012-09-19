@@ -30,7 +30,7 @@ public class PipeWrapRecorder extends PipeAny {
 
 		pipeline.addLast("datagram-reader", new DatagramPacketReader());
 
-		pipeline.addLast("packet-recorder", new HandPacketWrappwerWriter());
+		pipeline.addLast("packet-recorder", new HandPacketWrapWriter());
 
 	}
 
