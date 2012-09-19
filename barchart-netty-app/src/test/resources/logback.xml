@@ -1,0 +1,34 @@
+<!--
+
+    Copyright (C) 2011-2012 Barchart, Inc. <http://www.barchart.com/>
+
+    All rights reserved. Licensed under the OSI BSD License.
+
+    http://www.opensource.org/licenses/bsd-license.php
+
+-->
+<configuration>
+
+	<!-- console -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>// %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- file -->
+	<appender name="TEST_LOG" class="ch.qos.logback.core.FileAppender">
+		<file>target/test.log</file>
+		<encoder>
+			<pattern>//%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="TEST_LOG" />
+	</root>
+	
+	<logger name="org.ops4j.pax" level="INFO" />
+
+</configuration>
