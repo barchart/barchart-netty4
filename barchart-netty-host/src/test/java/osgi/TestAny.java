@@ -88,8 +88,23 @@ public class TestAny {
 						.artifactId("barchart-osgi-factory-cm")
 						.versionAsInProject(),
 
+				//
+
 				mavenBundle().groupId("com.barchart.netty")
 						.artifactId("barchart-netty-util").versionAsInProject(),
+
+				mavenBundle().groupId("com.barchart.proto")
+						.artifactId("barchart-proto-buf-data")
+						.versionAsInProject(),
+				mavenBundle().groupId("com.barchart.proto")
+						.artifactId("barchart-proto-buf-wrap")
+						.versionAsInProject(),
+
+				mavenBundle()
+						.groupId("org.apache.servicemix.bundles")
+						.artifactId(
+								"org.apache.servicemix.bundles.protobuf-java")
+						.versionAsInProject(),
 
 				//
 

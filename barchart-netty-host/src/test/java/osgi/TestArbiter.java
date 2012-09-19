@@ -22,7 +22,7 @@ import com.typesafe.config.ConfigFactory;
 
 /** FIXME add some traffic */
 @RunWith(JUnit4TestRunner.class)
-public class TestMulticastArbiter extends TestAny {
+public class TestArbiter extends TestAny {
 
 	@Inject
 	private NettyDotManager manager;

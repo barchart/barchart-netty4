@@ -22,8 +22,8 @@ public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	private InetSocketAddress localAddress;
-	private InetSocketAddress remoteAddress;
+	protected InetSocketAddress localAddress;
+	protected InetSocketAddress remoteAddress;
 
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
@@ -48,16 +48,6 @@ public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 	@Override
 	public void flush(final ChannelHandlerContext ctx,
 			final ChannelFuture future) throws Exception {
-
-		if (ctx.hasOutboundMessageBuffer()) {
-			processMessageBuffer(ctx);
-		}
-
-		ctx.flush(future);
-
-	}
-
-	private void processMessageBuffer(final ChannelHandlerContext ctx) {
 
 		final MessageBuf<Object> source = ctx.outboundMessageBuffer();
 
@@ -87,6 +77,8 @@ public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 			}
 
 		}
+
+		ctx.flush(future);
 
 	}
 

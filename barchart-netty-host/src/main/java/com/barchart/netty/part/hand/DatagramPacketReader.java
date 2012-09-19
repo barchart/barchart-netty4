@@ -20,16 +20,6 @@ public class DatagramPacketReader extends ChannelHandlerAdapter implements
 	public final void inboundBufferUpdated(final ChannelHandlerContext ctx)
 			throws Exception {
 
-		if (ctx.hasInboundMessageBuffer()) {
-			processMessageBuffer(ctx);
-		}
-
-		ctx.fireInboundBufferUpdated();
-
-	}
-
-	private void processMessageBuffer(final ChannelHandlerContext ctx) {
-
 		final MessageBuf<Object> source = ctx.inboundMessageBuffer();
 
 		final MessageBuf<Object> target = ctx.nextInboundMessageBuffer();
@@ -50,6 +40,8 @@ public class DatagramPacketReader extends ChannelHandlerAdapter implements
 			}
 
 		}
+
+		ctx.fireInboundBufferUpdated();
 
 	}
 

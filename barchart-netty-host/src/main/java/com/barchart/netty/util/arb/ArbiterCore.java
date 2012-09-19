@@ -41,9 +41,15 @@ public class ArbiterCore<V> implements Arbiter<V> {
 
 	protected final V[] storeArray;
 
-	@SuppressWarnings("unchecked")
+	public static final int DEFAULT_STORE_SIZE = 64 * 1024;
+
 	public ArbiterCore() {
-		this.storeSize = 64 * 1024;
+		this(DEFAULT_STORE_SIZE);
+	}
+
+	@SuppressWarnings("unchecked")
+	public ArbiterCore(final int storeSize) {
+		this.storeSize = storeSize;
 		this.storeArray = (V[]) new Object[storeSize];
 	}
 
