@@ -7,6 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
 import io.netty.channel.socket.DatagramPacket;
 
+/** from DatagramPacket into ByteBuf, initial stage after read */
 public class DatagramPacketReader extends ChannelHandlerAdapter implements
 		ChannelInboundMessageHandler<Object> {
 

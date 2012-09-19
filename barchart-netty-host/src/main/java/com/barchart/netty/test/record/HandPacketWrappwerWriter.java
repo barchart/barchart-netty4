@@ -1,0 +1,130 @@
+package com.barchart.netty.test.record;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.MessageBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundMessageHandler;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+
+import com.barchart.netty.host.api.NettyDot;
+import com.barchart.netty.util.point.NetAddress;
+import com.barchart.netty.util.point.NetPoint;
+import com.barchart.proto.buf.wrap.PacketWrapper;
+import com.barchart.proto.buf.wrap.PacketWrapper.Builder;
+import com.google.protobuf.ByteString;
+
+/** record ByteBuf packets into file */
+public class HandPacketWrappwerWriter extends ChannelHandlerAdapter implements
+		ChannelInboundMessageHandler<Object> {
+
+	@Override
+	public MessageBuf<Object> newInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		return Unpooled.messageBuffer();
+	}
+
+	protected String id;
+	protected NetAddress localAddress;
+	protected NetAddress remoteAddress;
+
+	protected OutputStream output;
+
+	private ScheduledFuture<?> future;
+
+	@Override
+	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
+
+		final NettyDot dot = ctx.channel().attr(NettyDot.ATTR_NETTY_DOT).get();
+
+		final NetPoint point = dot.netPoint();
+
+		id = point.getId();
+		localAddress = point.getLocalAddress();
+		remoteAddress = point.getRemoteAddress();
+
+		final String folder = point.load("folder");
+		final String file = //
+		"record." + id + "." + System.currentTimeMillis() + ".buf";
+
+		final File path = new File(folder, file);
+		output = new BufferedOutputStream(new FileOutputStream(path));
+
+		future = ctx.channel().eventLoop()
+				.scheduleAtFixedRate(task, 3, 3, TimeUnit.SECONDS);
+
+		super.channelActive(ctx);
+
+	}
+
+	@Override
+	public void channelInactive(final ChannelHandlerContext ctx)
+			throws Exception {
+
+		future.cancel(true);
+
+		output.close();
+
+		super.channelInactive(ctx);
+
+	}
+
+	private final AtomicLong sequence = new AtomicLong(0);
+
+	@Override
+	public final void inboundBufferUpdated(final ChannelHandlerContext ctx)
+			throws Exception {
+
+		final MessageBuf<Object> source = ctx.inboundMessageBuffer();
+
+		while (true) {
+
+			final Object message = source.poll();
+
+			if (message == null) {
+				break;
+			}
+
+			if (message instanceof ByteBuf) {
+
+				final ByteBuf buffer = (ByteBuf) message;
+				final byte[] array = new byte[buffer.readableBytes()];
+				buffer.readBytes(array);
+
+				final Builder wrapper = PacketWrapper.newBuilder();
+
+				wrapper.setSourceAddress(localAddress.intoTuple());
+				wrapper.setTargetAddress(remoteAddress.intoTuple());
+
+				wrapper.setSequence(sequence.getAndIncrement());
+				wrapper.setTimeStamp(System.currentTimeMillis());
+				wrapper.setBody(ByteString.copyFrom(array));
+
+				wrapper.build().writeDelimitedTo(output);
+
+			}
+
+		}
+
+	}
+
+	private final Runnable task = new Runnable() {
+		@Override
+		public void run() {
+			try {
+				output.flush();
+			} catch (final Exception e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
+}

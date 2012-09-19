@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.util.point.NetPoint;
 
+/** from ByteBuf into DatagramPacket, final stage before write */
 public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 		ChannelOutboundMessageHandler<Object> {
 
