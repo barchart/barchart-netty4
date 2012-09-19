@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.barchart.netty.host.api.NettyDot;
+import com.barchart.netty.util.arb.Arbiter;
+import com.barchart.netty.util.arb.ArbiterImpl;
 import com.barchart.netty.util.point.NetPoint;
 
 /**
@@ -56,6 +58,8 @@ public class HandArb extends ChannelHandlerAdapter implements
 
 	}
 
+	private final Arbiter<Object> arbiter = new ArbiterImpl();
+
 	@Override
 	public final void inboundBufferUpdated(final ChannelHandlerContext ctx)
 			throws Exception {
@@ -72,7 +76,17 @@ public class HandArb extends ChannelHandlerAdapter implements
 				break;
 			}
 
+			final long sequence = 0;
+
+			arbiter.fill(sequence, message);
+
 			collectMessage(message);
+
+		}
+
+		if (arbiter.isReady()) {
+			arbiter.drainTo(target);
+		} else {
 
 		}
 
