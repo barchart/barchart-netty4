@@ -7,12 +7,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.util.arb.Arbiter;
-import com.barchart.netty.util.arb.ArbiterImpl;
+import com.barchart.netty.util.arb.ArbiterCore;
 import com.barchart.netty.util.point.NetPoint;
 
 /**
@@ -58,15 +58,13 @@ public class HandArb extends ChannelHandlerAdapter implements
 
 	}
 
-	private final Arbiter<Object> arbiter = new ArbiterImpl();
+	private final Arbiter<Object> arbiter = new ArbiterCore<Object>();
 
 	@Override
 	public final void inboundBufferUpdated(final ChannelHandlerContext ctx)
 			throws Exception {
 
 		final MessageBuf<Object> source = ctx.inboundMessageBuffer();
-
-		final MessageBuf<Object> target = ctx.nextInboundMessageBuffer();
 
 		while (true) {
 
@@ -76,51 +74,62 @@ public class HandArb extends ChannelHandlerAdapter implements
 				break;
 			}
 
-			final long sequence = 0;
+			final long sequence = 0; // XXX
 
 			arbiter.fill(sequence, message);
-
-			collectMessage(message);
 
 		}
 
 		if (arbiter.isReady()) {
-			arbiter.drainTo(target);
-		} else {
 
-		}
+			timerOff();
 
-		if (isCollectReady()) {
-
-			target.addAll(collectBuffer());
-
-			ctx.fireInboundBufferUpdated();
+			drain();
 
 		} else {
 
-			startCollectTimer();
+			timerOn();
 
 		}
 
 	}
 
-	/** collect timer will force disruptor buffer flush when timeout expires */
-	private void startCollectTimer() {
+	private void timerOn() {
+
+		if (future == null || future.isDone()) {
+			future = ctx.channel().eventLoop()
+					.schedule(task, 100, TimeUnit.MILLISECONDS);
+		}
 
 	}
 
-	/** drain collected messages from disruptor buffer */
-	private List<Object> collectBuffer() {
-		return new ArrayList<Object>();
+	private void timerOff() {
+
+		if (future == null || future.isDone()) {
+			return;
+		}
+
+		future.cancel(true);
+		future = null;
+
 	}
 
-	/** disruptor has no losses or is timeout expired */
-	private boolean isCollectReady() {
-		return false;
-	}
+	private ScheduledFuture<?> future;
 
-	/** store message in disruptor, handle duplicates, etc */
-	private void collectMessage(final Object message) {
+	private final Runnable task = new Runnable() {
+		@Override
+		public void run() {
+			drain();
+		}
+	};
+
+	private void drain() {
+
+		final MessageBuf<Object> target = ctx.nextInboundMessageBuffer();
+
+		arbiter.drainTo(target);
+
+		ctx.fireInboundBufferUpdated();
 
 	}
 
