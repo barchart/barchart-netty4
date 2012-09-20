@@ -130,6 +130,18 @@ public class DotAny implements NettyDot {
 
 		log.debug("modified : {}", props);
 
+		final NetPoint newPoint = NetPoint.from(props.get(PROP_NET_POINT));
+
+		if (netPoint.equals(newPoint)) {
+			return;
+		}
+
+		deactivateBoot();
+
+		netPoint = newPoint;
+
+		activateBoot();
+
 	}
 
 	@Deactivate

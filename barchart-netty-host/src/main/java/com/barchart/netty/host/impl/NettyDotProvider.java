@@ -127,4 +127,19 @@ public class NettyDotProvider extends CidgetManagerBase<NettyDot> implements
 
 	}
 
+	@Override
+	public boolean update(final Config config) {
+
+		final Map<String, String> props = new HashMap<String, String>();
+
+		final String pointHocon = config.root().render();
+
+		props.put(NettyDot.PROP_NET_POINT, pointHocon);
+
+		final String instanceId = config.getString(NetPoint.KEY_ID);
+
+		return instanceUpdate(instanceId, props);
+
+	}
+
 }

@@ -29,7 +29,6 @@ public class RecorderApp extends BaseApp {
 			switch (mode) {
 
 			case ACTIVATE:
-			case CONFIG_CHANGE:
 
 				final NettyDot dot = channelManager().create(entry);
 
@@ -37,6 +36,12 @@ public class RecorderApp extends BaseApp {
 					log.error("failed to create", new Exception("" + entry));
 					continue;
 				}
+
+				break;
+
+			case CONFIG_CHANGE:
+
+				// XXX
 
 				break;
 
