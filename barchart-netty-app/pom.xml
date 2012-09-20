@@ -42,36 +42,37 @@
 		</dependency>
 
 		<!-- market data -->
-		<dependency>
-			<groupId>com.barchart.proto</groupId>
-			<artifactId>barchart-proto-buf-data</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.protobuf-java</artifactId>
-			<version>2.4.1_1</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>com.barchart.proto</groupId> -->
+		<!-- <artifactId>barchart-proto-buf-data</artifactId> -->
+		<!-- <version>1.0.1-SNAPSHOT</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.servicemix.bundles</groupId> -->
+		<!-- <artifactId>org.apache.servicemix.bundles.protobuf-java</artifactId> -->
+		<!-- <version>2.4.1_1</version> -->
+		<!-- </dependency> -->
 
 		<!-- packet wrapper -->
-		<dependency>
-			<groupId>com.barchart.proto</groupId>
-			<artifactId>barchart-proto-buf-wrap</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>com.barchart.proto</groupId> -->
+		<!-- <artifactId>barchart-proto-buf-wrap</artifactId> -->
+		<!-- <version>1.0.1-SNAPSHOT</version> -->
+		<!-- </dependency> -->
 
-		<!-- netty -->
+		<!-- netty host -->
 		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty</artifactId>
+			<groupId>com.barchart.netty</groupId>
+			<artifactId>barchart-netty-host</artifactId>
+			<version>${project.parent.version}</version>
 		</dependency>
 
 		<!-- netty util -->
-		<dependency>
-			<groupId>com.barchart.netty</groupId>
-			<artifactId>barchart-netty-util</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>com.barchart.netty</groupId> -->
+		<!-- <artifactId>barchart-netty-util</artifactId> -->
+		<!-- <version>${project.parent.version}</version> -->
+		<!-- </dependency> -->
 
 		<!-- config admin -->
 		<dependency>
@@ -98,12 +99,12 @@
 		</dependency>
 
 		<!-- config -->
-		<dependency>
-			<groupId>com.typesafe</groupId>
-			<artifactId>config</artifactId>
-			<version>0.5.0</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>com.typesafe</groupId> -->
+		<!-- <artifactId>config</artifactId> -->
+		<!-- <version>0.5.0</version> -->
+		<!-- <scope>provided</scope> -->
+		<!-- </dependency> -->
 
 		<!-- osgi spec -->
 		<dependency>

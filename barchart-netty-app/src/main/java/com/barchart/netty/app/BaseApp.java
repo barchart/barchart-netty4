@@ -1,7 +1,6 @@
 package com.barchart.netty.app;
 
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Property;
 import org.osgi.service.component.annotations.Reference;
@@ -14,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import com.barchart.conf.event.ConfigEvent;
 import com.barchart.conf.sync.api.ConfigManager;
 import com.barchart.conf.util.ConfigAny;
+import com.barchart.netty.host.api.NettyDotManager;
 import com.typesafe.config.Config;
 
-@Component(enabled = false, immediate = true)
 public class BaseApp implements EventHandler {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -25,14 +24,18 @@ public class BaseApp implements EventHandler {
 	@Property(name = EventConstants.EVENT_TOPIC)
 	static final String TOPIC = ConfigEvent.CONFIG_CHANGE;
 
+	public static enum Mode {
+		ACTIVATE, //
+		CONFIG_CHANGE, //
+		DEACTIVATE, //
+	}
+
 	@Activate
 	protected void activate() {
 
 		log.info("config-activate");
 
-		if (manager.isConfigValid()) {
-			processChange("CONFIG VALID");
-		}
+		processChange(Mode.ACTIVATE);
 
 	}
 
@@ -40,6 +43,8 @@ public class BaseApp implements EventHandler {
 	protected void deactivate() {
 
 		log.info("config-deactivate");
+
+		processChange(Mode.DEACTIVATE);
 
 	}
 
@@ -59,30 +64,44 @@ public class BaseApp implements EventHandler {
 
 		log.info("event-topic : {}", event.getTopic());
 
-		if (manager.isConfigValid()) {
-			processChange("CONFIG CHANGE");
+		processChange(Mode.CONFIG_CHANGE);
+
+	}
+
+	protected void processChange(final Mode mode) {
+
+		if (!manager.isConfigValid()) {
+			log.warn("config is invalid");
+			return;
 		}
 
-	}
+		log.info("\n{}", mode);
 
-	private Config config;
-
-	protected Config config() {
-		return config;
-	}
-
-	private void processChange(final String message) {
-
-		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-
-		log.info("\n{}", message);
-
-		config = manager.getConfig();
+		final Config config = manager.getConfig();
 
 		log.info("config : \n{}", ConfigAny.toString(config));
 
-		log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		processChange(mode, config);
 
+	}
+
+	protected void processChange(final Mode mode, final Config config) {
+		log.error("expecting override", new Exception());
+	}
+
+	private NettyDotManager channelManager;
+
+	protected NettyDotManager channelManager() {
+		return channelManager;
+	}
+
+	@Reference
+	protected void bind(final NettyDotManager s) {
+		channelManager = s;
+	}
+
+	protected void unbind(final NettyDotManager s) {
+		channelManager = null;
 	}
 
 }

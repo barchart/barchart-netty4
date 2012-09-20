@@ -11,4 +11,7 @@ public interface NettyDotManager extends CidgetManager<NettyDot> {
 	 */
 	NettyDot create(Config config);
 
+	/***/
+	boolean destroy(Config config);
+
 }

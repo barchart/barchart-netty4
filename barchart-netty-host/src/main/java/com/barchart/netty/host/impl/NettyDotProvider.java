@@ -118,4 +118,13 @@ public class NettyDotProvider extends CidgetManagerBase<NettyDot> implements
 
 	}
 
+	@Override
+	public boolean destroy(final Config config) {
+
+		final String instanceId = config.getString(NetPoint.KEY_ID);
+
+		return instanceDestroy(instanceId);
+
+	}
+
 }
