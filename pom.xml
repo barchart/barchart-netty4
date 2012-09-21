@@ -19,8 +19,13 @@
 	<modules>
 
 		<module>barchart-netty-archon</module>
+		
 		<module>barchart-netty-util</module>
 		<module>barchart-netty-host</module>
+		
+		<module>barchart-netty-app</module>
+
+		<module>barchart-netty-feature</module>
 
 	</modules>
 

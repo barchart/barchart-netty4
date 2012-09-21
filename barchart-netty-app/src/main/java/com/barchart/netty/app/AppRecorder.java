@@ -7,9 +7,10 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigList;
 import com.typesafe.config.ConfigObject;
 import com.typesafe.config.ConfigValue;
+import com.typesafe.config.ConfigValueFactory;
 
 @Component(enabled = false, immediate = true)
-public class RecorderApp extends BaseApp {
+public class AppRecorder extends AppBase {
 
 	@Override
 	protected void processChange(final Mode mode, final Config config) {
@@ -24,7 +25,10 @@ public class RecorderApp extends BaseApp {
 
 		for (final ConfigValue value : list) {
 
-			final Config entry = ((ConfigObject) value).toConfig();
+			final Config entry = ((ConfigObject) value).toConfig().withValue(
+					"pipeline",
+					ConfigValueFactory
+							.fromAnyRef("barchart.netty.pipe.record.wrapper"));
 
 			switch (mode) {
 

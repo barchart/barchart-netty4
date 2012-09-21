@@ -16,7 +16,7 @@ import com.barchart.conf.util.ConfigAny;
 import com.barchart.netty.host.api.NettyDotManager;
 import com.typesafe.config.Config;
 
-public class BaseApp implements EventHandler {
+public class AppBase implements EventHandler {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
