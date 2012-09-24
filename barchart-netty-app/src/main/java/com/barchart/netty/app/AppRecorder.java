@@ -10,10 +10,12 @@ import com.typesafe.config.ConfigValue;
 import com.typesafe.config.ConfigValueFactory;
 
 @Component(enabled = false, immediate = true)
-public class AppRecorder extends AppBase {
+public class AppRecorder extends AppNetty {
 
 	@Override
-	protected void processChange(final Mode mode, final Config config) {
+	protected void processChange(final Mode mode) {
+
+		final Config config = configNext();
 
 		final ConfigList sourceList = config.getList("feed-source.list");
 
