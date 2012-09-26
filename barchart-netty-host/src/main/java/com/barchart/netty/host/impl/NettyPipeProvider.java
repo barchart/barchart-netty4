@@ -32,13 +32,13 @@ public class NettyPipeProvider implements NettyPipeManager {
 	)
 	protected void bind(final NettyPipe pipe) {
 
-		pipeMap.put(pipe.getName(), pipe);
+		pipeMap.put(pipe.componentName(), pipe);
 
 	}
 
 	protected void unbind(final NettyPipe pipe) {
 
-		pipeMap.remove(pipe.getName());
+		pipeMap.remove(pipe.componentName());
 
 	}
 

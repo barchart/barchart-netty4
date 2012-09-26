@@ -17,7 +17,7 @@ public class PipeEchoMsgServer extends PipeAny {
 	public static final String NAME = "barchart.netty.pipe.echo.message.server";
 
 	@Override
-	public String getName() {
+	public String componentName() {
 		return NAME;
 	}
 

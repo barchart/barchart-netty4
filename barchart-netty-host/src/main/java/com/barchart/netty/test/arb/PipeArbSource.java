@@ -17,7 +17,7 @@ public class PipeArbSource extends PipeAny implements NameArb {
 	public static final String NAME = "barchart.netty.pipe.arbiter.source";
 
 	@Override
-	public String getName() {
+	public String componentName() {
 		return NAME;
 	}
 

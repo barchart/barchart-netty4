@@ -28,7 +28,7 @@ public class PipeAny implements NettyPipe {
 	public static final String NAME = "barchart.netty.pipe.any";
 
 	@Override
-	public String getName() {
+	public String componentName() {
 		return NAME;
 	}
 

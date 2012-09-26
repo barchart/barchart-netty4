@@ -17,7 +17,7 @@ public class PipeWrapRecorder extends PipeAny {
 	public static final String NAME = "barchart.netty.pipe.record.wrapper";
 
 	@Override
-	public String getName() {
+	public String componentName() {
 		return NAME;
 	}
 

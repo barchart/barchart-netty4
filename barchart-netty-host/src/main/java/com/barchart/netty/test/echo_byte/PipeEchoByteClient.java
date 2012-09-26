@@ -16,7 +16,7 @@ public class PipeEchoByteClient extends PipeAny {
 	public static final String NAME = "barchart.netty.pipe.echo.byte.client";
 
 	@Override
-	public String getName() {
+	public String componentName() {
 		return NAME;
 	}
 

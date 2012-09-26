@@ -19,7 +19,7 @@ public class PipeSwitchTarget extends PipeAny implements NameSwitch {
 	public static final String NAME = "barchart.netty.pipe.switch.target";
 
 	@Override
-	public String getName() {
+	public String componentName() {
 		return NAME;
 	}
 

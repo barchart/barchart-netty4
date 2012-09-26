@@ -19,7 +19,7 @@ public class PipeSequenceReader extends PipeAny {
 	public static final String NAME = "barchart.netty.pipe.sequence.reader";
 
 	@Override
-	public String getName() {
+	public String componentName() {
 		return NAME;
 	}
 

@@ -16,7 +16,7 @@ public interface NettyPipe {
 	}
 
 	/** UUID of this pipeline builder */
-	String getName();
+	String componentName();
 
 	/**
 	 * build a new pipeline and apply it to the channel

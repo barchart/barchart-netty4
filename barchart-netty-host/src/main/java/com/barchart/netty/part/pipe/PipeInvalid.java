@@ -13,7 +13,7 @@ public class PipeInvalid extends PipeAny {
 	public static final String NAME = "barchart.netty.pipe.invalid";
 
 	@Override
-	public String getName() {
+	public String componentName() {
 		return NAME;
 	}
 

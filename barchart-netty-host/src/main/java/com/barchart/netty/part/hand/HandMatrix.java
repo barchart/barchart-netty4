@@ -27,15 +27,15 @@ import org.osgi.service.component.annotations.Reference;
 import com.barchart.netty.matrix.api.Matrix;
 
 /** handler provides injection into matrix */
-@Component(name = HandMatrix.FACTORY, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = HandMatrix.NAME, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class HandMatrix extends HandAny implements
 		ChannelInboundMessageHandler<Object> {
 
-	public static final String FACTORY = "barchart.netty.hand.matrix";
+	public static final String NAME = "barchart.netty.hand.matrix";
 
 	@Override
-	public String factoryId() {
-		return FACTORY;
+	public String componentName() {
+		return NAME;
 	}
 
 	private String sourceId;

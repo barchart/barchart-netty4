@@ -25,22 +25,22 @@ import com.barchart.netty.util.point.NetPoint;
 /**
  * parent for "dot" (end point) netty components
  */
-@Component(name = DotAny.FACTORY, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = DotAny.NAME, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DotAny implements NettyDot {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	public static final String FACTORY = "barchart.netty.dot.any";
+	public static final String NAME = "barchart.netty.dot.any";
 
 	@Override
-	public String factoryId() {
-		return FACTORY;
+	public String componentName() {
+		return NAME;
 	}
 
 	private NetPoint netPoint;
 
 	@Override
-	public String instanceId() {
+	public String componentInstance() {
 		return netPoint.getId();
 	}
 
