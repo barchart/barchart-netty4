@@ -24,9 +24,9 @@ import com.barchart.netty.util.point.NetPoint;
 @Component(name = DotAny.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DotAny extends BaseComponentImpl implements NettyDot {
 
-	protected final Logger log = LoggerFactory.getLogger(getClass());
-
 	public static final String TYPE = "barchart.netty.dot.any";
+
+	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	private NetPoint netPoint;
 
