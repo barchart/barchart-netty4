@@ -89,12 +89,12 @@ public class DotAny extends BaseComponentImpl implements NettyDot {
 	}
 
 	/** bootstrap startup */
-	protected void activateBoot() throws Exception {
+	protected void bootActivate() throws Exception {
 		//
 	}
 
 	/** bootstrap shutdown */
-	protected void deactivateBoot() throws Exception {
+	protected void bootDeactivate() throws Exception {
 		//
 	}
 
@@ -105,14 +105,14 @@ public class DotAny extends BaseComponentImpl implements NettyDot {
 
 		netPoint = NetPoint.from(configCurrent());
 
-		activateBoot();
+		bootActivate();
 
 	}
 
 	@Override
 	protected void processDeactivate() throws Exception {
 
-		deactivateBoot();
+		bootDeactivate();
 
 		netPoint = null;
 
@@ -125,11 +125,11 @@ public class DotAny extends BaseComponentImpl implements NettyDot {
 			return;
 		}
 
-		deactivateBoot();
+		bootDeactivate();
 
 		netPoint = NetPoint.from(configCurrent());
 
-		activateBoot();
+		bootActivate();
 
 	}
 

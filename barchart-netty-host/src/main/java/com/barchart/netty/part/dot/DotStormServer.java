@@ -37,7 +37,7 @@ public class DotStormServer extends DotAny {
 	protected ChannelFuture deactivateFuture;
 
 	@Override
-	protected void activateBoot() throws Exception {
+	protected void bootActivate() throws Exception {
 
 		boot = new ServerBootstrap();
 		channel = new NioSctpServerChannel();
@@ -75,7 +75,7 @@ public class DotStormServer extends DotAny {
 	}
 
 	@Override
-	protected void deactivateBoot() throws Exception {
+	protected void bootDeactivate() throws Exception {
 
 		/** FIXME terminate children */
 

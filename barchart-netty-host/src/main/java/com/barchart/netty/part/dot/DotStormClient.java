@@ -37,7 +37,7 @@ public class DotStormClient extends DotAny {
 	protected ChannelFuture deactivateFuture;
 
 	@Override
-	protected void activateBoot() throws Exception {
+	protected void bootActivate() throws Exception {
 
 		boot = new Bootstrap();
 		channel = new NioSctpChannel();
@@ -65,7 +65,7 @@ public class DotStormClient extends DotAny {
 	}
 
 	@Override
-	protected void deactivateBoot() throws Exception {
+	protected void bootDeactivate() throws Exception {
 
 		deactivateFuture = channel().close();
 

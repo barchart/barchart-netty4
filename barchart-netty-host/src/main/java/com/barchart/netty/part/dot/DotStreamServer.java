@@ -37,7 +37,7 @@ public class DotStreamServer extends DotAny {
 	protected ChannelFuture deactivateFuture;
 
 	@Override
-	protected void activateBoot() throws Exception {
+	protected void bootActivate() throws Exception {
 
 		boot = new ServerBootstrap();
 		channel = new NioServerSocketChannel();
@@ -70,7 +70,7 @@ public class DotStreamServer extends DotAny {
 	}
 
 	@Override
-	protected void deactivateBoot() throws Exception {
+	protected void bootDeactivate() throws Exception {
 
 		/** FIXME terminate children */
 

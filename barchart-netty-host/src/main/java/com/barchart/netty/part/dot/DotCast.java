@@ -35,7 +35,7 @@ public class DotCast extends DotAny {
 	}
 
 	@Override
-	protected void activateBoot() throws Exception {
+	protected void bootActivate() throws Exception {
 
 		boot = new Bootstrap();
 		channel = new NioDatagramChannel();
@@ -63,7 +63,7 @@ public class DotCast extends DotAny {
 	}
 
 	@Override
-	protected void deactivateBoot() throws Exception {
+	protected void bootDeactivate() throws Exception {
 
 		channel().close().sync();
 

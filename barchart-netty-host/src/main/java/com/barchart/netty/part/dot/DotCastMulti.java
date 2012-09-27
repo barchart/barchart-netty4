@@ -89,20 +89,20 @@ public class DotCastMulti extends DotCast {
 	}
 
 	@Override
-	protected void activateBoot() throws Exception {
+	protected void bootActivate() throws Exception {
 
-		super.activateBoot();
+		super.bootActivate();
 
 		channel().joinGroup(groupAddress(), bindInteface()).sync();
 
 	}
 
 	@Override
-	protected void deactivateBoot() throws Exception {
+	protected void bootDeactivate() throws Exception {
 
 		channel().leaveGroup(groupAddress(), bindInteface()).sync();
 
-		super.deactivateBoot();
+		super.bootDeactivate();
 
 	}
 
