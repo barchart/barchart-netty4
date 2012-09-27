@@ -16,23 +16,23 @@ import org.slf4j.LoggerFactory;
 import com.barchart.netty.host.api.NettyHand;
 
 /** parent for "hand" - netty handlers */
-@Component(name = HandAny.NAME, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = HandAny.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class HandAny extends ChannelHandlerAdapter implements NettyHand {
 
-	public static final String NAME = "barchart.netty.hand.any";
+	public static final String TYPE = "barchart.netty.hand.any";
 
 	@Override
-	public String componentName() {
-		return NAME;
+	public String type() {
+		return TYPE;
 	}
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	private final String instanceId = componentName() + "."
+	private final String instanceId = type() + "."
 			+ UUID.randomUUID().toString();
 
 	@Override
-	public String componentInstance() {
+	public String id() {
 		return instanceId;
 	}
 

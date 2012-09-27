@@ -20,16 +20,16 @@ import com.barchart.netty.host.api.NettyHandManager;
 import com.barchart.netty.host.api.NettyPipe;
 
 /** parent for "pipe" - netty pipeline builders */
-@Component(name = PipeAny.NAME, immediate = true)
+@Component(name = PipeAny.TYPE, immediate = true)
 public class PipeAny implements NettyPipe {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	public static final String NAME = "barchart.netty.pipe.any";
+	public static final String TYPE = "barchart.netty.pipe.any";
 
 	@Override
-	public String componentName() {
-		return NAME;
+	public String type() {
+		return TYPE;
 	}
 
 	@Activate

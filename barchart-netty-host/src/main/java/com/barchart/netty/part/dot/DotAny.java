@@ -4,17 +4,13 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 
-import java.util.Map;
-
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.barchart.conf.util.BaseComponentImpl;
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyGroup;
 import com.barchart.netty.host.api.NettyPipe;
@@ -25,24 +21,14 @@ import com.barchart.netty.util.point.NetPoint;
 /**
  * parent for "dot" (end point) netty components
  */
-@Component(name = DotAny.NAME, configurationPolicy = ConfigurationPolicy.REQUIRE)
-public class DotAny implements NettyDot {
+@Component(name = DotAny.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
+public class DotAny extends BaseComponentImpl implements NettyDot {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	public static final String NAME = "barchart.netty.dot.any";
-
-	@Override
-	public String componentName() {
-		return NAME;
-	}
+	public static final String TYPE = "barchart.netty.dot.any";
 
 	private NetPoint netPoint;
-
-	@Override
-	public String componentInstance() {
-		return netPoint.getId();
-	}
 
 	@Override
 	public NetPoint netPoint() {
@@ -114,44 +100,36 @@ public class DotAny implements NettyDot {
 
 	//
 
-	@Activate
-	protected void activate(final Map<String, String> props) throws Exception {
+	@Override
+	protected void processActivate() throws Exception {
 
-		log.debug("activate : {}", props);
-
-		netPoint = NetPoint.from(props.get(PROP_NET_POINT));
+		netPoint = NetPoint.from(configCurrent());
 
 		activateBoot();
 
 	}
 
-	@Modified
-	protected void modified(final Map<String, String> props) throws Exception {
+	@Override
+	protected void processDeactivate() throws Exception {
 
-		log.debug("modified : {}", props);
+		deactivateBoot();
 
-		final NetPoint newPoint = NetPoint.from(props.get(PROP_NET_POINT));
+		netPoint = null;
 
-		if (netPoint.equals(newPoint)) {
+	}
+
+	@Override
+	protected void processModified() throws Exception {
+
+		if (configPrevious().equals(configCurrent())) {
 			return;
 		}
 
 		deactivateBoot();
 
-		netPoint = newPoint;
+		netPoint = NetPoint.from(configCurrent());
 
 		activateBoot();
-
-	}
-
-	@Deactivate
-	protected void deactivate(final Map<String, String> props) throws Exception {
-
-		log.debug("deactivate : {}", props);
-
-		deactivateBoot();
-
-		netPoint = null;
 
 	}
 

@@ -13,14 +13,14 @@ import com.barchart.netty.part.pipe.PipeAny;
 import com.barchart.netty.util.point.NetPoint;
 
 /** use for switch target end points */
-@Component(name = PipeSwitchTarget.NAME, immediate = true)
+@Component(name = PipeSwitchTarget.TYPE, immediate = true)
 public class PipeSwitchTarget extends PipeAny implements NameSwitch {
 
-	public static final String NAME = "barchart.netty.pipe.switch.target";
+	public static final String TYPE = "barchart.netty.pipe.switch.target";
 
 	@Override
-	public String componentName() {
-		return NAME;
+	public String type() {
+		return TYPE;
 	}
 
 	@Override

@@ -75,6 +75,8 @@ public class TestAny {
 				wrappedBundle(mavenBundle().groupId("io.netty")
 						.artifactId("netty").versionAsInProject()),
 
+				//
+
 				mavenBundle().groupId("com.typesafe").artifactId("config")
 						.versionAsInProject(),
 
@@ -105,6 +107,13 @@ public class TestAny {
 						.artifactId(
 								"org.apache.servicemix.bundles.protobuf-java")
 						.versionAsInProject(),
+
+				//
+
+				mavenBundle().groupId("com.barchart.conf")
+						.artifactId("barchart-conf-util").versionAsInProject(),
+				mavenBundle().groupId("com.barchart.conf")
+						.artifactId("barchart-conf-list").versionAsInProject(),
 
 				//
 

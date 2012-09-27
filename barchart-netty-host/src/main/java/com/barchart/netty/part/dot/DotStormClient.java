@@ -15,15 +15,10 @@ import com.barchart.netty.host.api.NettyPipe;
  * 
  * such as SCTP
  */
-@Component(name = DotStormClient.NAME, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = DotStormClient.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DotStormClient extends DotAny {
 
-	public static final String NAME = "barchart.netty.dot.storm.client";
-
-	@Override
-	public String componentName() {
-		return NAME;
-	}
+	public static final String TYPE = "barchart.netty.dot.storm.client";
 
 	private Bootstrap boot;
 

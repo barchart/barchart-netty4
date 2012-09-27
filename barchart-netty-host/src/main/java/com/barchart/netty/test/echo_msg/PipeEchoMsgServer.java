@@ -11,14 +11,14 @@ import com.barchart.netty.part.hand.SctpMessageCodec;
 import com.barchart.netty.part.pipe.PipeAny;
 
 /**  */
-@Component(name = PipeEchoMsgServer.NAME, immediate = true)
+@Component(name = PipeEchoMsgServer.TYPE, immediate = true)
 public class PipeEchoMsgServer extends PipeAny {
 
-	public static final String NAME = "barchart.netty.pipe.echo.message.server";
+	public static final String TYPE = "barchart.netty.pipe.echo.message.server";
 
 	@Override
-	public String componentName() {
-		return NAME;
+	public String type() {
+		return TYPE;
 	}
 
 	@Override

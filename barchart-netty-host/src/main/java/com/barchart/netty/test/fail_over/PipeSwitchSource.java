@@ -11,14 +11,14 @@ import com.barchart.netty.part.hand.BlackHoleMessageHandler;
 import com.barchart.netty.part.pipe.PipeAny;
 
 /** use for switch source end points */
-@Component(name = PipeSwitchSource.NAME, immediate = true)
+@Component(name = PipeSwitchSource.TYPE, immediate = true)
 public class PipeSwitchSource extends PipeAny implements NameSwitch {
 
-	public static final String NAME = "barchart.netty.pipe.switch.source";
+	public static final String TYPE = "barchart.netty.pipe.switch.source";
 
 	@Override
-	public String componentName() {
-		return NAME;
+	public String type() {
+		return TYPE;
 	}
 
 	@Override

@@ -16,15 +16,10 @@ import com.barchart.netty.host.api.NettyPipe;
  * 
  * anycast, broadcast, unicast, multicast, etc;
  */
-@Component(name = DotCast.NAME, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = DotCast.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DotCast extends DotAny {
 
-	public static final String NAME = "barchart.netty.dot.cast";
-
-	@Override
-	public String componentName() {
-		return NAME;
-	}
+	public static final String TYPE = "barchart.netty.dot.cast";
 
 	private Bootstrap boot;
 

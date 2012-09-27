@@ -15,15 +15,10 @@ import com.barchart.netty.host.api.NettyPipe;
  * 
  * such as TCP
  */
-@Component(name = DotStreamClient.NAME, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = DotStreamClient.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DotStreamClient extends DotAny {
 
-	public static final String NAME = "barchart.netty.dot.stream.client";
-
-	@Override
-	public String componentName() {
-		return NAME;
-	}
+	public static final String TYPE = "barchart.netty.dot.stream.client";
 
 	private Bootstrap boot;
 

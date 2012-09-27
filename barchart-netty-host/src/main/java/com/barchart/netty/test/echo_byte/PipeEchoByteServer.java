@@ -10,14 +10,14 @@ import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.part.pipe.PipeAny;
 
 /**  */
-@Component(name = PipeEchoByteServer.NAME, immediate = true)
+@Component(name = PipeEchoByteServer.TYPE, immediate = true)
 public class PipeEchoByteServer extends PipeAny {
 
-	public static final String NAME = "barchart.netty.pipe.echo.byte.server";
+	public static final String TYPE = "barchart.netty.pipe.echo.byte.server";
 
 	@Override
-	public String componentName() {
-		return NAME;
+	public String type() {
+		return TYPE;
 	}
 
 	@Override

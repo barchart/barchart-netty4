@@ -11,14 +11,14 @@ import com.barchart.netty.part.hand.DatagramPacketReader;
 import com.barchart.netty.part.pipe.PipeAny;
 
 /**  */
-@Component(name = PipeWrapRecorder.NAME, immediate = true)
+@Component(name = PipeWrapRecorder.TYPE, immediate = true)
 public class PipeWrapRecorder extends PipeAny {
 
-	public static final String NAME = "barchart.netty.pipe.record.wrapper";
+	public static final String TYPE = "barchart.netty.pipe.record.wrapper";
 
 	@Override
-	public String componentName() {
-		return NAME;
+	public String type() {
+		return TYPE;
 	}
 
 	@Override

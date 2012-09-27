@@ -20,6 +20,7 @@ import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyDotManager;
 import com.barchart.netty.host.api.NettyGroup;
 import com.barchart.netty.util.point.NetPoint;
+import com.barchart.osgi.factory.api.Cidget;
 import com.barchart.osgi.factory.api.CidgetManagerBase;
 import com.typesafe.config.Config;
 
@@ -102,19 +103,24 @@ public class NettyDotProvider extends CidgetManagerBase<NettyDot> implements
 		return group;
 	}
 
-	@Override
-	public NettyDot create(final Config config) {
+	public static Map<String, String> props(final Config config) {
 
 		final Map<String, String> props = new HashMap<String, String>();
 
-		final String pointHocon = config.root().render();
+		final String configuration = config.root().render();
 
-		props.put(NettyDot.PROP_NET_POINT, pointHocon);
+		props.put(Cidget.PROP_COMPONENT_CONFIG, configuration);
+
+		return props;
+	}
+
+	@Override
+	public NettyDot create(final Config config) {
 
 		final String factoryId = config.getString(NetPoint.KEY_TYPE);
 		final String instanceId = config.getString(NetPoint.KEY_ID);
 
-		return instanceCreate(factoryId, instanceId, props);
+		return instanceCreate(factoryId, instanceId, props(config));
 
 	}
 
@@ -130,15 +136,9 @@ public class NettyDotProvider extends CidgetManagerBase<NettyDot> implements
 	@Override
 	public boolean update(final Config config) {
 
-		final Map<String, String> props = new HashMap<String, String>();
-
-		final String pointHocon = config.root().render();
-
-		props.put(NettyDot.PROP_NET_POINT, pointHocon);
-
 		final String instanceId = config.getString(NetPoint.KEY_ID);
 
-		return instanceUpdate(instanceId, props);
+		return instanceUpdate(instanceId, props(config));
 
 	}
 

@@ -11,14 +11,14 @@ import com.barchart.netty.part.hand.BlackHoleMessageHandler;
 import com.barchart.netty.part.pipe.PipeAny;
 
 /** use for arbiter source end points */
-@Component(name = PipeArbSource.NAME, immediate = true)
+@Component(name = PipeArbSource.TYPE, immediate = true)
 public class PipeArbSource extends PipeAny implements NameArb {
 
-	public static final String NAME = "barchart.netty.pipe.arbiter.source";
+	public static final String TYPE = "barchart.netty.pipe.arbiter.source";
 
 	@Override
-	public String componentName() {
-		return NAME;
+	public String type() {
+		return TYPE;
 	}
 
 	@Override

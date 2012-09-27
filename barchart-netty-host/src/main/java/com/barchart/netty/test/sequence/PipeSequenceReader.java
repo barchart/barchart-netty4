@@ -13,14 +13,14 @@ import com.barchart.netty.part.hand.DatagramPacketReader;
 import com.barchart.netty.part.pipe.PipeAny;
 
 /**  */
-@Component(name = PipeSequenceReader.NAME, immediate = true)
+@Component(name = PipeSequenceReader.TYPE, immediate = true)
 public class PipeSequenceReader extends PipeAny {
 
-	public static final String NAME = "barchart.netty.pipe.sequence.reader";
+	public static final String TYPE = "barchart.netty.pipe.sequence.reader";
 
 	@Override
-	public String componentName() {
-		return NAME;
+	public String type() {
+		return TYPE;
 	}
 
 	@Override

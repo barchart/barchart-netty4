@@ -16,15 +16,10 @@ import com.barchart.netty.util.point.NetAddress;
  * 
  * handles multicast join / leave;
  */
-@Component(name = DotCastMulti.NAME, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = DotCastMulti.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class DotCastMulti extends DotCast {
 
-	public static final String NAME = "barchart.netty.dot.cast.multi";
-
-	@Override
-	public String componentName() {
-		return NAME;
-	}
+	public static final String TYPE = "barchart.netty.dot.cast.multi";
 
 	/** valid interface or loop back interface for error */
 	protected NetworkInterface bindInteface() {

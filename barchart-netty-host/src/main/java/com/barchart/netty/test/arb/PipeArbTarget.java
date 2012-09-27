@@ -13,14 +13,14 @@ import com.barchart.netty.part.pipe.PipeAny;
 import com.barchart.netty.util.point.NetPoint;
 
 /** use for arbiter target end points */
-@Component(name = PipeArbTarget.NAME, immediate = true)
+@Component(name = PipeArbTarget.TYPE, immediate = true)
 public class PipeArbTarget extends PipeAny implements NameArb {
 
-	public static final String NAME = "barchart.netty.pipe.arbiter.target";
+	public static final String TYPE = "barchart.netty.pipe.arbiter.target";
 
 	@Override
-	public String componentName() {
-		return NAME;
+	public String type() {
+		return TYPE;
 	}
 
 	@Override
