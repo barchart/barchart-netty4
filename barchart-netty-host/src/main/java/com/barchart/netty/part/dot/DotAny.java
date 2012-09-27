@@ -121,7 +121,7 @@ public class DotAny extends BaseComponentImpl implements NettyDot {
 	@Override
 	protected void processModified() throws Exception {
 
-		if (configPrevious().equals(configCurrent())) {
+		if (isConfigEqual()) {
 			return;
 		}
 
