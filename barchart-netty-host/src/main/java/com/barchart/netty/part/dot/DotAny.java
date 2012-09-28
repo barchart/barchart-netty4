@@ -10,7 +10,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.barchart.conf.util.BaseComponentImpl;
+import com.barchart.conf.util.BaseComponent;
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyGroup;
 import com.barchart.netty.host.api.NettyPipe;
@@ -22,7 +22,7 @@ import com.barchart.netty.util.point.NetPoint;
  * parent for "dot" (end point) netty components
  */
 @Component(name = DotAny.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
-public class DotAny extends BaseComponentImpl implements NettyDot {
+public class DotAny extends BaseComponent implements NettyDot {
 
 	public static final String TYPE = "barchart.netty.dot.any";
 
