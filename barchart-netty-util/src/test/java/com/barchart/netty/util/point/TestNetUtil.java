@@ -1,6 +1,6 @@
 package com.barchart.netty.util.point;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
@@ -29,9 +29,9 @@ public class TestNetUtil {
 	public void testPointForm() {
 
 		final Config conf = ConfigFactory.parseString("{ "
-				+ "localAddress = datalan/12345, " //
-				+ "remoteAddress = feedlan 23456, " //
-				+ "packetTTL = 33, " //
+				+ "local-address = datalan/12345, " //
+				+ "remote-address = feedlan 23456, " //
+				+ "packet-ttl = 33, " //
 				+ "pipeline = advanced, " //
 				+ "custom1 = signature, " //
 				+ "custom2 = 1000, " //
