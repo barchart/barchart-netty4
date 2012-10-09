@@ -39,6 +39,10 @@ public class DotStreamServer extends DotAny {
 	@Override
 	protected void bootActivate() throws Exception {
 
+		// TODO: BootManager integration:
+		// activateFuture =
+		// bootManager().findBoot(BootStreamServer.TYPE).boot(netPoint());
+
 		boot = new ServerBootstrap();
 		channel = new NioServerSocketChannel();
 

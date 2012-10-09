@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.barchart.conf.util.BaseComponent;
+import com.barchart.netty.host.api.NettyBootManager;
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyGroup;
 import com.barchart.netty.host.api.NettyPipe;
@@ -103,7 +104,12 @@ public class DotAny extends BaseComponent implements NettyDot {
 	@Override
 	protected void processActivate() throws Exception {
 
-		netPoint = NetPoint.from(configCurrent());
+		// All config has at least a "type"; fallback to flat if missing
+		if (configCurrent().entrySet().size() == 0) {
+			netPoint = NetPoint.from(wrap(componentContext().getProperties()));
+		} else {
+			netPoint = NetPoint.from(configCurrent());
+		}
 
 		bootActivate();
 
@@ -165,6 +171,21 @@ public class DotAny extends BaseComponent implements NettyDot {
 
 	protected void unbind(final NettyPipeManager s) {
 		pipeManager = null;
+	}
+
+	private NettyBootManager bootManager;
+
+	protected NettyBootManager bootManager() {
+		return bootManager;
+	}
+
+	@Reference
+	protected void bind(final NettyBootManager bm) {
+		bootManager = bm;
+	}
+
+	protected void unbind(final NettyBootManager bm) {
+		bootManager = null;
 	}
 
 	//
