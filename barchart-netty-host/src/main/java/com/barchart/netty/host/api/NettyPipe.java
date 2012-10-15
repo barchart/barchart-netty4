@@ -1,5 +1,7 @@
 package com.barchart.netty.host.api;
 
+import com.barchart.netty.util.point.NetPoint;
+
 import io.netty.channel.Channel;
 
 /** represents netty pipeline builder */
@@ -20,7 +22,8 @@ public interface NettyPipe {
 
 	/**
 	 * build a new pipeline and apply it to the channel
+	 * @param netPoint TODO
 	 */
-	void apply(NettyDot dot, Channel channel, Mode mode);
+	void apply(NetPoint netPoint, Channel channel, Mode mode);
 
 }

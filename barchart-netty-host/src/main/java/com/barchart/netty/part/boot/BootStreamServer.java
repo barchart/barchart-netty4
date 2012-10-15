@@ -21,7 +21,7 @@ public class BootStreamServer extends BootAny {
 	}
 
 	@Override
-	public ChannelFuture boot(final NetPoint netPoint) throws Exception {
+	public ChannelFuture startup(final NetPoint netPoint) throws Exception {
 
 		return new ServerBootstrap()
 				.group(group())

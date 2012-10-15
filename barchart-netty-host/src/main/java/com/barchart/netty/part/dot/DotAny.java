@@ -64,7 +64,7 @@ public class DotAny extends BaseComponent implements NettyDot {
 
 				} else {
 
-					pipe.apply(DotAny.this, channel, mode);
+					pipe.apply(null, channel, mode);
 
 				}
 

@@ -6,9 +6,9 @@ import io.netty.handler.logging.MessageLoggingHandler;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.part.hand.BlackHoleMessageHandler;
 import com.barchart.netty.part.pipe.PipeAny;
+import com.barchart.netty.util.point.NetPoint;
 
 /** use for arbiter source end points */
 @Component(name = PipeArbSource.TYPE, immediate = true)
@@ -22,7 +22,7 @@ public class PipeArbSource extends PipeAny implements NameArb {
 	}
 
 	@Override
-	public void apply(final NettyDot dot, final Channel channel, final Mode mode) {
+	public void apply(NetPoint netPoint, final Channel channel, final Mode mode) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 

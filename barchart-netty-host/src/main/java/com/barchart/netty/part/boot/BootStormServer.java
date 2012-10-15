@@ -27,7 +27,7 @@ public class BootStormServer extends BootAny {
 	}
 
 	@Override
-	public ChannelFuture boot(final NetPoint netPoint) throws Exception {
+	public ChannelFuture startup(final NetPoint netPoint) throws Exception {
 
 		return new ServerBootstrap()
 				.localAddress(netPoint.getLocalAddress())

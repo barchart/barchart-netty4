@@ -6,9 +6,9 @@ import io.netty.handler.logging.LoggingHandler;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.part.hand.SctpMessageCodec;
 import com.barchart.netty.part.pipe.PipeAny;
+import com.barchart.netty.util.point.NetPoint;
 
 /**  */
 @Component(name = PipeEchoMsgClient.TYPE, immediate = true)
@@ -22,7 +22,7 @@ public class PipeEchoMsgClient extends PipeAny {
 	}
 
 	@Override
-	public void apply(final NettyDot dot, final Channel channel, final Mode mode) {
+	public void apply(NetPoint netPoint, final Channel channel, final Mode mode) {
 
 		log.debug("apply client : {}", channel);
 

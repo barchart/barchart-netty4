@@ -91,8 +91,8 @@ public class BootCastMulti extends BootCast {
 	}
 
 	@Override
-	public ChannelFuture boot(final NetPoint netPoint) throws Exception {
-		final NioDatagramChannel channel = (NioDatagramChannel) super.boot(
+	public ChannelFuture startup(final NetPoint netPoint) throws Exception {
+		final NioDatagramChannel channel = (NioDatagramChannel) super.startup(
 				netPoint).channel();
 		return channel.joinGroup(groupAddress(netPoint),
 				bindInterface(netPoint)).sync();

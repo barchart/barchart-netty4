@@ -6,9 +6,9 @@ import io.netty.handler.logging.LoggingHandler;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.part.hand.SctpMessageCodec;
 import com.barchart.netty.part.pipe.PipeAny;
+import com.barchart.netty.util.point.NetPoint;
 
 /**  */
 @Component(name = PipeEchoMsgServer.TYPE, immediate = true)
@@ -22,7 +22,7 @@ public class PipeEchoMsgServer extends PipeAny {
 	}
 
 	@Override
-	protected void applyDefault(final NettyDot dot, final Channel channel) {
+	protected void applyDefault(NetPoint netPoint, final Channel channel) {
 
 		log.debug("apply parent : {}", channel);
 
@@ -33,7 +33,7 @@ public class PipeEchoMsgServer extends PipeAny {
 	}
 
 	@Override
-	protected void applyDerived(final NettyDot dot, final Channel channel) {
+	protected void applyDerived(NetPoint netPoint, final Channel channel) {
 
 		log.debug("apply child : {}", channel);
 

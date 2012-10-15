@@ -35,8 +35,8 @@ public abstract class BootAny implements NettyBoot {
 			@Override
 			public void initChannel(final Channel channel) throws Exception {
 
-				final NettyPipe pipe = pipeManager().findPipe(
-						netPoint.getPipeline());
+				final NettyPipe pipe =
+						pipeManager().findPipe(netPoint.getPipeline());
 
 				if (pipe == null) {
 					log.error("missing pipeline", new IllegalArgumentException(

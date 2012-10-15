@@ -12,7 +12,7 @@ public interface NettyBoot {
 	String type();
 
 	/** bootstrap a new connection defined by the NetPoint **/
-	public ChannelFuture boot(NetPoint netPoint) throws Exception;
+	public ChannelFuture startup(NetPoint netPoint) throws Exception;
 
 	/** bootstrap a new connection defined by the NetPoint **/
 	public ChannelFuture shutdown(NetPoint netPoint, Channel channel)

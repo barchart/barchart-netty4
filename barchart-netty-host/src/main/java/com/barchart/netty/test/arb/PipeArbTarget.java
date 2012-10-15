@@ -24,7 +24,7 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 	}
 
 	@Override
-	public void apply(final NettyDot targetDot, final Channel targetChannel,
+	public void apply(final NetPoint netPoint, final Channel targetChannel,
 			final Mode mode) {
 
 		final ChannelPipeline targetPipeline = targetChannel.pipeline();
@@ -37,9 +37,9 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 
 		/** attach arbitrage sources */
 
-		attachSource("source-one", targetDot, targetPipeline);
+		attachSource("source-one", netPoint, targetPipeline);
 
-		attachSource("source-two", targetDot, targetPipeline);
+		attachSource("source-two", netPoint, targetPipeline);
 
 	}
 
@@ -47,9 +47,7 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 	 * inject message redirect from source into target
 	 */
 	protected void attachSource(final String pointKey,
-			final NettyDot targetDot, final ChannelPipeline targetPipeline) {
-
-		final NetPoint targetPoint = targetDot.netPoint();
+			final NetPoint targetPoint, final ChannelPipeline targetPipeline) {
 
 		final String sourceId = targetPoint.load(pointKey);
 
@@ -69,12 +67,13 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 			return;
 		}
 
-		final ChannelHandler current = new RedirectMessageReader(targetPipeline);
+		final ChannelHandler current =
+				new RedirectMessageReader(targetPipeline);
 
 		sourcePipeline.replace(previous, ARBITER, current);
 
 		log.debug("arbiter mapping : \n\t source : {} \n\t target : {}",
-				sourceDot, targetDot);
+				sourceDot, targetPoint);
 
 	}
 

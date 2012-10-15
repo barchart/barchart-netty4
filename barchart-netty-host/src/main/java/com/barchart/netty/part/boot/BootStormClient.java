@@ -28,7 +28,7 @@ public class BootStormClient extends BootAny {
 	}
 
 	@Override
-	public ChannelFuture boot(final NetPoint netPoint) throws Exception {
+	public ChannelFuture startup(final NetPoint netPoint) throws Exception {
 
 		return new Bootstrap().localAddress(netPoint.getLocalAddress())
 				.remoteAddress(netPoint.getRemoteAddress())

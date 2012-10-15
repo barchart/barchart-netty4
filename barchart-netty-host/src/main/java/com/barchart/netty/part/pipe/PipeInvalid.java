@@ -4,7 +4,7 @@ import io.netty.channel.Channel;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.barchart.netty.host.api.NettyDot;
+import com.barchart.netty.util.point.NetPoint;
 
 /** empty pipe */
 @Component(name = PipeInvalid.TYPE, immediate = true)
@@ -18,14 +18,14 @@ public class PipeInvalid extends PipeAny {
 	}
 
 	@Override
-	protected void applyDefault(final NettyDot dot, final Channel channel) {
+	protected void applyDefault(NetPoint netPoint, final Channel channel) {
 
 		log.debug("apply default : {}", channel);
 
 	}
 
 	@Override
-	protected void applyDerived(final NettyDot dot, final Channel channel) {
+	protected void applyDerived(NetPoint netPoint, final Channel channel) {
 
 		log.debug("apply derived : {}", channel);
 

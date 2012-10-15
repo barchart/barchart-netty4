@@ -14,10 +14,10 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyDotManager;
 import com.barchart.netty.host.api.NettyHandManager;
 import com.barchart.netty.host.api.NettyPipe;
+import com.barchart.netty.util.point.NetPoint;
 
 /** parent for "pipe" - netty pipeline builders */
 @Component(name = PipeAny.TYPE, immediate = true)
@@ -56,22 +56,23 @@ public class PipeAny implements NettyPipe {
 	//
 
 	@Override
-	public void apply(final NettyDot dot, final Channel channel, final Mode mode) {
+	public void apply(final NetPoint netPoint, final Channel channel,
+			final Mode mode) {
 
 		switch (mode) {
-		case DEFAULT:
-			applyDefault(dot, channel);
-			break;
-		case DERIVED:
-			applyDerived(dot, channel);
-			break;
-		default:
-			log.error("wrong mode", new Exception());
+			case DEFAULT:
+				applyDefault(netPoint, channel);
+				break;
+			case DERIVED:
+				applyDerived(netPoint, channel);
+				break;
+			default:
+				log.error("wrong mode", new Exception());
 		}
 
 	}
 
-	protected void applyDefault(final NettyDot dot, final Channel channel) {
+	protected void applyDefault(final NetPoint netPoint, final Channel channel) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
@@ -79,7 +80,7 @@ public class PipeAny implements NettyPipe {
 
 	}
 
-	protected void applyDerived(final NettyDot dot, final Channel channel) {
+	protected void applyDerived(final NetPoint netPoint, final Channel channel) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
