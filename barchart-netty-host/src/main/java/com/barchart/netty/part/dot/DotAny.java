@@ -1,6 +1,7 @@
 package com.barchart.netty.part.dot;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.barchart.conf.util.BaseComponent;
+import com.barchart.netty.host.api.NettyBoot;
 import com.barchart.netty.host.api.NettyBootManager;
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyGroup;
@@ -23,7 +25,7 @@ import com.barchart.netty.util.point.NetPoint;
  * parent for "dot" (end point) netty components
  */
 @Component(name = DotAny.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
-public class DotAny extends BaseComponent implements NettyDot {
+public abstract class DotAny extends BaseComponent implements NettyDot {
 
 	public static final String TYPE = "barchart.netty.dot.any";
 
@@ -31,14 +33,12 @@ public class DotAny extends BaseComponent implements NettyDot {
 
 	private NetPoint netPoint;
 
+	// NettyBoot instance that handle connection startup/shutdown
+	protected abstract NettyBoot boot();
+
 	@Override
 	public NetPoint netPoint() {
 		return netPoint;
-	}
-
-	@Override
-	public Channel channel() {
-		throw new IllegalStateException("expecting override");
 	}
 
 	//
@@ -89,14 +89,34 @@ public class DotAny extends BaseComponent implements NettyDot {
 		return netPoint().getRemoteAddress();
 	}
 
+	private Channel channel;
+
+	@Override
+	public Channel channel() {
+		return channel;
+	}
+
+	protected ChannelFuture activateFuture;
+	protected ChannelFuture deactivateFuture;
+
 	/** bootstrap startup */
 	protected void bootActivate() throws Exception {
-		//
+
+		activateFuture = boot().startup(netPoint());
+
+		channel = activateFuture.channel();
+
 	}
 
 	/** bootstrap shutdown */
 	protected void bootDeactivate() throws Exception {
-		//
+
+		/** FIXME terminate children */
+
+		deactivateFuture = boot().shutdown(netPoint(), channel());
+
+		channel = null;
+
 	}
 
 	//
