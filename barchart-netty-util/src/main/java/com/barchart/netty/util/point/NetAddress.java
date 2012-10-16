@@ -44,7 +44,6 @@ public class NetAddress extends InetSocketAddress {
 	static final Pattern pattern = Pattern.compile(NetConst.ADDRESS_REGEX);
 
 	/** from tuple : "host:port" */
-	// @JsonCreator
 	public static NetAddress formTuple(final String address) {
 
 		final String host;
@@ -78,7 +77,6 @@ public class NetAddress extends InetSocketAddress {
 	 * 
 	 * "host:port"
 	 */
-	// @JsonValue
 	public String intoTuple() {
 		return getHost() + ":" + getPort();
 	}

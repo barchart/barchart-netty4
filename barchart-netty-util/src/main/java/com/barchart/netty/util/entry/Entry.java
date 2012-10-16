@@ -1,80 +1,99 @@
 package com.barchart.netty.util.entry;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
-import com.barchart.netty.util.point.NetKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.typesafe.config.Config;
 
 public abstract class Entry {
 
-	protected final Map<String, Object> props = new HashMap<String, Object>();
+	private final Config config;
 
-	public Map<String, Object> props() {
-		return props;
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+
+	protected Entry(final Config config) {
+		this.config = config;
 	}
 
-	//
-
-	public boolean isValidId() {
-		return isValid(getId());
+	public Config config() {
+		return config;
 	}
 
-	public boolean isValid(final CharSequence text) {
-		return text != null && text.length() > 0;
+	public double getDouble(final String path, final double value) {
+		try {
+			return config().getDouble(path);
+		} catch (final Exception e) {
+			log.error("", e);
+			return value;
+		}
 	}
 
-	public String getId() {
-		return load(NetKey.KEY_ID);
+	public int getInt(final String path, final int value) {
+		try {
+			return config().getInt(path);
+		} catch (final Exception e) {
+			log.error("", e);
+			return value;
+		}
 	}
-
-	public void setId(final String id) {
-		save(NetKey.KEY_ID, id);
-	}
-
-	//
 
 	@SuppressWarnings("unchecked")
-	public <T> T load(final String key) {
-		if (key == null) {
-			return null;
+	public <T> List<T> getUniformList(final String path, final Class<T> klaz) {
+		try {
+
+			if (klaz == String.class) {
+				return (List<T>) config().getStringList(path);
+			}
+
+			if (klaz == Integer.class) {
+				return (List<T>) config().getIntList(path);
+			}
+
+			if (klaz == Long.class) {
+				return (List<T>) config().getLongList(path);
+			}
+
+			if (klaz == Double.class) {
+				return (List<T>) config().getDoubleList(path);
+			}
+
+			if (klaz == Boolean.class) {
+				return (List<T>) config().getBooleanList(path);
+			}
+
+			throw new IllegalArgumentException("expecting primitive types");
+
+		} catch (final Exception e) {
+			log.error("", e);
+			return Collections.emptyList();
 		}
-		return (T) props.get(key);
+
 	}
 
-	public <T> void save(final String key, final T value) {
-		props.put(key, value);
+	public long getLong(final String path, final long value) {
+		try {
+			return config().getInt(path);
+		} catch (final Exception e) {
+			log.error("", e);
+			return value;
+		}
 	}
 
-	public boolean hasInt(final String key) {
-		if (key == null) {
-			return false;
+	public String getString(final String path, final String value) {
+		try {
+			return config().getString(path);
+		} catch (final Exception e) {
+			log.error("", e);
+			return value;
 		}
-		final Object value = load(key);
-		if (value instanceof Number) {
-			return true;
-		}
-		return false;
-	}
-
-	public int getInt(final String key) {
-		final Object value = load(key);
-		if (value instanceof Number) {
-			return ((Number) value).intValue();
-		}
-		return 0;
-	}
-
-	public int getInt(final String key, final int defaultValue) {
-		final Object value = load(key);
-		if (value instanceof Number) {
-			return ((Number) value).intValue();
-		}
-		return defaultValue;
 	}
 
 	@Override
 	public String toString() {
-		return props.toString();
+		return config().root().render();
 	}
 
 }

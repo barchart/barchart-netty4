@@ -121,15 +121,18 @@ public abstract class DotAny extends BaseComponent implements NettyDot {
 
 	//
 
+	/** TODO */
 	@Override
 	protected void processActivate() throws Exception {
 
 		// All config has at least a "type"; fallback to flat if missing
-		if (configCurrent().entrySet().size() == 0) {
-			netPoint = NetPoint.from(wrap(componentContext().getProperties()));
-		} else {
-			netPoint = NetPoint.from(configCurrent());
-		}
+		// if (configCurrent().entrySet().size() == 0) {
+		// netPoint = NetPoint.from(wrap(componentContext().getProperties()));
+		// } else {
+		// netPoint = NetPoint.from(configCurrent());
+		// }
+
+		netPoint = NetPoint.from(configCurrent());
 
 		bootActivate();
 

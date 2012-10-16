@@ -1,6 +1,6 @@
 package com.barchart.netty.util.point;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
@@ -52,15 +52,17 @@ public class TestNetUtil {
 
 		assertEquals("advanced", point.getPipeline());
 
-		assertEquals("signature", point.load("custom1"));
+		//
 
-		assertEquals(1000, point.load("custom2"));
+		assertEquals("signature", point.getString("custom1", null));
+
+		assertEquals(1000, point.getInt("custom2", 0));
 
 		final ArrayList<Integer> list = new ArrayList<Integer>();
 		list.add(1);
 		list.add(2);
 		list.add(3);
-		assertEquals(list, point.load("custom3"));
+		assertEquals(list, point.getUniformList("custom3", Integer.class));
 
 	}
 

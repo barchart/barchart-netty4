@@ -60,14 +60,14 @@ public class PipeAny implements NettyPipe {
 			final Mode mode) {
 
 		switch (mode) {
-			case DEFAULT:
-				applyDefault(netPoint, channel);
-				break;
-			case DERIVED:
-				applyDerived(netPoint, channel);
-				break;
-			default:
-				log.error("wrong mode", new Exception());
+		case DEFAULT:
+			applyDefault(netPoint, channel);
+			break;
+		case DERIVED:
+			applyDerived(netPoint, channel);
+			break;
+		default:
+			log.error("wrong mode", new Exception());
 		}
 
 	}

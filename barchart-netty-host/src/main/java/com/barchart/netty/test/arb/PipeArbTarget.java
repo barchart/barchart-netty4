@@ -49,7 +49,8 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 	protected void attachSource(final String pointKey,
 			final NetPoint targetPoint, final ChannelPipeline targetPipeline) {
 
-		final String sourceId = targetPoint.load(pointKey);
+		final String sourceId = targetPoint.getString(pointKey,
+				"invalid-source");
 
 		final NettyDot sourceDot = channelManager().instance(sourceId);
 
@@ -67,8 +68,7 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 			return;
 		}
 
-		final ChannelHandler current =
-				new RedirectMessageReader(targetPipeline);
+		final ChannelHandler current = new RedirectMessageReader(targetPipeline);
 
 		sourcePipeline.replace(previous, ARBITER, current);
 

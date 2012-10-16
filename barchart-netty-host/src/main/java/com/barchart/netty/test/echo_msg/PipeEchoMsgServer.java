@@ -22,7 +22,7 @@ public class PipeEchoMsgServer extends PipeAny {
 	}
 
 	@Override
-	protected void applyDefault(NetPoint netPoint, final Channel channel) {
+	protected void applyDefault(final NetPoint netPoint, final Channel channel) {
 
 		log.debug("apply parent : {}", channel);
 
@@ -33,7 +33,7 @@ public class PipeEchoMsgServer extends PipeAny {
 	}
 
 	@Override
-	protected void applyDerived(NetPoint netPoint, final Channel channel) {
+	protected void applyDerived(final NetPoint netPoint, final Channel channel) {
 
 		log.debug("apply child : {}", channel);
 

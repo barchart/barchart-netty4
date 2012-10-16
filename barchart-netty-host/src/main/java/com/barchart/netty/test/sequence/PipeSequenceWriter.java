@@ -24,7 +24,8 @@ public class PipeSequenceWriter extends PipeAny {
 	}
 
 	@Override
-	public void apply(NetPoint netPoint, final Channel channel, final Mode mode) {
+	public void apply(final NetPoint netPoint, final Channel channel,
+			final Mode mode) {
 
 		log.debug("apply : {}", channel);
 

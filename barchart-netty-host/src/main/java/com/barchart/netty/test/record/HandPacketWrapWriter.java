@@ -51,7 +51,7 @@ public class HandPacketWrapWriter extends ChannelHandlerAdapter implements
 		localAddress = point.getLocalAddress();
 		remoteAddress = point.getRemoteAddress();
 
-		final String folder = point.load("folder");
+		final String folder = point.getString("folder", "default-folder");
 		final String file = //
 		"record." + id + "." + System.currentTimeMillis() + ".buf";
 
