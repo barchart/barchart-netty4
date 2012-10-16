@@ -10,7 +10,6 @@ import org.osgi.service.component.annotations.Component;
 
 import com.barchart.netty.part.hand.DatagramPacketReader;
 import com.barchart.netty.part.pipe.PipeAny;
-import com.barchart.netty.util.point.NetPoint;
 
 /**  */
 @Component(name = PipeSequenceReader.TYPE, immediate = true)
@@ -24,8 +23,7 @@ public class PipeSequenceReader extends PipeAny {
 	}
 
 	@Override
-	public void apply(final NetPoint netPoint, final Channel channel,
-			final Mode mode) {
+	public void apply(final Channel channel, final Mode mode) {
 
 		log.debug("apply : {}", channel);
 

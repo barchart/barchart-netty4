@@ -43,9 +43,8 @@ public class HandPacketWrapWriter extends ChannelHandlerAdapter implements
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
 
-		final NettyDot dot = ctx.channel().attr(NettyDot.ATTR_NETTY_DOT).get();
-
-		final NetPoint point = dot.netPoint();
+		final NetPoint point = ctx.channel().attr(NettyDot.ATTR_NET_POINT)
+				.get();
 
 		id = point.getId();
 		localAddress = point.getLocalAddress();

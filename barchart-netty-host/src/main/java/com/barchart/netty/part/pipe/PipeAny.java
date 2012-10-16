@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import com.barchart.netty.host.api.NettyDotManager;
 import com.barchart.netty.host.api.NettyHandManager;
 import com.barchart.netty.host.api.NettyPipe;
-import com.barchart.netty.util.point.NetPoint;
 
 /** parent for "pipe" - netty pipeline builders */
 @Component(name = PipeAny.TYPE, immediate = true)
@@ -56,15 +55,14 @@ public class PipeAny implements NettyPipe {
 	//
 
 	@Override
-	public void apply(final NetPoint netPoint, final Channel channel,
-			final Mode mode) {
+	public void apply(final Channel channel, final Mode mode) {
 
 		switch (mode) {
 		case DEFAULT:
-			applyDefault(netPoint, channel);
+			applyDefault(channel);
 			break;
 		case DERIVED:
-			applyDerived(netPoint, channel);
+			applyDerived(channel);
 			break;
 		default:
 			log.error("wrong mode", new Exception());
@@ -72,7 +70,7 @@ public class PipeAny implements NettyPipe {
 
 	}
 
-	protected void applyDefault(final NetPoint netPoint, final Channel channel) {
+	protected void applyDefault(final Channel channel) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 
@@ -80,7 +78,7 @@ public class PipeAny implements NettyPipe {
 
 	}
 
-	protected void applyDerived(final NetPoint netPoint, final Channel channel) {
+	protected void applyDerived(final Channel channel) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 

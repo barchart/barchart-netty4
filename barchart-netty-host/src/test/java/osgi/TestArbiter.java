@@ -81,6 +81,7 @@ public class TestArbiter extends TestAny {
 			final NettyDot dot = manager.create(conf);
 
 			assertNotNull(dot);
+			assertNotNull(dot.channel());
 
 		}
 

@@ -8,7 +8,6 @@ import org.osgi.service.component.annotations.Component;
 
 import com.barchart.netty.part.hand.BlackHoleMessageHandler;
 import com.barchart.netty.part.pipe.PipeAny;
-import com.barchart.netty.util.point.NetPoint;
 
 /** use for switch source end points */
 @Component(name = PipeSwitchSource.TYPE, immediate = true)
@@ -22,8 +21,7 @@ public class PipeSwitchSource extends PipeAny implements NameSwitch {
 	}
 
 	@Override
-	public void apply(final NetPoint netPoint, final Channel channel,
-			final Mode mode) {
+	public void apply(final Channel channel, final Mode mode) {
 
 		final ChannelPipeline pipeline = channel.pipeline();
 

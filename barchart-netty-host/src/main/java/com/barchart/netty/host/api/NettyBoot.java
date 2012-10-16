@@ -11,10 +11,10 @@ public interface NettyBoot {
 	/** UUID of this connection boostrapper */
 	String type();
 
-	/** bootstrap a new connection defined by the NetPoint **/
+	/** initiate new connection defined by the NetPoint **/
 	public ChannelFuture startup(NetPoint netPoint) throws Exception;
 
-	/** bootstrap a new connection defined by the NetPoint **/
+	/** terminate old connection defined by the NetPoint **/
 	public ChannelFuture shutdown(NetPoint netPoint, Channel channel)
 			throws Exception;
 

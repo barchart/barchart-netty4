@@ -1,4 +1,4 @@
-package com.barchart.netty.part.dot;
+package bench.temp;
 
 import io.netty.bootstrap.AbstractBootstrap.ChannelFactory;
 import io.netty.channel.Channel;

@@ -5,28 +5,28 @@ import io.netty.util.AttributeKey;
 
 import com.barchart.netty.util.point.NetPoint;
 
-/** represents netty "dot" - end point / channel */
+/**
+ * represents netty "dot" - end point / channel
+ * 
+ * contract: net-point id defines dot id
+ */
 public interface NettyDot extends NettyAny {
 
 	/* properties */
 
-	/**
-	 * contract: dot factory must inject end point configuration as this
-	 * property; see #NetPoint
-	 */
-	String PROP_NET_POINT = "net-point";
+	// String PROP_NET_POINT = "net-point";
 
 	/* attributes */
 
-	AttributeKey<NettyDot> ATTR_NETTY_DOT //
-	= new AttributeKey<NettyDot>("netty-dot");
+	AttributeKey<NetPoint> ATTR_NET_POINT //
+	= new AttributeKey<NetPoint>("net-point");
 
 	/* methods */
 
 	/** net point that were used to configure this channel */
 	NetPoint netPoint();
 
-	/** netty channel associated with this dot */
+	/** transient/current netty channel associated with this dot */
 	Channel channel();
 
 }

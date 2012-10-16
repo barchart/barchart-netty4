@@ -8,6 +8,8 @@ public interface NettyDotManager extends CidgetManager<NettyDot> {
 
 	/**
 	 * create a new dot form a properly formed hocon end point config entry
+	 * 
+	 * see net-point reference.conf for entry format
 	 */
 	NettyDot create(Config config);
 

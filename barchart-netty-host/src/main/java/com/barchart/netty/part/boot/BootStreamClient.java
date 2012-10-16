@@ -6,7 +6,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.util.point.NetPoint;
@@ -16,7 +15,7 @@ import com.barchart.netty.util.point.NetPoint;
  * 
  * such as TCP
  */
-@Component(name = BootStreamClient.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = BootStreamClient.TYPE, immediate = true)
 public class BootStreamClient extends BootAny {
 
 	public static final String TYPE = "barchart.netty.boot.stream.client";
@@ -31,16 +30,26 @@ public class BootStreamClient extends BootAny {
 
 		return new Bootstrap()
 
-				.localAddress(netPoint.getLocalAddress())
-				.remoteAddress(netPoint.getRemoteAddress())
-				.channel(NioSocketChannel.class)
-				.option(ChannelOption.SO_REUSEADDR, true)
-				.option(ChannelOption.SO_SNDBUF, netPoint.getSendBufferSize())
-				.option(ChannelOption.SO_RCVBUF,
-						netPoint.getReceiveBufferSize()).group(group())
-				/** connector */
-				.handler(pipeApply(netPoint, NettyPipe.Mode.DEFAULT)) //
-				.connect();
+		.channel(NioSocketChannel.class)
+
+		.group(group())
+
+		.localAddress(netPoint.getLocalAddress())
+
+		.remoteAddress(netPoint.getRemoteAddress())
+
+		.option(ChannelOption.SO_REUSEADDR, true)
+
+		.option(ChannelOption.SO_SNDBUF, //
+				netPoint.getSendBufferSize())
+
+		.option(ChannelOption.SO_RCVBUF, //
+				netPoint.getReceiveBufferSize())
+
+		/** connector */
+		.handler(pipeApply(netPoint, NettyPipe.Mode.DEFAULT))
+
+		.connect();
 
 	}
 

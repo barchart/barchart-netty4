@@ -7,7 +7,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioSctpChannel;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.util.point.NetPoint;
@@ -17,7 +16,7 @@ import com.barchart.netty.util.point.NetPoint;
  * 
  * such as SCTP
  */
-@Component(name = BootStormClient.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = BootStormClient.TYPE, immediate = true)
 public class BootStormClient extends BootAny {
 
 	public static final String TYPE = "barchart.netty.boot.storm.client";
@@ -31,23 +30,36 @@ public class BootStormClient extends BootAny {
 	public ChannelFuture startup(final NetPoint netPoint) throws Exception {
 
 		return new Bootstrap().localAddress(netPoint.getLocalAddress())
-				.remoteAddress(netPoint.getRemoteAddress())
-				.channel(NioSctpChannel.class)
-				.option(ChannelOption.SCTP_NODELAY, true)
-				/** https://github.com/netty/netty/issues/610 */
-				.option(ChannelOption.SO_SNDBUF, //
-						netPoint.getSendBufferSize())
-				.option(ChannelOption.SO_RCVBUF, //
-						netPoint.getReceiveBufferSize()).group(group())
-				/** connector */
-				.handler(pipeApply(netPoint, NettyPipe.Mode.DEFAULT)).connect();
+
+		.channel(NioSctpChannel.class)
+
+		.group(group())
+
+		.remoteAddress(netPoint.getRemoteAddress())
+
+		.option(ChannelOption.SCTP_NODELAY, true)
+
+		/** https://github.com/netty/netty/issues/610 */
+
+		.option(ChannelOption.SO_SNDBUF, //
+				netPoint.getSendBufferSize())
+
+		.option(ChannelOption.SO_RCVBUF, //
+				netPoint.getReceiveBufferSize())
+
+		/** connector */
+		.handler(pipeApply(netPoint, NettyPipe.Mode.DEFAULT))
+
+		.connect();
 
 	}
 
 	@Override
 	public ChannelFuture shutdown(final NetPoint netPoint, final Channel channel)
 			throws Exception {
+
 		return channel.close();
+
 	}
 
 }

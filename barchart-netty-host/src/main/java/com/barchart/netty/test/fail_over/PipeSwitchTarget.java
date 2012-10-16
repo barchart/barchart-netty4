@@ -24,8 +24,10 @@ public class PipeSwitchTarget extends PipeAny implements NameSwitch {
 	}
 
 	@Override
-	public void apply(final NetPoint netPoint, final Channel targetChannel,
-			final Mode mode) {
+	public void apply(final Channel targetChannel, final Mode mode) {
+
+		final NetPoint netPoint = targetChannel.attr(NettyDot.ATTR_NET_POINT)
+				.get();
 
 		final ChannelPipeline targetPipeline = targetChannel.pipeline();
 

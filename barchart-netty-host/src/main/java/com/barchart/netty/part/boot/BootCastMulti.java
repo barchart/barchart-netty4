@@ -9,7 +9,6 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.barchart.netty.host.impl.OperatingSystem;
 import com.barchart.netty.util.point.NetAddress;
@@ -20,10 +19,15 @@ import com.barchart.netty.util.point.NetPoint;
  * 
  * handles multicast join / leave;
  */
-@Component(name = BootCastMulti.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = BootCastMulti.TYPE, immediate = true)
 public class BootCastMulti extends BootCast {
 
 	public static final String TYPE = "barchart.netty.boot.cast.multi";
+
+	@Override
+	public String type() {
+		return TYPE;
+	}
 
 	/** valid interface or loop back interface for error */
 	protected NetworkInterface bindInterface(final NetPoint netPoint) {
@@ -92,18 +96,24 @@ public class BootCastMulti extends BootCast {
 
 	@Override
 	public ChannelFuture startup(final NetPoint netPoint) throws Exception {
+
 		final NioDatagramChannel channel = (NioDatagramChannel) super.startup(
 				netPoint).channel();
+
 		return channel.joinGroup(groupAddress(netPoint),
 				bindInterface(netPoint)).sync();
+
 	}
 
 	@Override
 	public ChannelFuture shutdown(final NetPoint netPoint, final Channel channel)
 			throws Exception {
+
 		((NioDatagramChannel) channel).leaveGroup(groupAddress(netPoint),
 				bindInterface(netPoint)).sync();
+
 		return super.shutdown(netPoint, channel);
+
 	}
 
 }

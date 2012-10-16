@@ -7,6 +7,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.host.api.NettyPipeManager;
@@ -14,6 +16,8 @@ import com.barchart.netty.host.api.NettyPipeManager;
 /** pipeline collector */
 @Component(immediate = true)
 public class NettyPipeProvider implements NettyPipeManager {
+
+	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final ConcurrentMap<String, NettyPipe> pipeMap = //
 	new ConcurrentHashMap<String, NettyPipe>();
@@ -34,11 +38,15 @@ public class NettyPipeProvider implements NettyPipeManager {
 
 		pipeMap.put(pipe.type(), pipe);
 
+		log.debug("@@@ pipe-bind : {}", pipe.type());
+
 	}
 
 	protected void unbind(final NettyPipe pipe) {
 
 		pipeMap.remove(pipe.type());
+
+		log.debug("@@@ pipe-unbind : {}", pipe.type());
 
 	}
 

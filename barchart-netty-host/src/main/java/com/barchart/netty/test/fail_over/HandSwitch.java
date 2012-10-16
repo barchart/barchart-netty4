@@ -33,9 +33,8 @@ public class HandSwitch extends ChannelHandlerAdapter implements
 
 		this.ctx = ctx;
 
-		final NettyDot dot = ctx.channel().attr(NettyDot.ATTR_NETTY_DOT).get();
-
-		final NetPoint point = dot.netPoint();
+		final NetPoint point = ctx.channel().attr(NettyDot.ATTR_NET_POINT)
+				.get();
 
 		localAddress = point.getLocalAddress();
 		remoteAddress = point.getRemoteAddress();

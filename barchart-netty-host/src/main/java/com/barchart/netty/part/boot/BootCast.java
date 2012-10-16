@@ -7,7 +7,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.util.point.NetPoint;
@@ -19,7 +18,7 @@ import com.barchart.netty.util.point.NetPoint;
  * 
  * anycast, broadcast, unicast, multicast, etc;
  */
-@Component(name = BootCast.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
+@Component(name = BootCast.TYPE, immediate = true)
 public class BootCast extends BootAny {
 
 	public static final String TYPE = "barchart.netty.boot.cast";
@@ -33,26 +32,40 @@ public class BootCast extends BootAny {
 	public ChannelFuture startup(final NetPoint netPoint) throws Exception {
 
 		return new Bootstrap()
-				.localAddress(netPoint.getLocalAddress())
-				.remoteAddress(netPoint.getRemoteAddress())
-				.channel(NioDatagramChannel.class)
-				.option(ChannelOption.SO_SNDBUF, //
-						netPoint.getSendBufferSize())
-				.option(ChannelOption.SO_RCVBUF, //
-						netPoint.getReceiveBufferSize())
-				.option(ChannelOption.SO_REUSEADDR, true)
-				.option(ChannelOption.IP_MULTICAST_TTL, netPoint.getPacketTTL())
-				.group(group())
-				.handler(pipeApply(netPoint, NettyPipe.Mode.DEFAULT)) //
-				.bind() //
-				.sync();
+
+		.channel(NioDatagramChannel.class)
+
+		.group(group())
+
+		.localAddress(netPoint.getLocalAddress())
+
+		.remoteAddress(netPoint.getRemoteAddress())
+
+		.option(ChannelOption.SO_SNDBUF, //
+				netPoint.getSendBufferSize())
+
+		.option(ChannelOption.SO_RCVBUF, //
+				netPoint.getReceiveBufferSize())
+
+		.option(ChannelOption.SO_REUSEADDR, true)
+
+		.option(ChannelOption.IP_MULTICAST_TTL,//
+				netPoint.getPacketTTL())
+
+		.handler(pipeApply(netPoint, NettyPipe.Mode.DEFAULT))
+
+		.bind()
+
+		.sync();
 
 	}
 
 	@Override
 	public ChannelFuture shutdown(final NetPoint netPoint, final Channel channel)
 			throws Exception {
+
 		return channel.close().sync();
+
 	}
 
 }

@@ -2,11 +2,8 @@ package com.barchart.netty.part.dot;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +13,6 @@ import com.barchart.netty.host.api.NettyBoot;
 import com.barchart.netty.host.api.NettyBootManager;
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyGroup;
-import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.host.api.NettyPipeManager;
 import com.barchart.netty.util.point.NetAddress;
 import com.barchart.netty.util.point.NetPoint;
@@ -24,7 +20,6 @@ import com.barchart.netty.util.point.NetPoint;
 /**
  * parent for "dot" (end point) netty components
  */
-@Component(name = DotAny.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
 public abstract class DotAny extends BaseComponent implements NettyDot {
 
 	public static final String TYPE = "barchart.netty.dot.any";
@@ -39,37 +34,6 @@ public abstract class DotAny extends BaseComponent implements NettyDot {
 	@Override
 	public NetPoint netPoint() {
 		return netPoint;
-	}
-
-	//
-
-	/**
-	 * builder for transient pipeline applicator handler
-	 */
-	protected final ChannelInitializer<Channel> pipeApply(
-			final NettyPipe.Mode mode) {
-		return new ChannelInitializer<Channel>() {
-			@Override
-			public void initChannel(final Channel channel) throws Exception {
-
-				/** always link channel with owner dot */
-				channel.attr(ATTR_NETTY_DOT).set(DotAny.this);
-
-				final NettyPipe pipe = pipeManager().findPipe(pipeName());
-
-				if (pipe == null) {
-
-					log.error("missing pipeline", //
-							new IllegalArgumentException(pipeName()));
-
-				} else {
-
-					pipe.apply(null, channel, mode);
-
-				}
-
-			}
-		};
 	}
 
 	//
@@ -96,15 +60,24 @@ public abstract class DotAny extends BaseComponent implements NettyDot {
 		return channel;
 	}
 
-	protected ChannelFuture activateFuture;
-	protected ChannelFuture deactivateFuture;
+	private ChannelFuture futureActivate;
+
+	protected ChannelFuture futureActivate() {
+		return futureActivate;
+	}
+
+	private ChannelFuture futureDeactivate;
+
+	protected ChannelFuture futureDeactivate() {
+		return futureDeactivate;
+	}
 
 	/** bootstrap startup */
 	protected void bootActivate() throws Exception {
 
-		activateFuture = boot().startup(netPoint());
+		futureActivate = boot().startup(netPoint());
 
-		channel = activateFuture.channel();
+		channel = futureActivate().channel();
 
 	}
 
@@ -113,7 +86,7 @@ public abstract class DotAny extends BaseComponent implements NettyDot {
 
 		/** FIXME terminate children */
 
-		deactivateFuture = boot().shutdown(netPoint(), channel());
+		futureDeactivate = boot().shutdown(netPoint(), channel());
 
 		channel = null;
 

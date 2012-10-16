@@ -5,6 +5,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.logging.MessageLoggingHandler;
 
+import java.util.List;
+
 import org.osgi.service.component.annotations.Component;
 
 import com.barchart.netty.host.api.NettyDot;
@@ -24,8 +26,10 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 	}
 
 	@Override
-	public void apply(final NetPoint netPoint, final Channel targetChannel,
-			final Mode mode) {
+	public void apply(final Channel targetChannel, final Mode mode) {
+
+		final NetPoint netPoint = targetChannel.attr(NettyDot.ATTR_NET_POINT)
+				.get();
 
 		final ChannelPipeline targetPipeline = targetChannel.pipeline();
 
@@ -37,20 +41,20 @@ public class PipeArbTarget extends PipeAny implements NameArb {
 
 		/** attach arbitrage sources */
 
-		attachSource("source-one", netPoint, targetPipeline);
+		final List<String> sourceList = netPoint.getUniformList(
+				"arbiter-source-list", String.class);
 
-		attachSource("source-two", netPoint, targetPipeline);
+		for (final String sourceId : sourceList) {
+			attachSource(sourceId, netPoint, targetPipeline);
+		}
 
 	}
 
 	/**
 	 * inject message redirect from source into target
 	 */
-	protected void attachSource(final String pointKey,
+	protected void attachSource(final String sourceId,
 			final NetPoint targetPoint, final ChannelPipeline targetPipeline) {
-
-		final String sourceId = targetPoint.getString(pointKey,
-				"invalid-source");
 
 		final NettyDot sourceDot = channelManager().instance(sourceId);
 

@@ -5,11 +5,14 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.host.api.NettyBoot;
+import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyGroup;
 import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.host.api.NettyPipeManager;
@@ -17,12 +20,28 @@ import com.barchart.netty.util.point.NetPoint;
 
 public abstract class BootAny implements NettyBoot {
 
-	protected static final Logger log = LoggerFactory.getLogger(BootAny.class);
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+
+	@Activate
+	protected void bootActivate() {
+		log.debug("@@@ activate : {}", type());
+	}
+
+	@Deactivate
+	protected void bootDeactivate() {
+		log.debug("@@@ deactivate : {}", type());
+	}
+
+	@Override
+	public abstract ChannelFuture startup(final NetPoint netPoint)
+			throws Exception;
 
 	@Override
 	public ChannelFuture shutdown(final NetPoint netPoint, final Channel channel)
 			throws Exception {
+
 		return channel.close();
+
 	}
 
 	/**
@@ -35,6 +54,9 @@ public abstract class BootAny implements NettyBoot {
 			@Override
 			public void initChannel(final Channel channel) throws Exception {
 
+				/** always link channel with owner end point */
+				channel.attr(NettyDot.ATTR_NET_POINT).set(netPoint);
+
 				final NettyPipe pipe = pipeManager().findPipe(
 						netPoint.getPipeline());
 
@@ -42,8 +64,7 @@ public abstract class BootAny implements NettyBoot {
 					log.error("missing pipeline", new IllegalArgumentException(
 							netPoint.getPipeline()));
 				} else {
-					// FIXME: nulled since we aren't required to use Dots here
-					pipe.apply(null, channel, mode);
+					pipe.apply(channel, mode);
 				}
 
 			}
