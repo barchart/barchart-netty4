@@ -3,9 +3,9 @@ package com.barchart.netty.util.entry;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Entry {
+import com.barchart.netty.util.point.NetKey;
 
-	public static final String KEY_ID = "id";
+public abstract class Entry {
 
 	protected final Map<String, Object> props = new HashMap<String, Object>();
 
@@ -24,11 +24,11 @@ public abstract class Entry {
 	}
 
 	public String getId() {
-		return load(KEY_ID);
+		return load(NetKey.KEY_ID);
 	}
 
 	public void setId(final String id) {
-		save(KEY_ID, id);
+		save(NetKey.KEY_ID, id);
 	}
 
 	//
