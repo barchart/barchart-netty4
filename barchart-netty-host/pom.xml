@@ -6,12 +6,13 @@
 	<parent>
 		<groupId>com.barchart.netty</groupId>
 		<artifactId>barchart-netty-archon</artifactId>
-		<version>4.0.1-SNAPSHOT</version>
+		<version>4.0.1</version>
 		<relativePath />
 	</parent>
 
 	<artifactId>barchart-netty-host</artifactId>
 	<packaging>bundle</packaging>
+	<version>4.0.1-SNAPSHOT</version>
 
 	<scm>
 		<url>https://github.com/barchart/barchart-netty4</url>
