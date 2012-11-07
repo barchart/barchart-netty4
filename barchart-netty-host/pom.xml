@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
 			<artifactId>barchart-conf-list</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.3</version>
 		</dependency>
 
 		<!-- market data -->

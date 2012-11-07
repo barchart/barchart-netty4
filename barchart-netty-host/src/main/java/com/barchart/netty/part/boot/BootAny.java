@@ -55,7 +55,7 @@ public abstract class BootAny implements NettyBoot {
 			public void initChannel(final Channel channel) throws Exception {
 
 				/** always link channel with owner end point */
-				channel.attr(NettyDot.ATTR_NET_POINT).set(netPoint);
+//				channel.attr(NettyDot.ATTR_NET_POINT).set(netPoint);
 
 				final NettyPipe pipe = pipeManager().findPipe(
 						netPoint.getPipeline());
