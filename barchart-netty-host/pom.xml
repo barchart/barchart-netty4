@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>com.barchart.proto</groupId>
 			<artifactId>barchart-proto-buf-data</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<version>1.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>com.barchart.proto</groupId>
 			<artifactId>barchart-proto-buf-wrap</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<version>1.0.1</version>
 		</dependency>
 
 		<!-- netty -->
