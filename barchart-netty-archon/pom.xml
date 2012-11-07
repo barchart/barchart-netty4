@@ -25,7 +25,7 @@
 
 		<projectJavaVersion>1.7</projectJavaVersion>
 
-		<projectNettyVersion>4.0.0.Alpha5</projectNettyVersion>
+		<projectNettyVersion>4.0.0.Alpha6</projectNettyVersion>
 
 	</properties>
 

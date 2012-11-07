@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
 import io.netty.channel.ChannelOutboundMessageHandler;
-import io.netty.channel.socket.SctpData;
+import io.netty.channel.socket.SctpMessage;
 
 /** ByteBuf-SctpData wrapper */
 public class SctpMessageCodec extends ChannelHandlerAdapter implements
@@ -43,9 +43,9 @@ public class SctpMessageCodec extends ChannelHandlerAdapter implements
 				break;
 			}
 
-			if (entry instanceof SctpData) {
+			if (entry instanceof SctpMessage) {
 
-				final SctpData data = (SctpData) entry;
+				final SctpMessage data = (SctpMessage) entry;
 
 				final ByteBuf buffer = data.getPayloadBuffer();
 
@@ -77,7 +77,7 @@ public class SctpMessageCodec extends ChannelHandlerAdapter implements
 
 			if (entry instanceof ByteBuf) {
 
-				final SctpData data = new SctpData(0, 0, (ByteBuf) entry);
+				final SctpMessage data = new SctpMessage(0, 0, (ByteBuf) entry);
 
 				target.add(data);
 			}
