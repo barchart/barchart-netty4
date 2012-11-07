@@ -74,7 +74,7 @@
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
 			<artifactId>barchart-netty-util</artifactId>
-			<version>${project.parent.version}</version>
+			<version>4.0.1</version>
 		</dependency>
 
 		<!-- config admin -->
