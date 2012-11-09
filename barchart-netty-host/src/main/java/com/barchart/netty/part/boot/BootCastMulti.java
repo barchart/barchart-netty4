@@ -1,7 +1,9 @@
 package com.barchart.netty.part.boot;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.util.NetworkConstants;
 
@@ -10,6 +12,7 @@ import java.net.NetworkInterface;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.barchart.netty.host.api.NettyPipe.Mode;
 import com.barchart.netty.host.impl.OperatingSystem;
 import com.barchart.netty.util.point.NetAddress;
 import com.barchart.netty.util.point.NetPoint;
@@ -97,11 +100,22 @@ public class BootCastMulti extends BootCast {
 	@Override
 	public ChannelFuture startup(final NetPoint netPoint) throws Exception {
 
-		final NioDatagramChannel channel = (NioDatagramChannel) super.startup(
-				netPoint).channel();
-
+		final NioDatagramChannel channel = (NioDatagramChannel) new Bootstrap()
+		.localAddress(netPoint.getRemoteAddress().getPort())
+		.remoteAddress(netPoint.getRemoteAddress())
+		.channel(NioDatagramChannel.class)
+		.option(ChannelOption.SO_SNDBUF, netPoint.getSendBufferSize())
+		.option(ChannelOption.SO_RCVBUF, netPoint.getReceiveBufferSize())
+		.option(ChannelOption.SO_REUSEADDR, true)
+		.option(ChannelOption.IP_MULTICAST_TTL, netPoint.getPacketTTL())
+		.group(group())
+		.handler(pipeApply(netPoint, Mode.DEFAULT))
+		.bind()
+		.sync()
+		.channel();
+		
 		return channel.joinGroup(groupAddress(netPoint),
-				bindInterface(netPoint)).sync();
+			bindInterface(netPoint)).sync();
 
 	}
 
