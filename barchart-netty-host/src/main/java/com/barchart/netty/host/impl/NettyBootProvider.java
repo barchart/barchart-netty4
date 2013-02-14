@@ -1,7 +1,6 @@
 package com.barchart.netty.host.impl;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.host.api.NettyBoot;
 import com.barchart.netty.host.api.NettyBootManager;
+import com.barchart.util.collections.BlockingConcurrentHashMap;
 
 /** bootstrap collector */
 @Component(immediate = true)
@@ -23,8 +23,8 @@ public class NettyBootProvider implements NettyBootManager {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	private final ConcurrentMap<String, NettyBoot> bootMap = //
-	new ConcurrentHashMap<String, NettyBoot>();
+	private final BlockingConcurrentHashMap<String, NettyBoot> bootMap = //
+			new BlockingConcurrentHashMap<String, NettyBoot>();
 
 	@Override
 	public NettyBoot findBoot(final String bootName) {
@@ -32,6 +32,15 @@ public class NettyBootProvider implements NettyBootManager {
 			return null;
 		}
 		return bootMap.get(bootName);
+	}
+
+	@Override
+	public NettyBoot findBoot(final String bootName, final long timeout,
+			final TimeUnit unit) throws InterruptedException {
+		if (bootName == null) {
+			return null;
+		}
+		return bootMap.get(bootName, timeout, unit);
 	}
 
 	@Reference( //
