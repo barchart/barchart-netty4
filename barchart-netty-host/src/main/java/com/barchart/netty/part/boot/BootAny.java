@@ -58,8 +58,9 @@ public abstract class BootAny implements NettyBoot {
 				/** always link channel with owner end point */
 				// channel.attr(NettyDot.ATTR_NET_POINT).set(netPoint);
 
+				final int timeout = netPoint.getInt("pipeline-timeout", 10000);
 				final NettyPipe pipe =
-						pipeManager().findPipe(netPoint.getPipeline(), 3000,
+						pipeManager().findPipe(netPoint.getPipeline(), timeout,
 								TimeUnit.MILLISECONDS);
 
 				if (pipe == null) {
