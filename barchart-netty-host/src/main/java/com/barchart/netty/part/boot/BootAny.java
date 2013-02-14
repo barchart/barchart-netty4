@@ -5,6 +5,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 
+import java.util.concurrent.TimeUnit;
+
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
@@ -12,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.host.api.NettyBoot;
-import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyGroup;
 import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.host.api.NettyPipeManager;
@@ -55,10 +56,11 @@ public abstract class BootAny implements NettyBoot {
 			public void initChannel(final Channel channel) throws Exception {
 
 				/** always link channel with owner end point */
-//				channel.attr(NettyDot.ATTR_NET_POINT).set(netPoint);
+				// channel.attr(NettyDot.ATTR_NET_POINT).set(netPoint);
 
-				final NettyPipe pipe = pipeManager().findPipe(
-						netPoint.getPipeline());
+				final NettyPipe pipe =
+						pipeManager().findPipe(netPoint.getPipeline(), 3000,
+								TimeUnit.MILLISECONDS);
 
 				if (pipe == null) {
 					log.error("missing pipeline", new IllegalArgumentException(
