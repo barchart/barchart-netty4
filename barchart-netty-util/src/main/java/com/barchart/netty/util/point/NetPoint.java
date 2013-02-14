@@ -57,8 +57,8 @@ public class NetPoint extends Entry implements NetKey {
 		return config().getString(KEY_PIPELINE);
 	}
 
-	public String getPipelineTimeout() {
-		return config().getString(KEY_PIPELINE_TIMEOUT);
+	public int getPipelineTimeout() {
+		return config().getInt(KEY_PIPELINE_TIMEOUT);
 	}
 
 	public int getReceiveBufferSize() {
