@@ -7,10 +7,11 @@
  */
 package osgi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import javax.inject.Inject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
@@ -43,6 +44,7 @@ public class TestArbiter extends TestAny {
 
 	}
 
+	@Ignore
 	@Test
 	public void testMulticast() throws Exception {
 

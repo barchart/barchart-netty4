@@ -7,10 +7,11 @@
  */
 package osgi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import javax.inject.Inject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
@@ -42,6 +43,7 @@ public class TestMulticast extends TestAny {
 
 	}
 
+	@Ignore
 	@Test
 	public void testMulticast() throws Exception {
 
@@ -49,8 +51,9 @@ public class TestMulticast extends TestAny {
 
 			/** sequence writer */
 
-			final Config config = ConfigFactory.load("case-01/point-0.conf")
-					.getConfig("point");
+			final Config config =
+					ConfigFactory.load("case-01/point-0.conf").getConfig(
+							"point");
 
 			final NettyDot service = manager.create(config);
 
@@ -62,8 +65,9 @@ public class TestMulticast extends TestAny {
 
 			/** sequence reader */
 
-			final Config config = ConfigFactory.load("case-01/point-1.conf")
-					.getConfig("point");
+			final Config config =
+					ConfigFactory.load("case-01/point-1.conf").getConfig(
+							"point");
 
 			final NettyDot service = manager.create(config);
 

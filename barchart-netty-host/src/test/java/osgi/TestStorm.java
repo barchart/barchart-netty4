@@ -7,10 +7,11 @@
  */
 package osgi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import javax.inject.Inject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
@@ -45,6 +46,7 @@ public class TestStorm extends TestAny {
 
 	}
 
+	@Ignore
 	@Test
 	public void testStorm() throws Exception {
 
@@ -52,8 +54,9 @@ public class TestStorm extends TestAny {
 
 			/** echo server */
 
-			final Config config = ConfigFactory.load("case-04/point-0.conf")
-					.getConfig("point");
+			final Config config =
+					ConfigFactory.load("case-04/point-0.conf").getConfig(
+							"point");
 
 			final NettyDot service = manager.create(config);
 
@@ -65,8 +68,9 @@ public class TestStorm extends TestAny {
 
 			/** echo client */
 
-			final Config config = ConfigFactory.load("case-04/point-1.conf")
-					.getConfig("point");
+			final Config config =
+					ConfigFactory.load("case-04/point-1.conf").getConfig(
+							"point");
 
 			final NettyDot service = manager.create(config);
 
