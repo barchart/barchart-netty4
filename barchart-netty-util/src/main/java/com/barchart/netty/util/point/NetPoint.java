@@ -12,8 +12,8 @@ public class NetPoint extends Entry implements NetKey {
 
 	public static List<NetPoint> form(final List<? extends Config> confList) {
 
-		final List<NetPoint> pointList = new ArrayList<NetPoint>(
-				confList.size());
+		final List<NetPoint> pointList =
+				new ArrayList<NetPoint>(confList.size());
 
 		for (final Config config : confList) {
 			final NetPoint point = from(config);
@@ -55,6 +55,10 @@ public class NetPoint extends Entry implements NetKey {
 
 	public String getPipeline() {
 		return config().getString(KEY_PIPELINE);
+	}
+
+	public String getPipelineTimeout() {
+		return config().getString(KEY_PIPELINE_TIMEOUT);
 	}
 
 	public int getReceiveBufferSize() {
