@@ -22,7 +22,6 @@ import com.barchart.netty.util.point.NetPoint;
 public abstract class BootAny implements NettyBoot {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
-	protected final static String PIPELINE_TIMEOUT = "pipeline-timeout";
 
 	@Activate
 	protected void bootActivate() {
@@ -59,9 +58,9 @@ public abstract class BootAny implements NettyBoot {
 				/** always link channel with owner end point */
 				// channel.attr(NettyDot.ATTR_NET_POINT).set(netPoint);
 
-				final int timeout = netPoint.getInt(PIPELINE_TIMEOUT, 10000);
 				final NettyPipe pipe =
-						pipeManager().findPipe(netPoint.getPipeline(), timeout,
+						pipeManager().findPipe(netPoint.getPipeline(),
+								netPoint.getPipelineTimeout(),
 								TimeUnit.MILLISECONDS);
 
 				if (pipe == null) {
