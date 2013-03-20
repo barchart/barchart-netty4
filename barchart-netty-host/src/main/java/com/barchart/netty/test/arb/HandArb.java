@@ -2,9 +2,9 @@ package com.barchart.netty.test.arb;
 
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
+import io.netty.channel.ChannelStateHandlerAdapter;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +18,7 @@ import com.barchart.proto.buf.data.MarketPacket;
 /**
  * duplicate message arbiter handler
  */
-public class HandArb extends ChannelHandlerAdapter implements
+public class HandArb extends ChannelStateHandlerAdapter implements
 		ChannelInboundMessageHandler<MarketPacket> {
 
 	@Override
@@ -40,8 +40,8 @@ public class HandArb extends ChannelHandlerAdapter implements
 
 		this.ctx = ctx;
 
-		final NetPoint point = ctx.channel().attr(NettyDot.ATTR_NET_POINT)
-				.get();
+		final NetPoint point =
+				ctx.channel().attr(NettyDot.ATTR_NET_POINT).get();
 
 		arbiterDepth = point.getInt("arbiter-depth", 10 * 1000);
 		arbiterTimeout = point.getInt("arbiter-timeout", 200);
@@ -97,8 +97,9 @@ public class HandArb extends ChannelHandlerAdapter implements
 	private void timerOn() {
 
 		if (future == null || future.isDone()) {
-			future = ctx.channel().eventLoop()
-					.schedule(task, arbiterTimeout, arbiterUnit);
+			future =
+					ctx.channel().eventLoop()
+							.schedule(task, arbiterTimeout, arbiterUnit);
 		}
 
 	}
@@ -131,6 +132,12 @@ public class HandArb extends ChannelHandlerAdapter implements
 
 		ctx.fireInboundBufferUpdated();
 
+	}
+
+	@Override
+	public void freeInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }

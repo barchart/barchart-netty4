@@ -3,10 +3,10 @@ package com.barchart.netty.part.hand;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundMessageHandler;
+import io.netty.channel.ChannelPromise;
 import io.netty.channel.socket.DatagramPacket;
 
 import java.net.InetSocketAddress;
@@ -18,7 +18,7 @@ import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.util.point.NetPoint;
 
 /** from ByteBuf into DatagramPacket, final stage before write */
-public class DatagramPacketWriter extends ChannelHandlerAdapter implements
+public class DatagramPacketWriter extends ChannelDuplexHandler implements
 		ChannelOutboundMessageHandler<Object> {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -29,8 +29,8 @@ public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
 
-		final NetPoint point = ctx.channel().attr(NettyDot.ATTR_NET_POINT)
-				.get();
+		final NetPoint point =
+				ctx.channel().attr(NettyDot.ATTR_NET_POINT).get();
 
 		localAddress = point.getLocalAddress();
 		remoteAddress = point.getRemoteAddress();
@@ -47,7 +47,7 @@ public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 
 	@Override
 	public void flush(final ChannelHandlerContext ctx,
-			final ChannelFuture future) throws Exception {
+			final ChannelPromise promise) throws Exception {
 
 		final MessageBuf<Object> source = ctx.outboundMessageBuffer();
 
@@ -65,8 +65,8 @@ public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 
 				final ByteBuf buffer = (ByteBuf) entry;
 
-				final DatagramPacket packet = new DatagramPacket(buffer,
-						remoteAddress);
+				final DatagramPacket packet =
+						new DatagramPacket(buffer, remoteAddress);
 
 				target.add(packet);
 
@@ -78,8 +78,20 @@ public class DatagramPacketWriter extends ChannelHandlerAdapter implements
 
 		}
 
-		ctx.flush(future);
+		ctx.flush(promise);
 
+	}
+
+	@Override
+	public void freeOutboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void inboundBufferUpdated(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }

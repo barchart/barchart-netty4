@@ -6,9 +6,9 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.channel.socket.nio.NioEventLoopGroup;
 import io.netty.handler.logging.MessageLoggingHandler;
 
 import java.net.InetAddress;
@@ -36,8 +36,8 @@ public class MainWriteNetty {
 		final String host = "mainlan";
 
 		final InetAddress ifaceAddr = InetAddress.getByName(host);
-		final NetworkInterface iface = NetworkInterface
-				.getByInetAddress(ifaceAddr);
+		final NetworkInterface iface =
+				NetworkInterface.getByInetAddress(ifaceAddr);
 
 		log.info("iface = " + iface); //
 
@@ -54,8 +54,8 @@ public class MainWriteNetty {
 		final SocketAddress local = new InetSocketAddress(host, 0);
 		log.info("bind  = " + local);
 
-		final InetSocketAddress remote = new InetSocketAddress(groupAddr,
-				groupPort);
+		final InetSocketAddress remote =
+				new InetSocketAddress(groupAddr, groupPort);
 
 		final Bootstrap boot = new Bootstrap();
 		boot.localAddress(local);

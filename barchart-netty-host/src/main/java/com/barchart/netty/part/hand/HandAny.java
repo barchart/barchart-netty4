@@ -1,6 +1,6 @@
 package com.barchart.netty.part.hand;
 
-import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelDuplexHandler;
 
 import java.util.Map;
 import java.util.UUID;
@@ -17,7 +17,7 @@ import com.barchart.netty.host.api.NettyHand;
 
 /** parent for "hand" - netty handlers */
 @Component(name = HandAny.TYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
-public class HandAny extends ChannelHandlerAdapter implements NettyHand {
+public abstract class HandAny extends ChannelDuplexHandler implements NettyHand {
 
 	public static final String TYPE = "barchart.netty.hand.any";
 

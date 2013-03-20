@@ -2,9 +2,9 @@ package com.barchart.netty.test.fail_over;
 
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
+import io.netty.channel.ChannelStateHandlerAdapter;
 
 import java.net.InetSocketAddress;
 
@@ -14,7 +14,7 @@ import com.barchart.netty.util.point.NetPoint;
 /**
  * channel fail-over / switch handler
  */
-public class HandSwitch extends ChannelHandlerAdapter implements
+public class HandSwitch extends ChannelStateHandlerAdapter implements
 		ChannelInboundMessageHandler<Object> {
 
 	@Override
@@ -33,8 +33,8 @@ public class HandSwitch extends ChannelHandlerAdapter implements
 
 		this.ctx = ctx;
 
-		final NetPoint point = ctx.channel().attr(NettyDot.ATTR_NET_POINT)
-				.get();
+		final NetPoint point =
+				ctx.channel().attr(NettyDot.ATTR_NET_POINT).get();
 
 		localAddress = point.getLocalAddress();
 		remoteAddress = point.getRemoteAddress();
@@ -69,6 +69,12 @@ public class HandSwitch extends ChannelHandlerAdapter implements
 
 		}
 
+	}
+
+	@Override
+	public void freeInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }

@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.util.NetworkConstants;
+import io.netty.util.NetUtil;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -38,8 +38,8 @@ public class BootCastMulti extends BootCast {
 
 			final InetAddress address = netPoint.getLocalAddress().getAddress();
 
-			final NetworkInterface iface = NetworkInterface
-					.getByInetAddress(address);
+			final NetworkInterface iface =
+					NetworkInterface.getByInetAddress(address);
 
 			if (iface == null) {
 				throw new IllegalArgumentException(
@@ -50,7 +50,7 @@ public class BootCastMulti extends BootCast {
 
 		} catch (final Throwable e) {
 			log.error("fatal: can not resolve bind interface", e);
-			return NetworkConstants.LOOPBACK_IF;
+			return NetUtil.LOOPBACK_IF;
 		}
 	}
 
@@ -78,44 +78,45 @@ public class BootCastMulti extends BootCast {
 			final InetAddress bindAddr;
 			final int bindPort = groupAddress(netPoint).getPort();
 			switch (OperatingSystem.CURRENT) {
-			case LINUX:
-				bindAddr = groupAddress(netPoint).getAddress();
-				break;
-			case WINDOWS:
-				bindAddr = localAddress(netPoint).getAddress();
-				break;
-			default:
-				log.error("", new Exception(
-						"possible bind problem - o/s not tested"));
-				bindAddr = InetAddress.getByName("0.0.0.0");
-				break;
+				case LINUX:
+					bindAddr = groupAddress(netPoint).getAddress();
+					break;
+				case WINDOWS:
+					bindAddr = localAddress(netPoint).getAddress();
+					break;
+				default:
+					log.error("", new Exception(
+							"possible bind problem - o/s not tested"));
+					bindAddr = InetAddress.getByName("0.0.0.0");
+					break;
 			}
 			return new NetAddress(bindAddr, bindPort);
 		} catch (final Throwable e) {
 			log.error("fatal: can not resolve bind address", e);
-			return new NetAddress(NetworkConstants.LOCALHOST, 0);
+			return new NetAddress(NetUtil.LOCALHOST, 0);
 		}
 	}
 
 	@Override
 	public ChannelFuture startup(final NetPoint netPoint) throws Exception {
 
-		final NioDatagramChannel channel = (NioDatagramChannel) new Bootstrap()
-		.localAddress(netPoint.getRemoteAddress().getPort())
-		.remoteAddress(netPoint.getRemoteAddress())
-		.channel(NioDatagramChannel.class)
-		.option(ChannelOption.SO_SNDBUF, netPoint.getSendBufferSize())
-		.option(ChannelOption.SO_RCVBUF, netPoint.getReceiveBufferSize())
-		.option(ChannelOption.SO_REUSEADDR, true)
-		.option(ChannelOption.IP_MULTICAST_TTL, netPoint.getPacketTTL())
-		.group(group())
-		.handler(pipeApply(netPoint, Mode.DEFAULT))
-		.bind()
-		.sync()
-		.channel();
-		
+		final NioDatagramChannel channel =
+				(NioDatagramChannel) new Bootstrap()
+						.localAddress(netPoint.getRemoteAddress().getPort())
+						.remoteAddress(netPoint.getRemoteAddress())
+						.channel(NioDatagramChannel.class)
+						.option(ChannelOption.SO_SNDBUF,
+								netPoint.getSendBufferSize())
+						.option(ChannelOption.SO_RCVBUF,
+								netPoint.getReceiveBufferSize())
+						.option(ChannelOption.SO_REUSEADDR, true)
+						.option(ChannelOption.IP_MULTICAST_TTL,
+								netPoint.getPacketTTL()).group(group())
+						.handler(pipeApply(netPoint, Mode.DEFAULT)).bind()
+						.sync().channel();
+
 		return channel.joinGroup(groupAddress(netPoint),
-			bindInterface(netPoint)).sync();
+				bindInterface(netPoint)).sync();
 
 	}
 

@@ -19,6 +19,7 @@ import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
+import io.netty.channel.ChannelPromise;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -79,6 +80,18 @@ public class HandMatrix extends HandAny implements
 
 	protected void unbind(final Matrix s) {
 		matrix = null;
+	}
+
+	@Override
+	public void freeInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void flush(final ChannelHandlerContext ctx,
+			final ChannelPromise promise) throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }

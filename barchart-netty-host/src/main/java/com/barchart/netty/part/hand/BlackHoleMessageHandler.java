@@ -2,14 +2,14 @@ package com.barchart.netty.part.hand;
 
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
 import io.netty.channel.ChannelOutboundMessageHandler;
+import io.netty.channel.ChannelPromise;
 
 /** drop both inbound and outbound traffic */
-public class BlackHoleMessageHandler extends ChannelHandlerAdapter implements
+public class BlackHoleMessageHandler extends ChannelDuplexHandler implements
 		ChannelInboundMessageHandler<Object>,
 		ChannelOutboundMessageHandler<Object> {
 
@@ -42,7 +42,7 @@ public class BlackHoleMessageHandler extends ChannelHandlerAdapter implements
 
 	@Override
 	public void flush(final ChannelHandlerContext ctx,
-			final ChannelFuture future) throws Exception {
+			final ChannelPromise promise) throws Exception {
 
 		final MessageBuf<Object> source = ctx.outboundMessageBuffer();
 
@@ -53,6 +53,18 @@ public class BlackHoleMessageHandler extends ChannelHandlerAdapter implements
 			}
 		}
 
+	}
+
+	@Override
+	public void freeInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void freeOutboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }

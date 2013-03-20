@@ -3,15 +3,15 @@ package com.barchart.netty.part.hand;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
 import io.netty.channel.ChannelOutboundMessageHandler;
-import io.netty.channel.socket.SctpMessage;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.sctp.SctpMessage;
 
 /** ByteBuf-SctpData wrapper */
-public class SctpMessageCodec extends ChannelHandlerAdapter implements
+public class SctpMessageCodec extends ChannelDuplexHandler implements
 		ChannelInboundMessageHandler<Object>,
 		ChannelOutboundMessageHandler<Object> {
 
@@ -47,7 +47,7 @@ public class SctpMessageCodec extends ChannelHandlerAdapter implements
 
 				final SctpMessage data = (SctpMessage) entry;
 
-				final ByteBuf buffer = data.getPayloadBuffer();
+				final ByteBuf buffer = data.data();
 
 				target.add(buffer);
 
@@ -61,7 +61,7 @@ public class SctpMessageCodec extends ChannelHandlerAdapter implements
 
 	@Override
 	public void flush(final ChannelHandlerContext ctx,
-			final ChannelFuture future) throws Exception {
+			final ChannelPromise promise) throws Exception {
 
 		final MessageBuf<Object> source = ctx.outboundMessageBuffer();
 
@@ -84,8 +84,20 @@ public class SctpMessageCodec extends ChannelHandlerAdapter implements
 
 		}
 
-		ctx.flush(future);
+		ctx.flush(promise);
 
+	}
+
+	@Override
+	public void freeInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void freeOutboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }

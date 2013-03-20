@@ -2,14 +2,14 @@ package com.barchart.netty.test.sequence;
 
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
+import io.netty.channel.ChannelStateHandlerAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HandSequenceReader extends ChannelHandlerAdapter implements
+public class HandSequenceReader extends ChannelStateHandlerAdapter implements
 		ChannelInboundMessageHandler<Object> {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -84,6 +84,12 @@ public class HandSequenceReader extends ChannelHandlerAdapter implements
 
 		}
 
+	}
+
+	@Override
+	public void freeInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }

@@ -2,14 +2,14 @@ package com.barchart.netty.part.hand;
 
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
 import io.netty.channel.ChannelOutboundMessageHandler;
+import io.netty.channel.ChannelPromise;
 import io.netty.channel.socket.DatagramPacket;
 
-public class DatagramPacketCodec extends ChannelHandlerAdapter implements
+public class DatagramPacketCodec extends ChannelDuplexHandler implements
 		ChannelInboundMessageHandler<DatagramPacket>,
 		ChannelOutboundMessageHandler<DatagramPacket> {
 
@@ -46,7 +46,7 @@ public class DatagramPacketCodec extends ChannelHandlerAdapter implements
 
 	@Override
 	public void flush(final ChannelHandlerContext ctx,
-			final ChannelFuture future) throws Exception {
+			final ChannelPromise promise) throws Exception {
 
 		final MessageBuf<DatagramPacket> buf = ctx.outboundMessageBuffer();
 
@@ -60,8 +60,20 @@ public class DatagramPacketCodec extends ChannelHandlerAdapter implements
 			out.add(o);
 		}
 
-		ctx.flush(future);
+		ctx.flush(promise);
 
+	}
+
+	@Override
+	public void freeInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void freeOutboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }

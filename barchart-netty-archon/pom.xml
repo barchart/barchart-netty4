@@ -25,7 +25,7 @@
 
 		<projectJavaVersion>1.7</projectJavaVersion>
 
-		<projectNettyVersion>4.0.0.Alpha6</projectNettyVersion>
+		<projectNettyVersion>4.0.0.Beta3</projectNettyVersion>
 
 	</properties>
 
@@ -37,37 +37,7 @@
 
 			<dependency>
 				<groupId>io.netty</groupId>
-				<artifactId>netty</artifactId>
-				<version>${projectNettyVersion}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.netty</groupId>
-				<artifactId>netty-common</artifactId>
-				<version>${projectNettyVersion}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>io.netty</groupId>
-				<artifactId>netty-buffer</artifactId>
-				<version>${projectNettyVersion}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>io.netty</groupId>
-				<artifactId>netty-codec</artifactId>
-				<version>${projectNettyVersion}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>io.netty</groupId>
-				<artifactId>netty-handler</artifactId>
-				<version>${projectNettyVersion}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>io.netty</groupId>
-				<artifactId>netty-transport</artifactId>
+				<artifactId>netty-all</artifactId>
 				<version>${projectNettyVersion}</version>
 			</dependency>
 

@@ -2,16 +2,16 @@ package com.barchart.netty.part.hand;
 
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelStateHandlerAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** redirect incoming messages into a different pipeline */
-public class RedirectMessageReader extends ChannelHandlerAdapter implements
+public class RedirectMessageReader extends ChannelStateHandlerAdapter implements
 		ChannelInboundMessageHandler<Object> {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -52,6 +52,12 @@ public class RedirectMessageReader extends ChannelHandlerAdapter implements
 
 		targetPipeline.fireInboundBufferUpdated();
 
+	}
+
+	@Override
+	public void freeInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }

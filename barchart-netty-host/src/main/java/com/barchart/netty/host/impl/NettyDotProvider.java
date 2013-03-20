@@ -1,7 +1,7 @@
 package com.barchart.netty.host.impl;
 
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.socket.nio.NioEventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 

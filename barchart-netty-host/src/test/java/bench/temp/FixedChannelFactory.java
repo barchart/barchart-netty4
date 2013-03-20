@@ -1,6 +1,6 @@
 package bench.temp;
 
-import io.netty.bootstrap.AbstractBootstrap.ChannelFactory;
+import io.netty.bootstrap.ChannelFactory;
 import io.netty.channel.Channel;
 
 /**

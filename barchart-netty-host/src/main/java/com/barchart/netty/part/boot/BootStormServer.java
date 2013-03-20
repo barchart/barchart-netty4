@@ -3,7 +3,8 @@ package com.barchart.netty.part.boot;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.socket.nio.NioSctpServerChannel;
+import io.netty.channel.sctp.SctpChannelOption;
+import io.netty.channel.sctp.nio.NioSctpServerChannel;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -38,7 +39,7 @@ public class BootStormServer extends BootAny {
 
 		.option(ChannelOption.SO_BACKLOG, 100)
 
-		.childOption(ChannelOption.SCTP_NODELAY, true)
+		.childOption(SctpChannelOption.SCTP_NODELAY, true)
 
 		/** https://github.com/netty/netty/issues/610 */
 

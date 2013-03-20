@@ -1,7 +1,7 @@
 package com.barchart.netty.test.sequence;
 
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelStateHandlerAdapter;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HandSequenceWriter extends ChannelHandlerAdapter {
+public class HandSequenceWriter extends ChannelStateHandlerAdapter {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -48,8 +48,9 @@ public class HandSequenceWriter extends ChannelHandlerAdapter {
 
 	protected void writeActive() {
 
-		writeFuture = ctx.channel().eventLoop()
-				.scheduleAtFixedRate(writeTask, 1, 1, TimeUnit.SECONDS);
+		writeFuture =
+				ctx.channel().eventLoop()
+						.scheduleAtFixedRate(writeTask, 1, 1, TimeUnit.SECONDS);
 
 	}
 
@@ -87,6 +88,12 @@ public class HandSequenceWriter extends ChannelHandlerAdapter {
 
 		return PREFIX + counter.getAndIncrement();
 
+	}
+
+	@Override
+	public void inboundBufferUpdated(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }

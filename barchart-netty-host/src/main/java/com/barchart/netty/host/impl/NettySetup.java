@@ -1,7 +1,7 @@
 package com.barchart.netty.host.impl;
 
-import io.netty.logging.InternalLoggerFactory;
-import io.netty.logging.Slf4JLoggerFactory;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import io.netty.util.internal.logging.Slf4JLoggerFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

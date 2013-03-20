@@ -2,8 +2,8 @@ package bench.nio;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.channel.socket.nio.NioEventLoopGroup;
 import io.netty.handler.logging.MessageLoggingHandler;
 
 import java.net.InetAddress;
@@ -34,8 +34,8 @@ public class MainReadNetty {
 
 		final InetAddress ifaceAddr = InetAddress.getByName(host);
 
-		final NetworkInterface iface = NetworkInterface
-				.getByInetAddress(ifaceAddr);
+		final NetworkInterface iface =
+				NetworkInterface.getByInetAddress(ifaceAddr);
 		log.info("iface = " + iface);
 
 		//
@@ -49,8 +49,8 @@ public class MainReadNetty {
 		final SocketAddress local = new InetSocketAddress("0.0.0.0", groupPort);
 		log.info("local  = " + local);
 
-		final InetSocketAddress remote = new InetSocketAddress(groupAddr,
-				groupPort);
+		final InetSocketAddress remote =
+				new InetSocketAddress(groupAddr, groupPort);
 		log.info("remote  = " + remote);
 
 		//

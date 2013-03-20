@@ -4,7 +4,8 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.socket.nio.NioSctpChannel;
+import io.netty.channel.sctp.SctpChannelOption;
+import io.netty.channel.sctp.nio.NioSctpChannel;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -37,7 +38,7 @@ public class BootStormClient extends BootAny {
 
 		.remoteAddress(netPoint.getRemoteAddress())
 
-		.option(ChannelOption.SCTP_NODELAY, true)
+		.option(SctpChannelOption.SCTP_NODELAY, true)
 
 		/** https://github.com/netty/netty/issues/610 */
 

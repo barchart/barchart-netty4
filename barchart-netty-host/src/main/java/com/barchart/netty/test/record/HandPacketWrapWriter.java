@@ -3,9 +3,9 @@ package com.barchart.netty.test.record;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
+import io.netty.channel.ChannelStateHandlerAdapter;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -23,7 +23,7 @@ import com.barchart.proto.buf.wrap.PacketWrapper.Builder;
 import com.google.protobuf.ByteString;
 
 /** record ByteBuf packets into file */
-public class HandPacketWrapWriter extends ChannelHandlerAdapter implements
+public class HandPacketWrapWriter extends ChannelStateHandlerAdapter implements
 		ChannelInboundMessageHandler<Object> {
 
 	@Override
@@ -43,8 +43,8 @@ public class HandPacketWrapWriter extends ChannelHandlerAdapter implements
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
 
-		final NetPoint point = ctx.channel().attr(NettyDot.ATTR_NET_POINT)
-				.get();
+		final NetPoint point =
+				ctx.channel().attr(NettyDot.ATTR_NET_POINT).get();
 
 		id = point.getId();
 		localAddress = point.getLocalAddress();
@@ -52,13 +52,14 @@ public class HandPacketWrapWriter extends ChannelHandlerAdapter implements
 
 		final String folder = point.getString("folder", "default-folder");
 		final String file = //
-		"record." + id + "." + System.currentTimeMillis() + ".buf";
+				"record." + id + "." + System.currentTimeMillis() + ".buf";
 
 		final File path = new File(folder, file);
 		output = new BufferedOutputStream(new FileOutputStream(path));
 
-		future = ctx.channel().eventLoop()
-				.scheduleAtFixedRate(task, 3, 3, TimeUnit.SECONDS);
+		future =
+				ctx.channel().eventLoop()
+						.scheduleAtFixedRate(task, 3, 3, TimeUnit.SECONDS);
 
 		super.channelActive(ctx);
 
@@ -125,5 +126,11 @@ public class HandPacketWrapWriter extends ChannelHandlerAdapter implements
 			}
 		}
 	};
+
+	@Override
+	public void freeInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
+	}
 
 }

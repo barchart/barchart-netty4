@@ -2,13 +2,13 @@ package com.barchart.netty.part.hand;
 
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
+import io.netty.channel.ChannelStateHandlerAdapter;
 import io.netty.channel.socket.DatagramPacket;
 
 /** from DatagramPacket into ByteBuf, initial stage after read */
-public class DatagramPacketReader extends ChannelHandlerAdapter implements
+public class DatagramPacketReader extends ChannelStateHandlerAdapter implements
 		ChannelInboundMessageHandler<Object> {
 
 	@Override
@@ -44,6 +44,12 @@ public class DatagramPacketReader extends ChannelHandlerAdapter implements
 
 		ctx.fireInboundBufferUpdated();
 
+	}
+
+	@Override
+	public void freeInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }
