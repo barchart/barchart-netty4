@@ -15,14 +15,14 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 import com.barchart.osgi.event.api.EventAdminService;
 import com.barchart.osgi.event.api.EventUtil;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class TestEvents extends TestAny implements EventHandler {
 
 	static final String TOPIC = UUID.randomUUID().toString();

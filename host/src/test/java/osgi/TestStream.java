@@ -7,24 +7,20 @@
  */
 package osgi;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
+import org.ops4j.pax.exam.junit.PaxExam;
 
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyDotManager;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-@RunWith(JUnit4TestRunner.class)
-@ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
+@RunWith(PaxExam.class)
 public class TestStream extends TestAny {
 
 	@Inject
@@ -46,7 +42,6 @@ public class TestStream extends TestAny {
 
 	}
 
-	@Ignore
 	@Test
 	public void testStream() throws Exception {
 
@@ -54,9 +49,8 @@ public class TestStream extends TestAny {
 
 			/** echo server */
 
-			final Config config =
-					ConfigFactory.load("case-02/point-0.conf").getConfig(
-							"point");
+			final Config config = ConfigFactory.load("case-02/point-0.conf")
+					.getConfig("point");
 
 			final NettyDot service = manager.create(config);
 
@@ -68,9 +62,8 @@ public class TestStream extends TestAny {
 
 			/** echo client */
 
-			final Config config =
-					ConfigFactory.load("case-02/point-1.conf").getConfig(
-							"point");
+			final Config config = ConfigFactory.load("case-02/point-1.conf")
+					.getConfig("point");
 
 			final NettyDot service = manager.create(config);
 

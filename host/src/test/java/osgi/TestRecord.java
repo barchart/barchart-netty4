@@ -7,21 +7,20 @@
  */
 package osgi;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
 
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyDotManager;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class TestRecord extends TestAny {
 
 	@Inject
@@ -43,7 +42,6 @@ public class TestRecord extends TestAny {
 
 	}
 
-	@Ignore
 	@Test
 	public void testMulticast() throws Exception {
 
@@ -51,9 +49,8 @@ public class TestRecord extends TestAny {
 
 			/** sequence writer */
 
-			final Config config =
-					ConfigFactory.load("case-05/point-0.conf").getConfig(
-							"point");
+			final Config config = ConfigFactory.load("case-05/point-0.conf")
+					.getConfig("point");
 
 			final NettyDot service = manager.create(config);
 
@@ -65,9 +62,8 @@ public class TestRecord extends TestAny {
 
 			/** sequence reader */
 
-			final Config config =
-					ConfigFactory.load("case-05/point-1.conf").getConfig(
-							"point");
+			final Config config = ConfigFactory.load("case-05/point-1.conf")
+					.getConfig("point");
 
 			final NettyDot service = manager.create(config);
 
@@ -79,9 +75,8 @@ public class TestRecord extends TestAny {
 
 			/** file recorder */
 
-			final Config config =
-					ConfigFactory.load("case-05/point-2.conf").getConfig(
-							"point");
+			final Config config = ConfigFactory.load("case-05/point-2.conf")
+					.getConfig("point");
 
 			final NettyDot service = manager.create(config);
 

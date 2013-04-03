@@ -7,14 +7,13 @@
  */
 package osgi;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.PaxExam;
 
 import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyDotManager;
@@ -22,7 +21,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 /** FIXME add some traffic */
-@RunWith(JUnit4TestRunner.class)
+@RunWith(PaxExam.class)
 public class TestArbiter extends TestAny {
 
 	@Inject
@@ -44,7 +43,6 @@ public class TestArbiter extends TestAny {
 
 	}
 
-	@Ignore
 	@Test
 	public void testMulticast() throws Exception {
 

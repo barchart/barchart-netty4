@@ -19,8 +19,8 @@ import javax.inject.Inject;
 
 import org.junit.After;
 import org.junit.Before;
+import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.event.EventConstants;
@@ -61,19 +61,29 @@ public class TestAny {
 						.artifactId("org.apache.felix.scr")
 						.versionAsInProject(),
 
-				mavenBundle().groupId("com.carrotgarden.osgi")
-						.artifactId("carrot-osgi-anno-scr-core")
-						.versionAsInProject(),
 				//
 
-				mavenBundle().groupId("org.ops4j.pax.logging").artifactId(
-						"pax-logging-api"),
-				mavenBundle().groupId("org.ops4j.pax.logging").artifactId(
-						"pax-logging-service"),
+				mavenBundle().groupId("org.ops4j.pax.logging")
+						.artifactId("pax-logging-api").versionAsInProject(),
+				mavenBundle().groupId("org.ops4j.pax.logging")
+						.artifactId("pax-logging-service").versionAsInProject(),
 				//
 
 				wrappedBundle(mavenBundle().groupId("io.netty")
-						.artifactId("netty-all").versionAsInProject()),
+						.artifactId("netty-common").versionAsInProject()),
+				wrappedBundle(mavenBundle().groupId("io.netty")
+						.artifactId("netty-codec").versionAsInProject()),
+				wrappedBundle(mavenBundle().groupId("io.netty")
+						.artifactId("netty-buffer").versionAsInProject()),
+				wrappedBundle(mavenBundle().groupId("io.netty")
+						.artifactId("netty-handler").versionAsInProject()),
+				wrappedBundle(mavenBundle().groupId("io.netty")
+						.artifactId("netty-transport").versionAsInProject()),
+				wrappedBundle(mavenBundle().groupId("io.netty")
+						.artifactId("netty-transport-sctp")
+						.versionAsInProject()),
+				wrappedBundle(mavenBundle().groupId("io.netty")
+						.artifactId("netty-transport-udt").versionAsInProject()),
 
 				//
 
