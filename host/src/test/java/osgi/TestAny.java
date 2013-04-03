@@ -7,15 +7,8 @@
  */
 package osgi;
 
-import static org.junit.Assert.assertNotNull;
-import static org.ops4j.pax.exam.CoreOptions.bundle;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemPackage;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
+import static org.junit.Assert.*;
+import static org.ops4j.pax.exam.CoreOptions.*;
 
 import java.net.URL;
 import java.util.Dictionary;
@@ -164,8 +157,7 @@ public class TestAny {
 	}
 
 	private static final String PAX_PID = "org.ops4j.pax.logging";
-	private static final String PAX_SERVICE =
-			"org.ops4j.pax.logging.PaxLoggingService";
+	private static final String PAX_SERVICE = "org.ops4j.pax.logging.PaxLoggingService";
 
 	private void loggingActivate(final ConfigurationAdmin configAdmin)
 			throws Exception {
@@ -176,13 +168,13 @@ public class TestAny {
 
 		props.load(propsURL.openStream());
 
-		final org.osgi.service.cm.Configuration config =
-				configAdmin.getConfiguration(PAX_PID, null);
+		final org.osgi.service.cm.Configuration config = configAdmin
+				.getConfiguration(PAX_PID, null);
 
-		config.update(props);
+		config.update((Dictionary) props);
 
-		final ServiceTracker tracker =
-				new ServiceTracker(context, PAX_SERVICE, null);
+		final ServiceTracker tracker = new ServiceTracker(context, PAX_SERVICE,
+				null);
 
 		tracker.open(true);
 
@@ -197,8 +189,8 @@ public class TestAny {
 	private void loggingDeactivate(final ConfigurationAdmin configAdmin)
 			throws Exception {
 
-		final org.osgi.service.cm.Configuration config =
-				configAdmin.getConfiguration(PAX_PID, null);
+		final org.osgi.service.cm.Configuration config = configAdmin
+				.getConfiguration(PAX_PID, null);
 
 		config.delete();
 
@@ -210,8 +202,7 @@ public class TestAny {
 
 		final String name = EventHandler.class.getName();
 
-		final Dictionary<String, Object> props =
-				new Hashtable<String, Object>();
+		final Dictionary<String, Object> props = new Hashtable<String, Object>();
 		props.put(EventConstants.EVENT_TOPIC, topic);
 
 		context.registerService(name, this, props);

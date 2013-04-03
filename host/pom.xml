@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.barchart.netty</groupId>
 		<artifactId>barchart-netty-archon</artifactId>
-		<version>4.0.2</version>
+		<version>4.0.3-SNAPSHOT</version>
 		<relativePath />
 	</parent>
 
@@ -17,7 +17,7 @@
 		<url>https://github.com/barchart/barchart-netty4</url>
 		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
-	  <tag>HEAD</tag>
+		<tag>master</tag>
   </scm>
 
 	<properties>
