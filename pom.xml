@@ -6,26 +6,32 @@
 	<parent>
 		<groupId>com.barchart.base</groupId>
 		<artifactId>barchart-archon</artifactId>
-		<version>2.3.2</version>
+		<version>2.5.6</version>
 	</parent>
 
-	<groupId>com.barchart.invalid</groupId>
-	<artifactId>barchart-invalid</artifactId>
+	<groupId>com.barchart.netty</groupId>
+	<artifactId>barchart-netty4</artifactId>
 	<version>0.0.0</version>
 	<packaging>pom</packaging>
 
-	<description>eclipse import helper</description>
+	<description>
+<![CDATA[
+### ${project.artifactId}
+
+Layout Project.
+]]>
+	</description>
 
 	<modules>
 
-		<module>barchart-netty-archon</module>
+		<module>archon</module>
 		
-		<module>barchart-netty-util</module>
-		<module>barchart-netty-host</module>
+		<module>util</module>
+		<module>host</module>
 		
-		<module>barchart-netty-app</module>
+		<module>app</module>
 
-		<module>barchart-netty-feature</module>
+		<module>feature</module>
 
 	</modules>
 
