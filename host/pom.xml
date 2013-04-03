@@ -62,14 +62,26 @@
 		<!-- netty -->
 		<dependency>
 			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
+			<artifactId>netty-handler</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport-sctp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport-udt</artifactId>
 		</dependency>
 		
 		<!-- netty util -->
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
 			<artifactId>barchart-netty-util</artifactId>
-			<version>4.0.3</version>
+			<version>4.0.4-SNAPSHOT</version>
 		</dependency>
 		
 		<!--  barchart util -->
