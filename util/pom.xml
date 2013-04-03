@@ -26,7 +26,6 @@
 			<groupId>com.typesafe</groupId>
 			<artifactId>config</artifactId>
 			<version>1.0.0</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- logging -->
