@@ -128,8 +128,6 @@ public class TestAny {
 				//
 
 				mavenBundle().groupId("com.barchart.util")
-						.artifactId("barchart-util-anno").versionAsInProject(),
-				mavenBundle().groupId("com.barchart.util")
 						.artifactId("barchart-util-ascii").versionAsInProject(),
 				mavenBundle().groupId("com.barchart.util")
 						.artifactId("barchart-util-collections")
@@ -142,6 +140,9 @@ public class TestAny {
 				mavenBundle().groupId("com.barchart.util")
 						.artifactId("barchart-util-values")
 						.versionAsInProject(),
+
+				// mavenBundle().groupId("joda-time").artifactId("joda-time")
+				// .versionAsInProject(),
 
 				//
 
