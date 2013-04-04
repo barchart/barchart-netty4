@@ -112,6 +112,8 @@ public class TestAny {
 						.artifactId("barchart-proto-buf-wrap")
 						.versionAsInProject(),
 
+				//
+
 				mavenBundle()
 						.groupId("org.apache.servicemix.bundles")
 						.artifactId(
@@ -141,8 +143,10 @@ public class TestAny {
 						.artifactId("barchart-util-values")
 						.versionAsInProject(),
 
-				// mavenBundle().groupId("joda-time").artifactId("joda-time")
-				// .versionAsInProject(),
+				//
+
+				mavenBundle().groupId("com.barchart.udt")
+						.artifactId("barchart-udt-bundle").versionAsInProject(),
 
 				//
 
