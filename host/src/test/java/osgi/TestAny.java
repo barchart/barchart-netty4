@@ -143,7 +143,8 @@ public class TestAny {
 						.artifactId("barchart-util-values")
 						.versionAsInProject(),
 
-				//
+				mavenBundle().groupId("joda-time").artifactId("joda-time")
+						.versionAsInProject(),
 
 				mavenBundle().groupId("com.barchart.udt")
 						.artifactId("barchart-udt-bundle").versionAsInProject(),
