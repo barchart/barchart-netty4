@@ -97,7 +97,7 @@ public class TestAny {
 						.artifactId("barchart-osgi-event").versionAsInProject(),
 
 				mavenBundle().groupId("com.barchart.osgi")
-						.artifactId("barchart-osgi-factory-cm")
+						.artifactId("barchart-osgi-factory-ca")
 						.versionAsInProject(),
 
 				//
@@ -124,6 +124,24 @@ public class TestAny {
 						.artifactId("barchart-conf-util").versionAsInProject(),
 				mavenBundle().groupId("com.barchart.conf")
 						.artifactId("barchart-conf-list").versionAsInProject(),
+
+				//
+
+				mavenBundle().groupId("com.barchart.util")
+						.artifactId("barchart-util-anno").versionAsInProject(),
+				mavenBundle().groupId("com.barchart.util")
+						.artifactId("barchart-util-ascii").versionAsInProject(),
+				mavenBundle().groupId("com.barchart.util")
+						.artifactId("barchart-util-collections")
+						.versionAsInProject(),
+				mavenBundle().groupId("com.barchart.util")
+						.artifactId("barchart-util-math").versionAsInProject(),
+				mavenBundle().groupId("com.barchart.util")
+						.artifactId("barchart-util-thread")
+						.versionAsInProject(),
+				mavenBundle().groupId("com.barchart.util")
+						.artifactId("barchart-util-values")
+						.versionAsInProject(),
 
 				//
 
