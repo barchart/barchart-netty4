@@ -85,7 +85,7 @@
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
 			<artifactId>barchart-netty-util</artifactId>
-			<version>4.0.4-SNAPSHOT</version>
+			<version>4.0.4</version>
 		</dependency>
 
 		<!-- barchart util -->
