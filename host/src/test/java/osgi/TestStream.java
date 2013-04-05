@@ -11,7 +11,6 @@ import static org.junit.Assert.*;
 
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -21,7 +20,6 @@ import com.barchart.netty.host.api.NettyDotManager;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-@Ignore
 @RunWith(PaxExam.class)
 public class TestStream extends TestAny {
 
@@ -47,12 +45,14 @@ public class TestStream extends TestAny {
 	@Test
 	public void testStream() throws Exception {
 
+		final ClassLoader loader = getClass().getClassLoader();
+
 		{
 
 			/** echo server */
 
-			final Config config = ConfigFactory.load("case-02/point-0.conf")
-					.getConfig("point");
+			final Config config = ConfigFactory.load(loader,
+					"case-02/point-0.conf").getConfig("point");
 
 			final NettyDot service = manager.create(config);
 
@@ -64,8 +64,8 @@ public class TestStream extends TestAny {
 
 			/** echo client */
 
-			final Config config = ConfigFactory.load("case-02/point-1.conf")
-					.getConfig("point");
+			final Config config = ConfigFactory.load(loader,
+					"case-02/point-1.conf").getConfig("point");
 
 			final NettyDot service = manager.create(config);
 

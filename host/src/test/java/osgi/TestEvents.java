@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -23,7 +22,6 @@ import org.osgi.service.event.EventHandler;
 import com.barchart.osgi.event.api.EventAdminService;
 import com.barchart.osgi.event.api.EventUtil;
 
-@Ignore
 @RunWith(PaxExam.class)
 public class TestEvents extends TestAny implements EventHandler {
 

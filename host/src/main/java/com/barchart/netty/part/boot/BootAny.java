@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.host.api.NettyBoot;
+import com.barchart.netty.host.api.NettyDot;
 import com.barchart.netty.host.api.NettyGroup;
 import com.barchart.netty.host.api.NettyPipe;
 import com.barchart.netty.host.api.NettyPipeManager;
@@ -56,12 +57,12 @@ public abstract class BootAny implements NettyBoot {
 			public void initChannel(final Channel channel) throws Exception {
 
 				/** always link channel with owner end point */
-				// channel.attr(NettyDot.ATTR_NET_POINT).set(netPoint);
+				// FIXME why it was commented out
+				channel.attr(NettyDot.ATTR_NET_POINT).set(netPoint);
 
-				final NettyPipe pipe =
-						pipeManager().findPipe(netPoint.getPipeline(),
-								netPoint.getPipelineTimeout(),
-								TimeUnit.MILLISECONDS);
+				final NettyPipe pipe = pipeManager().findPipe(
+						netPoint.getPipeline(), netPoint.getPipelineTimeout(),
+						TimeUnit.MILLISECONDS);
 
 				if (pipe == null) {
 					log.error("missing pipeline", new IllegalArgumentException(

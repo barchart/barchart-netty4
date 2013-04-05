@@ -11,7 +11,6 @@ import static org.junit.Assert.*;
 
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -22,7 +21,6 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 /** FIXME add some traffic */
-@Ignore
 @RunWith(PaxExam.class)
 public class TestArbiter extends TestAny {
 
@@ -48,7 +46,10 @@ public class TestArbiter extends TestAny {
 	@Test
 	public void testMulticast() throws Exception {
 
-		final Config confArbiter = ConfigFactory.load("case-03/arbiter.conf");
+		final ClassLoader loader = getClass().getClassLoader();
+
+		final Config confArbiter = ConfigFactory.load(loader,
+				"case-03/arbiter.conf");
 
 		{
 

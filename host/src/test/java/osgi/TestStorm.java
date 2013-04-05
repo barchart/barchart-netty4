@@ -21,6 +21,11 @@ import com.barchart.netty.host.api.NettyDotManager;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
+/**
+ * FIXME
+ * <p>
+ * com.sun.nio.sctp.UnsupportedOperatingSystemException
+ */
 @Ignore
 @RunWith(PaxExam.class)
 public class TestStorm extends TestAny {
@@ -47,12 +52,14 @@ public class TestStorm extends TestAny {
 	@Test
 	public void testStorm() throws Exception {
 
+		final ClassLoader loader = getClass().getClassLoader();
+
 		{
 
 			/** echo server */
 
-			final Config config = ConfigFactory.load("case-04/point-0.conf")
-					.getConfig("point");
+			final Config config = ConfigFactory.load(loader,
+					"case-04/point-0.conf").getConfig("point");
 
 			final NettyDot service = manager.create(config);
 
@@ -64,8 +71,8 @@ public class TestStorm extends TestAny {
 
 			/** echo client */
 
-			final Config config = ConfigFactory.load("case-04/point-1.conf")
-					.getConfig("point");
+			final Config config = ConfigFactory.load(loader,
+					"case-04/point-1.conf").getConfig("point");
 
 			final NettyDot service = manager.create(config);
 
