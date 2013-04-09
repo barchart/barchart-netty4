@@ -39,15 +39,18 @@
 		</dependency>
 
 		<!-- market data -->
+		<!-- FIXME migrate. -->
 		<dependency>
 			<groupId>com.barchart.proto</groupId>
 			<artifactId>barchart-proto-buf-data</artifactId>
 			<version>1.2.1</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.protobuf-java</artifactId>
 			<version>2.4.1_1</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- packet wrapper -->

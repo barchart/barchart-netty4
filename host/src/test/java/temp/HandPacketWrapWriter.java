@@ -1,4 +1,4 @@
-package com.barchart.netty.test.record;
+package temp;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.MessageBuf;
