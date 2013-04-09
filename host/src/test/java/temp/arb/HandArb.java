@@ -1,4 +1,4 @@
-package com.barchart.netty.test.arb;
+package temp.arb;
 
 import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;

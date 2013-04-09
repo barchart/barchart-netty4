@@ -1,4 +1,4 @@
-package com.barchart.netty.test.arb;
+package temp.arb;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;

@@ -1,4 +1,4 @@
-package com.barchart.netty.test.arb;
+package temp.arb;
 
 /** shared name space */
 interface NameArb {
