@@ -1,8 +1,10 @@
 package com.barchart.netty.host.api;
 
 import io.netty.channel.Channel;
+import aQute.bnd.annotation.ProviderType;
 
 /** represents netty pipeline builder */
+@ProviderType
 public interface NettyPipe {
 
 	enum Mode {

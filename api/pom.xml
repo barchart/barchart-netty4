@@ -9,9 +9,21 @@
 		<relativePath />
 	</parent>
 
-	<artifactId>barchart-netty-host</artifactId>
+	<artifactId>barchart-netty-api</artifactId>
 	<packaging>bundle</packaging>
-	<version>4.0.8-SNAPSHOT</version>
+	<version>4.0.0-SNAPSHOT</version>
+
+	<description>
+<![CDATA[
+### ${project.artifactId}
+
+API bundle. 
+
+Contains API interfaces.
+* Consumer interfaces.
+* Provider interfaces.
+]]>
+	</description>
 
 	<scm>
 		<url>https://github.com/barchart/barchart-netty4</url>
@@ -26,6 +38,13 @@
 
 	<dependencies>
 
+		<dependency>
+			<groupId>biz.aQute</groupId>
+			<artifactId>annotation</artifactId>
+			<version>1.50.0</version>
+			<optional>true</optional>
+		</dependency>
+
 		<!-- base comp -->
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
@@ -36,28 +55,6 @@
 			<groupId>com.barchart.conf</groupId>
 			<artifactId>barchart-conf-list</artifactId>
 			<version>1.0.5</version>
-		</dependency>
-
-		<!-- market data -->
-		<!-- FIXME migrate. -->
-		<dependency>
-			<groupId>com.barchart.proto</groupId>
-			<artifactId>barchart-proto-buf-data</artifactId>
-			<version>1.2.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.protobuf-java</artifactId>
-			<version>2.4.1_1</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- packet wrapper -->
-		<dependency>
-			<groupId>com.barchart.proto</groupId>
-			<artifactId>barchart-proto-buf-wrap</artifactId>
-			<version>1.0.2</version>
 		</dependency>
 
 		<!-- netty -->

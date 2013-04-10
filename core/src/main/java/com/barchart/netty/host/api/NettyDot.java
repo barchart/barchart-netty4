@@ -2,6 +2,7 @@ package com.barchart.netty.host.api;
 
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
+import aQute.bnd.annotation.ProviderType;
 
 import com.barchart.netty.util.point.NetPoint;
 
@@ -10,6 +11,7 @@ import com.barchart.netty.util.point.NetPoint;
  * 
  * contract: net-point id defines dot id
  */
+@ProviderType
 public interface NettyDot extends NettyAny {
 
 	/* properties */

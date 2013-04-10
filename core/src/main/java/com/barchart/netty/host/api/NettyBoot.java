@@ -2,10 +2,12 @@ package com.barchart.netty.host.api;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import aQute.bnd.annotation.ProviderType;
 
 import com.barchart.netty.util.point.NetPoint;
 
 /** represents netty "boot" - connection bootstrapper / channel creator */
+@ProviderType
 public interface NettyBoot {
 
 	/** UUID of this connection boostrapper */

@@ -1,9 +1,12 @@
 package com.barchart.netty.host.api;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.barchart.osgi.factory.api.CidgetManager;
 import com.typesafe.config.Config;
 
 /** dot (end point) factory manager */
+@ProviderType
 public interface NettyDotManager extends CidgetManager<NettyDot> {
 
 	/**
