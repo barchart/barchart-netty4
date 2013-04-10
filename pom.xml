@@ -28,12 +28,11 @@ Layout Project.
 
 		<module>api</module>
 		<module>core</module>
-		
-		<module>util</module>
-		
-		<module>app</module>
+
+		<module>test</module>
 
 		<module>feature</module>
+		<module>app</module>
 
 	</modules>
 

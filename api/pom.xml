@@ -35,101 +35,61 @@ Contains API interfaces.
 
 	<properties>
 
+		<!-- FIXME remove after release. -->
+		<bundleBaselineVersion>1.0.0-SNAPSHOT</bundleBaselineVersion>
+
 	</properties>
 
 	<dependencies>
 
+		<!-- Semantic version annotations. -->
 		<dependency>
 			<groupId>biz.aQute</groupId>
 			<artifactId>annotation</artifactId>
+			<!-- FIXME pending release 2.X. -->
 			<version>1.50.0</version>
 			<optional>true</optional>
 		</dependency>
 
-		<!-- base comp -->
+		<!-- DS event admin LIB. -->
 		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-util</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-list</artifactId>
-			<version>1.0.5</version>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-event</artifactId>
+			<version>[1.1,1.2)</version>
 		</dependency>
 
-		<!-- netty -->
+		<!-- DS factory via config admin LIB. -->
 		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-handler</artifactId>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-factory-ca</artifactId>
+			<version>[1.4,1.5)</version>
 		</dependency>
+
+		<!-- Config LIB. -->
+		<dependency>
+			<groupId>com.typesafe</groupId>
+			<artifactId>config</artifactId>
+			<version>[1.0,1.1)</version>
+		</dependency>
+
+		<!-- Netty components LIB. -->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-transport</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-transport-sctp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-transport-udt</artifactId>
-		</dependency>
-
-		<!-- netty util -->
-		<dependency>
-			<groupId>com.barchart.netty</groupId>
-			<artifactId>barchart-netty-util</artifactId>
-			<version>4.0.4</version>
-		</dependency>
-
-		<!-- barchart util -->
-		<dependency>
-			<groupId>com.barchart.util</groupId>
-			<artifactId>barchart-util-collections</artifactId>
-			<version>2.0.30</version>
-		</dependency>
-
-		<!-- config admin -->
-		<dependency>
-			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-conf</artifactId>
-			<version>1.2.1</version>
-		</dependency>
-
-		<!-- events admin -->
-		<dependency>
-			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-event</artifactId>
-			<version>1.2.1</version>
-		</dependency>
-
-		<!-- ds factory via config admin -->
-		<dependency>
-			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-factory-ca</artifactId>
-			<version>1.4.0</version>
-		</dependency>
-
-		<!-- config -->
-		<dependency>
-			<groupId>com.typesafe</groupId>
-			<artifactId>config</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-
-		<!-- osgi spec -->
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-			<scope>provided</scope>
-		</dependency>
 
 	</dependencies>
+
+	<build>
+		<plugins>
+
+			<!-- Semantic version check against baseline. -->
+			<plugin>
+				<groupId>org.apache.aries.versioning</groupId>
+				<artifactId>org.apache.aries.versioning.plugin</artifactId>
+			</plugin>
+
+		</plugins>
+	</build>
 
 </project>

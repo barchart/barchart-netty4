@@ -1,0 +1,159 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.netty</groupId>
+		<artifactId>barchart-netty-archon</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../archon</relativePath>
+	</parent>
+
+	<artifactId>barchart-netty-test</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<description>
+<![CDATA[
+### ${project.artifactId}
+
+Test suite bundle. 
+
+Imports API bundle.
+* Uses consumer interfaces.
+* Implements provider interfaces.
+]]>
+	</description>
+
+	<scm>
+		<url>https://github.com/barchart/barchart-netty4</url>
+		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
+		<tag>master</tag>
+	</scm>
+
+	<properties>
+
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.barchart.netty</groupId>
+			<artifactId>barchart-netty-api</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.barchart.netty</groupId>
+			<artifactId>barchart-netty-core</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
+
+		<!-- base comp -->
+		<dependency>
+			<groupId>com.barchart.conf</groupId>
+			<artifactId>barchart-conf-util</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.barchart.conf</groupId>
+			<artifactId>barchart-conf-list</artifactId>
+			<version>1.0.5</version>
+		</dependency>
+
+		<!-- market data -->
+		<dependency>
+			<groupId>com.barchart.proto</groupId>
+			<artifactId>barchart-proto-buf-data</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.protobuf-java</artifactId>
+			<version>2.4.1_1</version>
+		</dependency>
+
+		<!-- packet wrapper -->
+		<dependency>
+			<groupId>com.barchart.proto</groupId>
+			<artifactId>barchart-proto-buf-wrap</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
+		<!-- netty -->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-handler</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport-sctp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport-udt</artifactId>
+		</dependency>
+
+		<!-- netty util -->
+		<dependency>
+			<groupId>com.barchart.netty</groupId>
+			<artifactId>barchart-netty-util</artifactId>
+			<version>4.0.4</version>
+		</dependency>
+
+		<!-- barchart util -->
+		<dependency>
+			<groupId>com.barchart.util</groupId>
+			<artifactId>barchart-util-collections</artifactId>
+			<version>2.0.30</version>
+		</dependency>
+
+		<!-- config admin -->
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-conf</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+
+		<!-- events admin -->
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-event</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+
+		<!-- ds factory via config admin -->
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-factory-ca</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+
+		<!-- config -->
+		<dependency>
+			<groupId>com.typesafe</groupId>
+			<artifactId>config</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<!-- osgi spec -->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+</project>

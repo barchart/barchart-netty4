@@ -2,7 +2,7 @@ package com.barchart.netty.app;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.barchart.netty.host.api.NettyDot;
+import com.barchart.netty.api.NettyDot;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigList;
 import com.typesafe.config.ConfigObject;

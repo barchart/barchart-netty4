@@ -26,7 +26,10 @@
 
 		<projectJavaVersion>1.7</projectJavaVersion>
 
-		<projectNettyVersion>4.0.0.CR1</projectNettyVersion>
+
+		<!-- FIXME use range when ready.  -->
+		<projectNettyVersion>[4.0.0.CR1]</projectNettyVersion>
+		<!-- <projectNettyVersion>[4.0, 4.1)</projectNettyVersion> -->
 
 	</properties>
 

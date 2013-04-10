@@ -15,8 +15,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 
-import com.barchart.netty.host.api.NettyDot;
-import com.barchart.netty.host.api.NettyDotManager;
+import com.barchart.netty.api.NettyDot;
+import com.barchart.netty.api.NettyDotManager;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 

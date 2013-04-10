@@ -24,27 +24,21 @@
 
 	<dependencies>
 
-		<!-- MAIN -->
-
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
 			<artifactId>barchart-netty-core</artifactId>
+			<!-- FIXME use release when ready. -->
 			<version>[1-SNAPSHOT,2)</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
 			<artifactId>barchart-netty-app</artifactId>
+			<!-- FIXME use release when ready. -->
 			<version>[1-SNAPSHOT,2)</version>
 		</dependency>
 
-		<!-- TEST -->
-
 	</dependencies>
-
-	<properties>
-		<featureName>${project.artifactId}-${project.version}</featureName>
-	</properties>
 
 	<build>
 

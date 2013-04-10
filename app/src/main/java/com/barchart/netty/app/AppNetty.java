@@ -2,7 +2,7 @@ package com.barchart.netty.app;
 
 import org.osgi.service.component.annotations.Reference;
 
-import com.barchart.netty.host.api.NettyDotManager;
+import com.barchart.netty.api.NettyDotManager;
 
 public class AppNetty extends AppConfig {
 
