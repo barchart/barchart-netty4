@@ -28,8 +28,13 @@
 			<arg value="--define" />
 			<arg value="skipTests" />
 
+			<arg value="--define" />
+			<arg value="invoker.skip=true" />
+
+			<arg value="--show-version" />
+
 		</exec>
-		
+
 	</target>
 
 </project>
