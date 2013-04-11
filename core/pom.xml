@@ -33,20 +33,13 @@ Imports API bundle.
 		<tag>semantic</tag>
 	</scm>
 
-	<properties>
-
-		<!-- FIXME remove after release. -->
-		<bundleBaselineVersion>1.0.0-SNAPSHOT</bundleBaselineVersion>
-
-	</properties>
-
 	<dependencies>
 
 		<!-- API bundle. Provider import. -->
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
 			<artifactId>barchart-netty-api</artifactId>
-			<version>[1.0-SNAPSHOT,1.1)</version>
+			<version>[1.0,1.2)</version>
 		</dependency>
 
 		<!-- Base components LIB. -->

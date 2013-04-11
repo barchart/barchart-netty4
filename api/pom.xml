@@ -32,13 +32,6 @@ Contains API interfaces.
 		<tag>semantic</tag>
 	</scm>
 
-	<properties>
-
-		<!-- FIXME remove after release. -->
-		<bundleBaselineVersion>1.0.0-SNAPSHOT</bundleBaselineVersion>
-
-	</properties>
-
 	<dependencies>
 
 		<!-- Semantic version annotations. -->
