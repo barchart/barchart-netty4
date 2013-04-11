@@ -103,7 +103,11 @@ public class TestAny {
 				//
 
 				mavenBundle().groupId("com.barchart.netty")
-						.artifactId("barchart-netty-util").versionAsInProject(),
+						.artifactId("barchart-netty-api").versionAsInProject(),
+				mavenBundle().groupId("com.barchart.netty")
+						.artifactId("barchart-netty-core").versionAsInProject(),
+
+				//
 
 				mavenBundle().groupId("com.barchart.proto")
 						.artifactId("barchart-proto-buf-data")
@@ -114,11 +118,8 @@ public class TestAny {
 
 				//
 
-				mavenBundle()
-						.groupId("org.apache.servicemix.bundles")
-						.artifactId(
-								"org.apache.servicemix.bundles.protobuf-java")
-						.versionAsInProject(),
+				mavenBundle().groupId("com.google.protobuf")
+						.artifactId("protobuf-java").versionAsInProject(),
 
 				//
 

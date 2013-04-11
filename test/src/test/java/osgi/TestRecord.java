@@ -11,7 +11,6 @@ import static org.junit.Assert.*;
 
 import javax.inject.Inject;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -21,7 +20,6 @@ import com.barchart.netty.api.NettyDotManager;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-@Ignore
 @RunWith(PaxExam.class)
 public class TestRecord extends TestAny {
 
