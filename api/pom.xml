@@ -1,0 +1,95 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.netty</groupId>
+		<artifactId>barchart-netty-archon</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../archon</relativePath>
+	</parent>
+
+	<artifactId>barchart-netty-api</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<description>
+<![CDATA[
+### ${project.artifactId}
+
+API bundle. 
+
+Contains API interfaces.
+* Consumer interfaces.
+* Provider interfaces.
+]]>
+	</description>
+
+	<scm>
+		<url>https://github.com/barchart/barchart-netty4</url>
+		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
+		<tag>master</tag>
+	</scm>
+
+	<properties>
+
+		<!-- FIXME remove after release. -->
+		<bundleBaselineVersion>1.0.0-SNAPSHOT</bundleBaselineVersion>
+
+	</properties>
+
+	<dependencies>
+
+		<!-- Semantic version annotations. -->
+		<dependency>
+			<groupId>biz.aQute</groupId>
+			<artifactId>annotation</artifactId>
+			<!-- FIXME pending release 2.X. -->
+			<version>1.50.0</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- DS event admin LIB. -->
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-event</artifactId>
+			<version>[1.2,2)</version>
+		</dependency>
+
+		<!-- DS factory via config admin LIB. -->
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-factory-ca</artifactId>
+			<version>[1.4,2)</version>
+		</dependency>
+
+		<!-- Config LIB. -->
+		<dependency>
+			<groupId>com.typesafe</groupId>
+			<artifactId>config</artifactId>
+			<version>[1,2)</version>
+		</dependency>
+
+		<!-- Netty components LIB. -->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<!-- Semantic version check against baseline. -->
+			<plugin>
+				<groupId>org.apache.aries.versioning</groupId>
+				<artifactId>org.apache.aries.versioning.plugin</artifactId>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>
