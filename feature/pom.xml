@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -26,16 +27,15 @@
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
 			<artifactId>barchart-netty-core</artifactId>
-			<!-- FIXME use release when ready. -->
-			<version>[1-SNAPSHOT,2)</version>
+			<version>[1,2)</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.barchart.netty</groupId>
-			<artifactId>barchart-netty-app</artifactId>
-			<!-- FIXME use release when ready. -->
-			<version>[1-SNAPSHOT,2)</version>
-		</dependency>
+		<!-- FIXME use release when ready. -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.barchart.netty</groupId> -->
+		<!-- <artifactId>barchart-netty-app</artifactId> -->
+		<!-- <version>[1-SNAPSHOT,2)</version> -->
+		<!-- </dependency> -->
 
 	</dependencies>
 
@@ -46,7 +46,7 @@
 			<plugin>
 				<groupId>org.apache.karaf.tooling</groupId>
 				<artifactId>karaf-maven-plugin</artifactId>
-				<version>3.0.0-build003</version>
+				<version>3.0.0-build004</version>
 				<extensions>true</extensions>
 				<configuration>
 					<installMode>auto</installMode>
