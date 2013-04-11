@@ -96,4 +96,8 @@ public abstract class Entry {
 		return config().root().render();
 	}
 
+	public void test() {
+
+	}
+
 }
