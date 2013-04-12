@@ -1,4 +1,4 @@
-package com.barchart.netty.core;
+package com.barchart.netty.impl;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;

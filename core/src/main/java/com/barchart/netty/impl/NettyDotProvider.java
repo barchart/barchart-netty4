@@ -1,4 +1,4 @@
-package com.barchart.netty.core;
+package com.barchart.netty.impl;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;

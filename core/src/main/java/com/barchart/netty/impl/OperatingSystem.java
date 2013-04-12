@@ -1,4 +1,4 @@
-package com.barchart.netty.core;
+package com.barchart.netty.impl;
 
 /** o/s detector */
 public enum OperatingSystem {

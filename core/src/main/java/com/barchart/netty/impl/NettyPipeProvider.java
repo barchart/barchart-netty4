@@ -1,4 +1,4 @@
-package com.barchart.netty.core;
+package com.barchart.netty.impl;
 
 import java.util.concurrent.TimeUnit;
 

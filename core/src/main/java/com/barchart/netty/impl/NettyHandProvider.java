@@ -1,4 +1,4 @@
-package com.barchart.netty.core;
+package com.barchart.netty.impl;
 
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;

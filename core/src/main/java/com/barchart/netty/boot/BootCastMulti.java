@@ -13,7 +13,7 @@ import java.net.NetworkInterface;
 import org.osgi.service.component.annotations.Component;
 
 import com.barchart.netty.api.NettyPipe.Mode;
-import com.barchart.netty.core.OperatingSystem;
+import com.barchart.netty.impl.OperatingSystem;
 import com.barchart.netty.util.point.NetAddress;
 import com.barchart.netty.util.point.NetPoint;
 
