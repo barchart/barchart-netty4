@@ -7,28 +7,38 @@ import aQute.bnd.annotation.ProviderType;
 import com.barchart.netty.util.point.NetPoint;
 
 /**
- * represents netty "dot" - end point / channel
- * 
- * contract: net-point id defines dot id
+ * Netty "dot" - end point / channel.
+ * <p>
+ * Contract: {@link NetPoint} id defines dot id.
  */
 @ProviderType
 public interface NettyDot extends NettyAny {
 
 	/* properties */
 
-	// String PROP_NET_POINT = "net-point";
+	/**
+	 * Name of the net point property.
+	 */
+	String PROP_NET_POINT = "net-point";
 
 	/* attributes */
 
+	/**
+	 * Channel attribute that stores the net point.
+	 */
 	AttributeKey<NetPoint> ATTR_NET_POINT //
-	= new AttributeKey<NetPoint>("net-point");
+	= new AttributeKey<NetPoint>(PROP_NET_POINT);
 
 	/* methods */
 
-	/** net point that were used to configure this channel */
+	/**
+	 * Net point that were used to configure this channel.
+	 */
 	NetPoint netPoint();
 
-	/** transient/current netty channel associated with this dot */
+	/**
+	 * Current netty channel associated with this dot.
+	 */
 	Channel channel();
 
 }

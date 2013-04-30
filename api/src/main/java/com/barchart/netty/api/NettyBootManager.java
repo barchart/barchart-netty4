@@ -4,14 +4,26 @@ import java.util.concurrent.TimeUnit;
 
 import aQute.bnd.annotation.ProviderType;
 
-/** boot (connection creator) factory manager */
+/**
+ * Boot (connection creator) factory manager.
+ * <p>
+ * FIXME change api.
+ */
 @ProviderType
 public interface NettyBootManager {
 
-	/** @return valid bootstrap or null when not present */
+	/**
+	 * Discover existing bootstrap.
+	 * 
+	 * @return valid bootstrap or null when not present
+	 */
 	NettyBoot findBoot(String bootName);
 
-	/** @return valid bootstrap or null when not present */
+	/**
+	 * Discover existing bootstrap.
+	 * 
+	 * @return valid bootstrap or null when not present
+	 */
 	NettyBoot findBoot(String bootName, long timeout, TimeUnit unit)
 			throws InterruptedException;
 

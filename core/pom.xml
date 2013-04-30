@@ -23,6 +23,13 @@ API Provider bundle.
 Imports API bundle.
 * Uses consumer interfaces.
 * Implements provider interfaces.
+
+Provides 
+* netty host runtime.
+* basic netty components
+
+Basic netty components can be extended by other providers.
+
 ]]>
 	</description>
 
