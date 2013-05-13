@@ -23,13 +23,11 @@
 		<exec executable="${executable}">
 
 			<arg value="clean" />
-			<arg value="install" />
+			<arg value="package" />
 
-			<arg value="--activate-profiles" />
-			<arg value="build-jenkins" />
+			<arg value="--errors" />
 
 		</exec>
-		
 	</target>
 
 </project>

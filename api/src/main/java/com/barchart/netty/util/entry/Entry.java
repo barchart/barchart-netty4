@@ -8,6 +8,11 @@ import org.slf4j.LoggerFactory;
 
 import com.typesafe.config.Config;
 
+/**
+ * {@link Config} Entry.
+ * <p>
+ * TODO move to conf-util
+ */
 public abstract class Entry {
 
 	private final Config config;

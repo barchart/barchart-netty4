@@ -25,6 +25,8 @@
 			<arg value="clean" />
 			<arg value="deploy" />
 
+			<arg value="--errors" />
+
 		</exec>
 	</target>
 

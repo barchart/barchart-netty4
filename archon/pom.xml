@@ -22,13 +22,23 @@
 		<tag>semantic</tag>
 	</scm>
 
+	<description>
+<![CDATA[
+### ${project.artifactId}
+
+Parent Project.
+]]>
+	</description>
+
 	<properties>
 
 		<projectJavaVersion>1.7</projectJavaVersion>
 
-
-		<!-- FIXME use range when ready.  -->
-		<projectNettyVersion>[4.0.0.CR2]</projectNettyVersion>
+		<!-- FIXME use range when ready. -->
+		<projectNettyVersion>4.0.0.CR2</projectNettyVersion>
+		
+		<!-- Use semantic range when netty ready. -->
+		<!-- See https://github.com/netty/netty/issues/1269 -->
 		<!-- <projectNettyVersion>[4.0,4.1)</projectNettyVersion> -->
 
 	</properties>
@@ -79,7 +89,8 @@
 
 	<dependencies>
 
-		<!-- logging -->
+		<!-- Logging API. -->
+		<!-- Provided by OSGI framework at runtime. -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -91,6 +102,61 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- OSGI Specification API. -->
+		<!-- Provided by OSGI framework at runtime. -->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Documentation annotations. -->
+		<!-- Used at build time, not used at runtime. -->
+		<dependency>
+			<groupId>com.barchart.util</groupId>
+			<artifactId>barchart-util-anno</artifactId>
+			<version>2.1.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+
 	</dependencies>
+
+	<build>
+		<plugins>
+
+			<!-- Include test source. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Include test archive. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
 
 </project>

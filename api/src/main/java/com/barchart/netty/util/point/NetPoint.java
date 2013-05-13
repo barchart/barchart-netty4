@@ -8,12 +8,15 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
 
+/**
+ * Network end-point.
+ */
 public class NetPoint extends Entry implements NetKey {
 
 	public static List<NetPoint> form(final List<? extends Config> confList) {
 
-		final List<NetPoint> pointList =
-				new ArrayList<NetPoint>(confList.size());
+		final List<NetPoint> pointList = new ArrayList<NetPoint>(
+				confList.size());
 
 		for (final Config config : confList) {
 			final NetPoint point = from(config);

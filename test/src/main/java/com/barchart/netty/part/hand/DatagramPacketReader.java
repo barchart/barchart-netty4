@@ -35,7 +35,7 @@ public class DatagramPacketReader extends ChannelStateHandlerAdapter implements
 
 			if (message instanceof DatagramPacket) {
 				final DatagramPacket packet = (DatagramPacket) message;
-				target.add(packet.data());
+				target.add(packet.content());
 			} else {
 				target.add(message);
 			}
@@ -44,12 +44,6 @@ public class DatagramPacketReader extends ChannelStateHandlerAdapter implements
 
 		ctx.fireInboundBufferUpdated();
 
-	}
-
-	@Override
-	public void freeInboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		// TODO Auto-generated method stub
 	}
 
 }

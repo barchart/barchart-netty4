@@ -55,16 +55,4 @@ public class BlackHoleMessageHandler extends ChannelDuplexHandler implements
 
 	}
 
-	@Override
-	public void freeInboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void freeOutboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		// TODO Auto-generated method stub
-	}
-
 }

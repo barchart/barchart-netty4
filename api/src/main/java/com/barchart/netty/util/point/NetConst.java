@@ -1,5 +1,8 @@
 package com.barchart.netty.util.point;
 
+/**
+ * Network constants.
+ */
 public interface NetConst {
 
 	/**

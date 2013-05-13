@@ -9,21 +9,22 @@ import io.netty.channel.ChannelStateHandlerAdapter;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.openfeed.proto.generic.Packet;
+
 import com.barchart.netty.api.NettyDot;
 import com.barchart.netty.util.arb.Arbiter;
 import com.barchart.netty.util.arb.ArbiterCore;
 import com.barchart.netty.util.point.NetPoint;
-import com.barchart.proto.buf.data.MarketPacket;
 
 /**
  * duplicate message arbiter handler
  */
 public class HandArb extends ChannelStateHandlerAdapter implements
-		ChannelInboundMessageHandler<MarketPacket> {
+		ChannelInboundMessageHandler<Packet> {
 
 	@Override
-	public MessageBuf<MarketPacket> newInboundBuffer(
-			final ChannelHandlerContext ctx) throws Exception {
+	public MessageBuf<Packet> newInboundBuffer(final ChannelHandlerContext ctx)
+			throws Exception {
 		return Unpooled.messageBuffer();
 	}
 
@@ -40,8 +41,8 @@ public class HandArb extends ChannelStateHandlerAdapter implements
 
 		this.ctx = ctx;
 
-		final NetPoint point =
-				ctx.channel().attr(NettyDot.ATTR_NET_POINT).get();
+		final NetPoint point = ctx.channel().attr(NettyDot.ATTR_NET_POINT)
+				.get();
 
 		arbiterDepth = point.getInt("arbiter-depth", 10 * 1000);
 		arbiterTimeout = point.getInt("arbiter-timeout", 200);
@@ -64,11 +65,11 @@ public class HandArb extends ChannelStateHandlerAdapter implements
 	public final void inboundBufferUpdated(final ChannelHandlerContext ctx)
 			throws Exception {
 
-		final MessageBuf<MarketPacket> source = ctx.inboundMessageBuffer();
+		final MessageBuf<Packet> source = ctx.inboundMessageBuffer();
 
 		while (true) {
 
-			final MarketPacket message = source.poll();
+			final Packet message = source.poll();
 
 			if (message == null) {
 				break;
@@ -97,9 +98,8 @@ public class HandArb extends ChannelStateHandlerAdapter implements
 	private void timerOn() {
 
 		if (future == null || future.isDone()) {
-			future =
-					ctx.channel().eventLoop()
-							.schedule(task, arbiterTimeout, arbiterUnit);
+			future = ctx.channel().eventLoop()
+					.schedule(task, arbiterTimeout, arbiterUnit);
 		}
 
 	}
@@ -132,12 +132,6 @@ public class HandArb extends ChannelStateHandlerAdapter implements
 
 		ctx.fireInboundBufferUpdated();
 
-	}
-
-	@Override
-	public void freeInboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		// TODO Auto-generated method stub
 	}
 
 }

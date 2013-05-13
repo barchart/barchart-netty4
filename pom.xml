@@ -31,8 +31,8 @@ Layout Project.
 
 		<module>test</module>
 
-		<module>feature</module>
 		<module>app</module>
+		<module>feature</module>
 
 	</modules>
 

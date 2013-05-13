@@ -1,6 +1,5 @@
 package com.barchart.netty.test.sequence;
 
-import io.netty.buffer.BufType;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.string.StringEncoder;
@@ -34,8 +33,7 @@ public class PipeSequenceWriter extends PipeAny {
 
 		pipeline.addLast("packet-writer", new DatagramPacketWriter());
 
-		pipeline.addLast("string-encoder", new StringEncoder(BufType.BYTE,
-				CharsetUtil.UTF_8));
+		pipeline.addLast("string-encoder", new StringEncoder(CharsetUtil.UTF_8));
 
 		pipeline.addLast("sequence-writer", new HandSequenceWriter());
 

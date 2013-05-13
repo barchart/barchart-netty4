@@ -29,8 +29,8 @@ public class DatagramPacketWriter extends ChannelDuplexHandler implements
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
 
-		final NetPoint point =
-				ctx.channel().attr(NettyDot.ATTR_NET_POINT).get();
+		final NetPoint point = ctx.channel().attr(NettyDot.ATTR_NET_POINT)
+				.get();
 
 		localAddress = point.getLocalAddress();
 		remoteAddress = point.getRemoteAddress();
@@ -65,8 +65,8 @@ public class DatagramPacketWriter extends ChannelDuplexHandler implements
 
 				final ByteBuf buffer = (ByteBuf) entry;
 
-				final DatagramPacket packet =
-						new DatagramPacket(buffer, remoteAddress);
+				final DatagramPacket packet = new DatagramPacket(buffer,
+						remoteAddress);
 
 				target.add(packet);
 
@@ -83,15 +83,10 @@ public class DatagramPacketWriter extends ChannelDuplexHandler implements
 	}
 
 	@Override
-	public void freeOutboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public void inboundBufferUpdated(final ChannelHandlerContext ctx)
 			throws Exception {
 		// TODO Auto-generated method stub
+		ctx.fireInboundBufferUpdated();
 	}
 
 }

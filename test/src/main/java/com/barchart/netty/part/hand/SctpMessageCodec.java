@@ -47,7 +47,7 @@ public class SctpMessageCodec extends ChannelDuplexHandler implements
 
 				final SctpMessage data = (SctpMessage) entry;
 
-				final ByteBuf buffer = data.data();
+				final ByteBuf buffer = data.content();
 
 				target.add(buffer);
 
@@ -86,18 +86,6 @@ public class SctpMessageCodec extends ChannelDuplexHandler implements
 
 		ctx.flush(promise);
 
-	}
-
-	@Override
-	public void freeInboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void freeOutboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		// TODO Auto-generated method stub
 	}
 
 }

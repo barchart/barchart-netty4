@@ -24,12 +24,10 @@
 
 			<arg value="clean" />
 			<arg value="install" />
-			
-			<arg value="--activate-profiles" />
-			<arg value="build-jenkins" />
+
+			<arg value="--errors" />
 
 		</exec>
-		
 	</target>
 
 </project>

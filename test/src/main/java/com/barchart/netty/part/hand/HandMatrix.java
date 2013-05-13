@@ -83,15 +83,10 @@ public class HandMatrix extends HandAny implements
 	}
 
 	@Override
-	public void freeInboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public void flush(final ChannelHandlerContext ctx,
 			final ChannelPromise promise) throws Exception {
 		// TODO Auto-generated method stub
+		ctx.flush(promise);
 	}
 
 }

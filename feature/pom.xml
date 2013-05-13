@@ -22,12 +22,20 @@
 		<tag>semantic</tag>
 	</scm>
 
+	<description>
+<![CDATA[
+### ${project.artifactId}
+
+Feature Project.
+]]>
+	</description>
+
 	<dependencies>
 
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
 			<artifactId>barchart-netty-core</artifactId>
-			<version>[1,2)</version>
+			<version>[2-SNAPSHOT,3)</version>
 		</dependency>
 
 		<!-- FIXME use release when ready. -->
@@ -44,6 +52,7 @@
 		<plugins>
 
 			<plugin>
+				<!-- Barchart custom plugin. -->
 				<groupId>org.apache.karaf.tooling</groupId>
 				<artifactId>karaf-maven-plugin</artifactId>
 				<version>3.0.0-build004</version>

@@ -25,11 +25,9 @@
 			<arg value="clean" />
 			<arg value="deploy" />
 
-			<arg value="--activate-profiles" />
-			<arg value="build-robot" />
+			<arg value="--errors" />
 
 		</exec>
-
 	</target>
 
 </project>

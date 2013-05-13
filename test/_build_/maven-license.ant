@@ -28,8 +28,9 @@
 			<arg value="--activate-profiles" />
 			<arg value="license" />
 
-		</exec>
+			<arg value="--errors" />
 
+		</exec>
 	</target>
 
 </project>

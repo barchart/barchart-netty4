@@ -43,8 +43,8 @@ public class HandPacketWrapWriter extends ChannelStateHandlerAdapter implements
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
 
-		final NetPoint point =
-				ctx.channel().attr(NettyDot.ATTR_NET_POINT).get();
+		final NetPoint point = ctx.channel().attr(NettyDot.ATTR_NET_POINT)
+				.get();
 
 		id = point.getId();
 		localAddress = point.getLocalAddress();
@@ -52,14 +52,13 @@ public class HandPacketWrapWriter extends ChannelStateHandlerAdapter implements
 
 		final String folder = point.getString("folder", "default-folder");
 		final String file = //
-				"record." + id + "." + System.currentTimeMillis() + ".buf";
+		"record." + id + "." + System.currentTimeMillis() + ".buf";
 
 		final File path = new File(folder, file);
 		output = new BufferedOutputStream(new FileOutputStream(path));
 
-		future =
-				ctx.channel().eventLoop()
-						.scheduleAtFixedRate(task, 3, 3, TimeUnit.SECONDS);
+		future = ctx.channel().eventLoop()
+				.scheduleAtFixedRate(task, 3, 3, TimeUnit.SECONDS);
 
 		super.channelActive(ctx);
 
@@ -126,11 +125,5 @@ public class HandPacketWrapWriter extends ChannelStateHandlerAdapter implements
 			}
 		}
 	};
-
-	@Override
-	public void freeInboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		// TODO Auto-generated method stub
-	}
 
 }

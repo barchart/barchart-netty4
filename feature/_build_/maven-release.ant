@@ -12,21 +12,23 @@
 	<echo message="basedir : ${basedir}" />
 
 	<target name="maven">
-		
+
 		<condition property="executable" value="mvn">
 			<os family="unix" />
 		</condition>
 		<condition property="executable" value="mvn.bat">
 			<os family="windows" />
 		</condition>
-		
+
 		<exec executable="${executable}">
-			
+
 			<arg value="release:prepare" />
 			<arg value="release:perform" />
-			
+
+			<arg value="--errors" />
+
 		</exec>
-		
+
 	</target>
 
 </project>

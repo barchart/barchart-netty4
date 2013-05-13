@@ -1,7 +1,8 @@
 package com.barchart.netty.util.point;
 
-
-
+/**
+ * Network utilities.
+ */
 public final class NetUtil {
 
 	public static boolean isValidMulticastAddress(final NetAddress netAddress) {

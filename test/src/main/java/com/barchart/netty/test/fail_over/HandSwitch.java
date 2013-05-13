@@ -33,8 +33,8 @@ public class HandSwitch extends ChannelStateHandlerAdapter implements
 
 		this.ctx = ctx;
 
-		final NetPoint point =
-				ctx.channel().attr(NettyDot.ATTR_NET_POINT).get();
+		final NetPoint point = ctx.channel().attr(NettyDot.ATTR_NET_POINT)
+				.get();
 
 		localAddress = point.getLocalAddress();
 		remoteAddress = point.getRemoteAddress();
@@ -69,12 +69,6 @@ public class HandSwitch extends ChannelStateHandlerAdapter implements
 
 		}
 
-	}
-
-	@Override
-	public void freeInboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		// TODO Auto-generated method stub
 	}
 
 }

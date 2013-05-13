@@ -20,9 +20,13 @@
 		<tag>semantic</tag>
 	</scm>
 
-	<properties>
+	<description>
+<![CDATA[
+### ${project.artifactId}
 
-	</properties>
+Application Project.
+]]>
+	</description>
 
 	<dependencies>
 

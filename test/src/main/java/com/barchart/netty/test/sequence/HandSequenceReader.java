@@ -86,10 +86,4 @@ public class HandSequenceReader extends ChannelStateHandlerAdapter implements
 
 	}
 
-	@Override
-	public void freeInboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		// TODO Auto-generated method stub
-	}
-
 }

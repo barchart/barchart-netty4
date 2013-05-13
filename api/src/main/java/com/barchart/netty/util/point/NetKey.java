@@ -1,5 +1,8 @@
 package com.barchart.netty.util.point;
 
+/**
+ * Standard properties of network point {@link NetPoint}.
+ */
 public interface NetKey {
 
 	/** end point uuid */

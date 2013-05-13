@@ -25,11 +25,15 @@
 			<arg value="clean" />
 			<arg value="install" />
 
-			<arg value="--activate-profiles" />
-			<arg value="build-robot" />
-
 			<arg value="--define" />
 			<arg value="skipTests" />
+
+			<arg value="--define" />
+			<arg value="invoker.skip=true" />
+
+			<arg value="--show-version" />
+
+			<arg value="--errors" />
 
 		</exec>
 

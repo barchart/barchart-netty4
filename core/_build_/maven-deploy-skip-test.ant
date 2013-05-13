@@ -25,14 +25,13 @@
 			<arg value="clean" />
 			<arg value="deploy" />
 
-			<arg value="--activate-profiles" />
-			<arg value="build-robot" />
-
 			<arg value="--define" />
 			<arg value="skipTests" />
 
-		</exec>
+			<arg value="--errors" />
 
+		</exec>
+		
 	</target>
 
 </project>
