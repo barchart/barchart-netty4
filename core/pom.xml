@@ -86,30 +86,5 @@ Basic netty components can be extended by other providers.
 			<artifactId>netty-transport-udt</artifactId>
 		</dependency>
 
-		<!-- OSGI specification. -->
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
 	</dependencies>
-
-	<build>
-		<plugins>
-
-			<!-- Semantic version check against baseline. -->
-			<plugin>
-				<groupId>org.apache.aries.versioning</groupId>
-				<artifactId>org.apache.aries.versioning.plugin</artifactId>
-			</plugin>
-
-		</plugins>
-	</build>
-
 </project>

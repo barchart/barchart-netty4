@@ -36,7 +36,7 @@ Parent Project.
 
 		<!-- FIXME use range when ready. -->
 		<projectNettyVersion>4.0.0.CR2</projectNettyVersion>
-		
+
 		<!-- Use semantic range when netty ready. -->
 		<!-- See https://github.com/netty/netty/issues/1269 -->
 		<!-- <projectNettyVersion>[4.0,4.1)</projectNettyVersion> -->
@@ -158,5 +158,28 @@ Parent Project.
 
 		</plugins>
 	</build>
+
+	<profiles>
+
+		<!-- Semantic version check against baseline. -->
+		<profile>
+			<id>semantic-version</id>
+			<activation>
+				<file>
+					<missing>disable-semantic-version.md</missing>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<!-- Semantic version check against baseline. -->
+					<plugin>
+						<groupId>org.apache.aries.versioning</groupId>
+						<artifactId>org.apache.aries.versioning.plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
 
 </project>

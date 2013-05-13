@@ -30,6 +30,14 @@ Feature Project.
 ]]>
 	</description>
 
+	<properties>
+
+		<!-- Feature file name must be based on artifact id and version. -->
+		<!-- Use "xml" extension for standard deployer, "repository" for custom. -->
+		<featureFile>${project.artifactId}-${project.version}.repository</featureFile>
+
+	</properties>
+
 	<dependencies>
 
 		<dependency>
@@ -60,6 +68,7 @@ Feature Project.
 				<configuration>
 					<installMode>auto</installMode>
 					<startLevel>90</startLevel>
+					<outputFile>target/feature/${featureFile}</outputFile>
 				</configuration>
 				<executions>
 					<execution>
