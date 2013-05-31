@@ -25,7 +25,7 @@ Layout Project.
 
 	<modules>
 
-		<module>archon</module>
+		<module>a</module>
 
 		<module>api</module>
 		<module>core</module>
