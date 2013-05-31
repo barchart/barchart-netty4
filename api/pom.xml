@@ -4,8 +4,8 @@
 
 	<parent>
 		<groupId>com.barchart.netty</groupId>
-		<artifactId>barchart-netty-archon</artifactId>
-		<version>4.0.3</version>
+		<artifactId>barchart-netty-a</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
 		<relativePath>../archon</relativePath>
 	</parent>
 
