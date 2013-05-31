@@ -35,7 +35,7 @@ Parent Project.
 		<projectJavaVersion>1.7</projectJavaVersion>
 
 		<!-- FIXME use range when ready. -->
-		<projectNettyVersion>4.0.0.CR2</projectNettyVersion>
+		<projectNettyVersion>4.0.0.CR3</projectNettyVersion>
 
 		<!-- Use semantic range when netty ready. -->
 		<!-- See https://github.com/netty/netty/issues/1269 -->
