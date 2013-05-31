@@ -6,7 +6,7 @@
 		<groupId>com.barchart.netty</groupId>
 		<artifactId>barchart-netty-a</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
-		<relativePath>../archon</relativePath>
+		<relativePath>../a</relativePath>
 	</parent>
 
 	<artifactId>barchart-netty-app</artifactId>
