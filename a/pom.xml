@@ -11,14 +11,14 @@
 
 	<groupId>com.barchart.netty</groupId>
 	<artifactId>barchart-netty-a</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.2</version>
 	<packaging>pom</packaging>
 
 	<scm>
 		<url>https://github.com/barchart/barchart-netty4</url>
 		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
-		<tag>semantic</tag>
+		<tag>barchart-netty-a-1.0.2</tag>
 	</scm>
 
 	<description>
