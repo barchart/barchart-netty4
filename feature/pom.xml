@@ -11,7 +11,7 @@
 
 	<groupId>com.barcahrt.netty</groupId>
 	<artifactId>barchart-netty-feature</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<scm>
@@ -42,14 +42,14 @@ Feature Project.
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
 			<artifactId>barchart-netty-core</artifactId>
-			<version>[2-SNAPSHOT,3)</version>
+			<version>[2-SNAPSHOT,3-SNAPSHOT)</version>
 		</dependency>
 
 		<!-- FIXME use release when ready. -->
 		<!-- <dependency> -->
 		<!-- <groupId>com.barchart.netty</groupId> -->
 		<!-- <artifactId>barchart-netty-app</artifactId> -->
-		<!-- <version>[1-SNAPSHOT,2)</version> -->
+		<!-- <version>[1-SNAPSHOT,2-SNAPSHOT)</version> -->
 		<!-- </dependency> -->
 
 	</dependencies>

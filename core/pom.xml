@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>barchart-netty-core</artifactId>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>2.0.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<description>
@@ -45,26 +45,26 @@ Basic netty components can be extended by other providers.
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
 			<artifactId>barchart-netty-api</artifactId>
-			<version>[1.1-SNAPSHOT,1.2)</version>
+			<version>[1.1-SNAPSHOT,1.2-SNAPSHOT)</version>
 		</dependency>
 
 		<!-- Base components LIB. -->
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
 			<artifactId>barchart-conf-util</artifactId>
-			<version>[1.2,2)</version>
+			<version>[1.2,2-SNAPSHOT)</version>
 		</dependency>
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
 			<artifactId>barchart-conf-list</artifactId>
-			<version>[1,2)</version>
+			<version>[1,2-SNAPSHOT)</version>
 		</dependency>
 
 		<!-- Barchart utilities LIB. -->
 		<dependency>
 			<groupId>com.barchart.util</groupId>
 			<artifactId>barchart-util-collections</artifactId>
-			<version>[2,3)</version>
+			<version>[2,3-SNAPSHOT)</version>
 		</dependency>
 
 		<!-- Netty components LIB. -->
