@@ -20,14 +20,13 @@ public interface NettyBoot {
 	/**
 	 * Initiate new connection defined by the NetPoint.
 	 */
-	public ChannelFuture startup(NetPoint netPoint) throws Exception;
+	ChannelFuture startup(NetPoint netPoint) throws Exception;
 
 	/**
 	 * Terminate old connection defined by the NetPoint.
 	 * <p>
 	 * FIXME remove channel parameter.
 	 */
-	public ChannelFuture shutdown(NetPoint netPoint, Channel channel)
-			throws Exception;
+	ChannelFuture shutdown(NetPoint netPoint, Channel channel) throws Exception;
 
 }
