@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.barchart.netty</groupId>
 		<artifactId>barchart-netty-archon</artifactId>
-		<version>4.0.3-SNAPSHOT</version>
+		<version>4.0.4-SNAPSHOT</version>
 		<relativePath />
 	</parent>
 
@@ -61,7 +61,7 @@
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
 			<artifactId>barchart-netty-host</artifactId>
-			<version>4.0.5-SNAPSHOT</version>
+			<version>4.0.8-SNAPSHOT</version>
 		</dependency>
 
 		<!-- netty util -->
