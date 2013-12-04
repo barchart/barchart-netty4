@@ -27,6 +27,7 @@ Layout Project.
 
 		<module>api</module>
 		<module>core</module>
+		<module>client</module>
 
 		<module>test</module>
 

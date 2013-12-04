@@ -38,12 +38,6 @@ Contains API interfaces.
 
 	<dependencies>
 
-		<!-- DS event admin LIB. -->
-		<dependency>
-			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-event</artifactId>
-		</dependency>
-
 		<!-- DS factory via config admin LIB. -->
 		<dependency>
 			<groupId>com.barchart.osgi</groupId>

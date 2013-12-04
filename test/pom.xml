@@ -45,6 +45,12 @@ Imports API bundle.
 			<version>[2-SNAPSHOT,3-SNAPSHOT)</version>
 		</dependency>
 
+		<!-- DS event admin LIB. -->
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-event</artifactId>
+		</dependency>
+
 		<!-- messages -->
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
