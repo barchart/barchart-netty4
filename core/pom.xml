@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.barchart.netty</groupId>
-		<artifactId>barchart-netty-a</artifactId>
-		<version>1.0.1</version>
-		<relativePath>../a</relativePath>
+		<groupId>com.barchart.base</groupId>
+		<artifactId>barchart-archon</artifactId>
+		<version>2.5.13</version>
 	</parent>
 
+	<groupId>com.barchart.netty</groupId>
 	<artifactId>barchart-netty-core</artifactId>
 	<version>2.0.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
@@ -39,6 +39,10 @@ Basic netty components can be extended by other providers.
 		<tag>semantic</tag>
 	</scm>
 
+	<properties>
+		<projectJavaVersion>1.7</projectJavaVersion>
+	</properties>
+
 	<dependencies>
 
 		<!-- API bundle. Provider import. -->
@@ -52,12 +56,6 @@ Basic netty components can be extended by other providers.
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
 			<artifactId>barchart-conf-util</artifactId>
-			<version>[1.2,2-SNAPSHOT)</version>
-		</dependency>
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-list</artifactId>
-			<version>[1,2-SNAPSHOT)</version>
 		</dependency>
 
 		<!-- Barchart utilities LIB. -->
