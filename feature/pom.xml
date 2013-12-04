@@ -1,98 +1,84 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>com.barchart.base</groupId>
 		<artifactId>barchart-archon</artifactId>
-		<version>2.5.6</version>
+		<version>2.5.11</version>
 		<relativePath />
 	</parent>
 
 	<groupId>com.barcahrt.netty</groupId>
 	<artifactId>barchart-netty-feature</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<packaging>feature</packaging>
+	<version>1.0.4-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
 	<scm>
 		<url>https://github.com/barchart/barchart-netty4</url>
 		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
-		<tag>master</tag>
+		<tag>semantic</tag>
 	</scm>
+
+	<description>
+<![CDATA[
+### ${project.artifactId}
+
+Feature Project.
+]]>
+	</description>
+
+	<properties>
+
+		<!-- Feature file name must be based on artifact id and version. -->
+		<!-- Use "xml" extension for standard deployer, "repository" for custom. -->
+		<featureFile>${project.artifactId}-${project.version}.repository</featureFile>
+
+	</properties>
 
 	<dependencies>
 
-		<!-- MAIN -->
-
 		<dependency>
 			<groupId>com.barchart.netty</groupId>
-			<artifactId>barchart-netty-host</artifactId>
-			<version>4.0.8-SNAPSHOT</version>
+			<artifactId>barchart-netty-core</artifactId>
+			<version>[2-SNAPSHOT,3-SNAPSHOT)</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.barchart.netty</groupId>
-			<artifactId>barchart-netty-app</artifactId>
-			<version>4.0.4-SNAPSHOT</version>
-		</dependency>
-
-		<!-- TEST -->
+		<!-- FIXME use release when ready. -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.barchart.netty</groupId> -->
+		<!-- <artifactId>barchart-netty-app</artifactId> -->
+		<!-- <version>[1-SNAPSHOT,2-SNAPSHOT)</version> -->
+		<!-- </dependency> -->
 
 	</dependencies>
-
-	<properties>
-		<featureName>${project.artifactId}-${project.version}</featureName>
-	</properties>
 
 	<build>
 
 		<plugins>
 
 			<plugin>
+				<!-- Barchart custom plugin. -->
 				<groupId>org.apache.karaf.tooling</groupId>
 				<artifactId>karaf-maven-plugin</artifactId>
-				<version>3.0.0.RC1</version>
+				<version>3.0.0-build004</version>
 				<extensions>true</extensions>
 				<configuration>
 					<installMode>auto</installMode>
 					<startLevel>90</startLevel>
-					<outputFile>target/feature/${featureName}.xml</outputFile>
+					<outputFile>target/feature/${featureFile}</outputFile>
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>features-generate-semantic</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>
-
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.karaf.tooling</groupId>
-										<artifactId>karaf-maven-plugin</artifactId>
-										<versionRange>[0,)
-										</versionRange>
-										<goals>
-											<goal>features-generate-descriptor</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 
 	</build>
 

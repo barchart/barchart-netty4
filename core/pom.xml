@@ -1,0 +1,89 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.netty</groupId>
+		<artifactId>barchart-netty-a</artifactId>
+		<version>1.0.1</version>
+		<relativePath>../a</relativePath>
+	</parent>
+
+	<artifactId>barchart-netty-core</artifactId>
+	<version>2.0.2-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<description>
+<![CDATA[
+### ${project.artifactId}
+
+API Provider bundle. 
+
+Imports API bundle.
+* Uses consumer interfaces.
+* Implements provider interfaces.
+
+Provides 
+* netty host runtime.
+* basic netty components
+
+Basic netty components can be extended by other providers.
+
+]]>
+	</description>
+
+	<scm>
+		<url>https://github.com/barchart/barchart-netty4</url>
+		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
+		<tag>semantic</tag>
+	</scm>
+
+	<dependencies>
+
+		<!-- API bundle. Provider import. -->
+		<dependency>
+			<groupId>com.barchart.netty</groupId>
+			<artifactId>barchart-netty-api</artifactId>
+			<version>[1.1-SNAPSHOT,1.2-SNAPSHOT)</version>
+		</dependency>
+
+		<!-- Base components LIB. -->
+		<dependency>
+			<groupId>com.barchart.conf</groupId>
+			<artifactId>barchart-conf-util</artifactId>
+			<version>[1.2,2-SNAPSHOT)</version>
+		</dependency>
+		<dependency>
+			<groupId>com.barchart.conf</groupId>
+			<artifactId>barchart-conf-list</artifactId>
+			<version>[1,2-SNAPSHOT)</version>
+		</dependency>
+
+		<!-- Barchart utilities LIB. -->
+		<dependency>
+			<groupId>com.barchart.util</groupId>
+			<artifactId>barchart-util-collections</artifactId>
+			<version>[2,3-SNAPSHOT)</version>
+		</dependency>
+
+		<!-- Netty components LIB. -->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-handler</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport-sctp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport-udt</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>

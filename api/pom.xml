@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.netty</groupId>
+		<artifactId>barchart-netty-a</artifactId>
+		<version>1.0.1</version>
+		<relativePath>../a</relativePath>
+	</parent>
+
+	<artifactId>barchart-netty-api</artifactId>
+	<version>1.1.2-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<description>
+<![CDATA[
+### ${project.artifactId}
+
+API bundle. 
+
+Contains API interfaces.
+* Consumer interfaces.
+* Provider interfaces.
+]]>
+	</description>
+
+	<scm>
+		<url>https://github.com/barchart/barchart-netty4</url>
+		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
+		<tag>semantic</tag>
+	</scm>
+
+	<dependencies>
+
+		<!-- DS event admin LIB. -->
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-event</artifactId>
+			<version>[1.2,2-SNAPSHOT)</version>
+		</dependency>
+
+		<!-- DS factory via config admin LIB. -->
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-factory-ca</artifactId>
+			<version>[1.4,2-SNAPSHOT)</version>
+		</dependency>
+
+		<!-- Config LIB. -->
+		<dependency>
+			<groupId>com.typesafe</groupId>
+			<artifactId>config</artifactId>
+			<version>[1,2-SNAPSHOT)</version>
+		</dependency>
+
+		<!-- Netty components LIB. -->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-transport</artifactId>
+		</dependency>
+
+	</dependencies>
+
+</project>
