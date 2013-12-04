@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.barchart.base</groupId>
 		<artifactId>barchart-archon</artifactId>
-		<version>2.5.11</version>
+		<version>2.5.13</version>
 		<relativePath/>
 	</parent>
 
@@ -25,15 +25,10 @@ Layout Project.
 
 	<modules>
 
-		<module>a</module>
-
 		<module>api</module>
 		<module>core</module>
 
 		<module>test</module>
-
-		<module>app</module>
-		<module>feature</module>
 
 	</modules>
 
