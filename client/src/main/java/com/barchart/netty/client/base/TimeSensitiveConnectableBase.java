@@ -9,8 +9,9 @@ import java.util.concurrent.TimeUnit;
 import rx.Observer;
 
 import com.barchart.netty.client.Connectable;
+import com.barchart.netty.client.Ping;
+import com.barchart.netty.client.Pong;
 import com.barchart.netty.client.TimeSensitive;
-import com.barchart.netty.client.Timestamp;
 import com.barchart.netty.client.transport.TransportProtocol;
 import com.yammer.metrics.core.Histogram;
 import com.yammer.metrics.core.MetricsRegistry;
@@ -91,16 +92,11 @@ public abstract class TimeSensitiveConnectableBase<T extends TimeSensitiveConnec
 
 			@Override
 			public void run() {
-				send(new Timestamp() {
+				send(new Ping() {
 
 					@Override
 					public long timestamp() {
 						return System.currentTimeMillis();
-					}
-
-					@Override
-					public long received() {
-						return 0;
 					}
 
 				});
@@ -108,32 +104,30 @@ public abstract class TimeSensitiveConnectableBase<T extends TimeSensitiveConnec
 
 		};
 
-		private final Observer<Timestamp> heartbeatHandler =
-				new Observer<Timestamp>() {
+		private final Observer<Pong> heartbeatHandler = new Observer<Pong>() {
 
-					@Override
-					public void onNext(final Timestamp timestamp) {
-						// Compare the peer-received timestamp to current
-						final long latency =
-								(System.currentTimeMillis() - timestamp
-										.received()) / 2;
-						latencySampler.update(latency);
-					}
+			@Override
+			public void onNext(final Pong timestamp) {
+				// Compare the peer-received timestamp to current
+				final long latency =
+						(System.currentTimeMillis() - timestamp.pinged()) / 2;
+				latencySampler.update(latency);
+			}
 
-					@Override
-					public void onCompleted() {
-						// Should never happen
-					}
+			@Override
+			public void onCompleted() {
+				// Should never happen
+			}
 
-					@Override
-					public void onError(final Throwable t) {
-						// Should never happen
-					}
+			@Override
+			public void onError(final Throwable t) {
+				// Should never happen
+			}
 
-				};
+		};
 
 		public ConnectionHeartbeat() {
-			receive(Timestamp.class).subscribe(heartbeatHandler);
+			receive(Pong.class).subscribe(heartbeatHandler);
 		}
 
 		@Override

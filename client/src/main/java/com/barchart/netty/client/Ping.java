@@ -1,9 +1,7 @@
 package com.barchart.netty.client;
 
-public interface Timestamp {
+public interface Ping {
 
 	long timestamp();
-
-	long received();
 
 }
