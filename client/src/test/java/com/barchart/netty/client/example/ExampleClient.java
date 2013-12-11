@@ -12,10 +12,10 @@ import rx.util.functions.Action1;
 import com.barchart.account.api.Account;
 import com.barchart.account.api.AuthResult;
 import com.barchart.netty.client.base.AuthenticatingConnectableBase;
-import com.barchart.netty.client.base.ProtobufClientBase;
+import com.barchart.netty.client.base.OpenFeedClientBase;
 import com.barchart.netty.client.transport.TransportProtocol;
 
-public class ExampleClient extends ProtobufClientBase<ExampleClient> {
+public class ExampleClient extends OpenFeedClientBase<ExampleClient> {
 
 	public static class Builder
 			extends
