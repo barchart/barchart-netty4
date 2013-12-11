@@ -88,7 +88,7 @@ public abstract class KeepaliveConnectableBase<T extends KeepaliveConnectableBas
 
 		private ScheduledFuture<?> heartbeat = null;
 
-		private final Runnable heartbeatSender = new Runnable() {
+		private final Runnable sendPing = new Runnable() {
 
 			@Override
 			public void run() {
@@ -104,13 +104,13 @@ public abstract class KeepaliveConnectableBase<T extends KeepaliveConnectableBas
 
 		};
 
-		private final Observer<Pong> heartbeatHandler = new Observer<Pong>() {
+		private final Observer<Pong> handlePong = new Observer<Pong>() {
 
 			@Override
-			public void onNext(final Pong timestamp) {
+			public void onNext(final Pong pong) {
 				// Compare the peer-received timestamp to current
 				final long latency =
-						(System.currentTimeMillis() - timestamp.pinged()) / 2;
+						(System.currentTimeMillis() - pong.pinged()) / 2;
 				latencySampler.update(latency);
 			}
 
@@ -126,8 +126,42 @@ public abstract class KeepaliveConnectableBase<T extends KeepaliveConnectableBas
 
 		};
 
+		private final Observer<Ping> handlePing = new Observer<Ping>() {
+
+			@Override
+			public void onNext(final Ping ping) {
+
+				send(new Pong() {
+
+					@Override
+					public long timestamp() {
+						return System.currentTimeMillis();
+					}
+
+					@Override
+					public long pinged() {
+						return ping.timestamp();
+					}
+
+				});
+
+			}
+
+			@Override
+			public void onCompleted() {
+				// Should never happen
+			}
+
+			@Override
+			public void onError(final Throwable t) {
+				// Should never happen
+			}
+
+		};
+
 		public ConnectionHeartbeat() {
-			receive(Pong.class).subscribe(heartbeatHandler);
+			receive(Ping.class).subscribe(handlePing);
+			receive(Pong.class).subscribe(handlePong);
 		}
 
 		@Override
@@ -174,9 +208,9 @@ public abstract class KeepaliveConnectableBase<T extends KeepaliveConnectableBas
 
 				if (heartbeatInterval() > 0) {
 					heartbeat =
-							channel.eventLoop().scheduleAtFixedRate(
-									heartbeatSender, heartbeatInterval(),
-									heartbeatInterval(), TimeUnit.SECONDS);
+							channel.eventLoop().scheduleAtFixedRate(sendPing,
+									heartbeatInterval(), heartbeatInterval(),
+									TimeUnit.SECONDS);
 				}
 
 			}
