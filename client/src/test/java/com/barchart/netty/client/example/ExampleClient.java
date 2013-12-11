@@ -11,6 +11,7 @@ import rx.util.functions.Action1;
 
 import com.barchart.account.api.Account;
 import com.barchart.account.api.AuthResult;
+import com.barchart.netty.client.Connectable;
 import com.barchart.netty.client.base.AuthenticatingConnectableBase;
 import com.barchart.netty.client.base.OpenFeedClientBase;
 import com.barchart.netty.client.transport.TransportProtocol;
@@ -70,10 +71,9 @@ public class ExampleClient extends OpenFeedClientBase<ExampleClient> {
 
 				}).build();
 
-		client.stateChanges().subscribe(new Action1<State>() {
+		client.stateChanges().subscribe(new Action1<Connectable.State>() {
 			@Override
-			public void call(
-					final com.barchart.netty.client.Connectable.State state) {
+			public void call(final Connectable.State state) {
 				System.out.println("connect state changed: " + state.name());
 			}
 		});
