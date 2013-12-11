@@ -18,7 +18,7 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 		extends KeepaliveConnectableBase<T> implements
 		AuthenticatingConnectable<T, A> {
 
-	public abstract static class Builder<B extends Builder<B, C, D>, C extends AuthenticatingConnectableBase<C, D>, D extends Account>
+	protected abstract static class Builder<B extends Builder<B, C, D>, C extends AuthenticatingConnectableBase<C, D>, D extends Account>
 			extends ConnectableBase.Builder<B, C> implements
 			AuthenticatingConnectable.Builder<C, D> {
 

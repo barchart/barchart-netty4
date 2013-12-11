@@ -48,7 +48,7 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	public abstract static class Builder<B extends Builder<B, C>, C extends ConnectableBase<C>>
+	protected abstract static class Builder<B extends Builder<B, C>, C extends ConnectableBase<C>>
 			implements Connectable.Builder<C> {
 
 		/* Standard fields */

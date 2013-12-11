@@ -17,7 +17,7 @@ import com.barchart.netty.client.transport.TransportProtocol;
 
 public class ExampleClient extends OpenFeedClientBase<ExampleClient> {
 
-	public static class Builder
+	protected static class Builder
 			extends
 			AuthenticatingConnectableBase.Builder<Builder, ExampleClient, Account> {
 
