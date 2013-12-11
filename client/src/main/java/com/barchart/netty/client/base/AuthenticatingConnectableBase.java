@@ -15,7 +15,7 @@ import com.barchart.netty.client.Connectable;
 import com.barchart.netty.client.transport.TransportProtocol;
 
 public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConnectableBase<T, A>, A extends Account>
-		extends TimeSensitiveConnectableBase<T> implements
+		extends KeepaliveConnectableBase<T> implements
 		AuthenticatingConnectable<T, A> {
 
 	public abstract static class Builder<B extends Builder<B, C, D>, C extends AuthenticatingConnectableBase<C, D>, D extends Account>

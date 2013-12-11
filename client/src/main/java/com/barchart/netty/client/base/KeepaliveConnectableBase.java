@@ -26,7 +26,7 @@ import com.yammer.metrics.core.MetricsRegistry;
  * host must response to any Timestamp messages with a Timestamp response of
  * their own as quickly as possible.
  */
-public abstract class TimeSensitiveConnectableBase<T extends TimeSensitiveConnectableBase<T>>
+public abstract class KeepaliveConnectableBase<T extends KeepaliveConnectableBase<T>>
 		extends ConnectableBase<T> implements TimeSensitive, Connectable<T> {
 
 	/* Heartbeat interval */
@@ -35,7 +35,7 @@ public abstract class TimeSensitiveConnectableBase<T extends TimeSensitiveConnec
 	/* Peer state */
 	private final long latency = 0;
 	private final Histogram latencySampler = new MetricsRegistry()
-			.newHistogram(TimeSensitiveConnectableBase.this.getClass(),
+			.newHistogram(KeepaliveConnectableBase.this.getClass(),
 					"connectable-latency", true);
 	private final long clockSkew = 0;
 
@@ -45,7 +45,7 @@ public abstract class TimeSensitiveConnectableBase<T extends TimeSensitiveConnec
 	/**
 	 * Create a new latency-aware Connectable.
 	 */
-	protected TimeSensitiveConnectableBase(final EventLoopGroup eventLoop_,
+	protected KeepaliveConnectableBase(final EventLoopGroup eventLoop_,
 			final InetSocketAddress address_, final TransportProtocol transport_) {
 
 		super(eventLoop_, address_, transport_);
