@@ -1,31 +1,26 @@
 package com.barchart.netty.client.base;
 
 import io.netty.channel.EventLoopGroup;
-
-import java.net.InetSocketAddress;
-
 import rx.Observable;
 import rx.Observer;
+import rx.subjects.PublishSubject;
 
 import com.barchart.account.api.Account;
 import com.barchart.account.api.AuthResult;
 import com.barchart.account.api.AuthResult.Status;
-import com.barchart.netty.client.AuthenticatingConnectable;
 import com.barchart.netty.client.Connectable;
+import com.barchart.netty.client.facets.AuthenticationAware;
 import com.barchart.netty.client.transport.TransportProtocol;
 
 public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConnectableBase<T, A>, A extends Account>
-		extends KeepaliveConnectableBase<T> implements
-		AuthenticatingConnectable<T, A> {
+		extends KeepaliveConnectableBase<T> implements AuthenticationAware<A> {
 
 	protected abstract static class Builder<B extends Builder<B, C, D>, C extends AuthenticatingConnectableBase<C, D>, D extends Account>
-			extends ConnectableBase.Builder<B, C> implements
-			AuthenticatingConnectable.Builder<C, D> {
+			extends KeepaliveConnectableBase.Builder<B, C> {
 
 		protected Authenticator<D> authenticator;
 
 		@SuppressWarnings("unchecked")
-		@Override
 		public B authenticator(final Authenticator<D> authenticator_) {
 			authenticator = authenticator_;
 			return (B) this;
@@ -41,18 +36,21 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 	}
 
 	/* Authentication state */
-	private final AuthStateChange authStateChanges = new AuthStateChange();
+	private final PublishSubject<AuthState> authStateChanges = PublishSubject
+			.create();
+	private AuthState lastState = AuthState.NOT_AUTHENTICATED;
 
 	/* Authenticator */
 	private Authenticator<A> authenticator = null;
 	private A account = null;
 
 	protected AuthenticatingConnectableBase(final EventLoopGroup eventLoop_,
-			final InetSocketAddress address_, final TransportProtocol transport_) {
+			final TransportProtocol transport_) {
 
-		super(eventLoop_, address_, transport_);
+		super(eventLoop_, transport_);
 
 		stateChanges().subscribe(new ConnectionMonitor());
+		authStateChanges().subscribe(new AuthStateObserver());
 
 	}
 
@@ -61,7 +59,7 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 		authenticator = authenticator_;
 
 		if (state() == State.CONNECTED) {
-			authStateChanges.fire(AuthState.AUTHENTICATING);
+			authStateChanges.onNext(AuthState.AUTHENTICATING);
 			authenticator.authenticate(new RawMessageStream()).subscribe(
 					new AuthResultObserver());
 		}
@@ -74,12 +72,12 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 
 	@Override
 	public Observable<AuthState> authStateChanges() {
-		return Observable.create(authStateChanges);
+		return authStateChanges;
 	}
 
 	@Override
 	public AuthState authState() {
-		return authStateChanges.last();
+		return lastState;
 	}
 
 	@Override
@@ -109,17 +107,18 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 	/**
 	 * Monitor connection state to handler authentication.
 	 */
-	private class ConnectionMonitor implements Observer<Connectable.State> {
+	private class ConnectionMonitor implements
+			Observer<Connectable.StateChange<?>> {
 
 		@Override
-		public void onNext(final Connectable.State state) {
+		public void onNext(final Connectable.StateChange<?> change) {
 
-			switch (state) {
+			switch (change.state()) {
 
 				case CONNECTED:
 
 					if (authenticator != null) {
-						authStateChanges.fire(AuthState.AUTHENTICATING);
+						authStateChanges.onNext(AuthState.AUTHENTICATING);
 						authenticator.authenticate(new RawMessageStream())
 								.subscribe(new AuthResultObserver());
 					}
@@ -128,9 +127,9 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 
 				default:
 
-					if (authStateChanges.last() != AuthState.NOT_AUTHENTICATED) {
+					if (lastState != AuthState.NOT_AUTHENTICATED) {
 						account = null;
-						authStateChanges.fire(AuthState.NOT_AUTHENTICATED);
+						authStateChanges.onNext(AuthState.NOT_AUTHENTICATED);
 					}
 
 			}
@@ -173,10 +172,10 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 		public void onNext(final AuthResult<A> result) {
 			if (result.status() == Status.AUTHENTICATED) {
 				account = result.account();
-				authStateChanges.fire(AuthState.AUTHENTICATED);
+				authStateChanges.onNext(AuthState.AUTHENTICATED);
 			} else {
 				account = null;
-				authStateChanges.fire(AuthState.AUTHENTICATION_FAILED);
+				authStateChanges.onNext(AuthState.AUTHENTICATION_FAILED);
 			}
 		}
 
@@ -191,20 +190,21 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 	}
 
 	/**
-	 * Notify of authentication state changes.
+	 * Monitor authentication state changes.
 	 */
-	private static class AuthStateChange extends PushSubscription<AuthState> {
+	private class AuthStateObserver implements Observer<AuthState> {
 
-		private AuthState lastState = AuthState.NOT_AUTHENTICATED;
-
-		protected void fire(final AuthState state) {
-			log.debug("Connection state fired: " + state);
+		@Override
+		public void onNext(final AuthState state) {
 			lastState = state;
-			push(state);
 		}
 
-		public AuthState last() {
-			return lastState;
+		@Override
+		public void onCompleted() {
+		}
+
+		@Override
+		public void onError(final Throwable e) {
 		}
 
 	}

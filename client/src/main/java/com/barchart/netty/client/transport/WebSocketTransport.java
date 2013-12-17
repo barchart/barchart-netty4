@@ -5,6 +5,7 @@ import io.netty.buffer.MessageBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelStateHandlerAdapter;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.handler.codec.http.HttpClientCodec;
@@ -16,6 +17,8 @@ import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.handler.ssl.SslHandler;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.URI;
 
 import javax.net.ssl.SSLContext;
@@ -24,9 +27,20 @@ import javax.net.ssl.SSLEngine;
 public class WebSocketTransport implements TransportProtocol {
 
 	private final URI uri;
+	private final InetSocketAddress address;
 
 	public WebSocketTransport(final URI uri_) {
+
 		uri = uri_;
+
+		int port = uri.getPort();
+
+		if (port == -1) {
+			port = uri.getScheme().equalsIgnoreCase("wss") ? 443 : 80;
+		}
+
+		address = new InetSocketAddress(uri.getHost(), port);
+
 	}
 
 	@Override
@@ -43,11 +57,14 @@ public class WebSocketTransport implements TransportProtocol {
 				new HttpObjectAggregator(65536), //
 				wsHandler);
 
-		if (uri.getScheme().equalsIgnoreCase("wss")) {
+		if (uri.getScheme().equalsIgnoreCase("wss")
+				&& pipeline.get(SslHandler.class) == null) {
+
 			final SSLEngine sslEngine =
 					SSLContext.getDefault().createSSLEngine();
 			sslEngine.setUseClientMode(true);
-			pipeline.addFirst(new SslHandler(sslEngine));
+			pipeline.addFirst("ssl", new SslHandler(sslEngine));
+
 		}
 
 		// Fires CONNECTED event after handshake and removes self
@@ -58,7 +75,7 @@ public class WebSocketTransport implements TransportProtocol {
 
 	}
 
-	private class WebSocketConnectedNotifier extends PassthroughStateHandler {
+	private class WebSocketConnectedNotifier extends ChannelStateHandlerAdapter {
 
 		@Override
 		public void userEventTriggered(final ChannelHandlerContext ctx,
@@ -71,6 +88,12 @@ public class WebSocketTransport implements TransportProtocol {
 
 			ctx.fireUserEventTriggered(evt);
 
+		}
+
+		@Override
+		public void inboundBufferUpdated(final ChannelHandlerContext ctx)
+				throws Exception {
+			ctx.fireInboundBufferUpdated();
 		}
 
 	}
@@ -97,6 +120,11 @@ public class WebSocketTransport implements TransportProtocol {
 	@Override
 	public Class<? extends Channel> channel() {
 		return NioSocketChannel.class;
+	}
+
+	@Override
+	public SocketAddress address() {
+		return address;
 	}
 
 }

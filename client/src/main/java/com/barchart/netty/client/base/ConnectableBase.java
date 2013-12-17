@@ -2,32 +2,24 @@ package com.barchart.netty.client.base;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.MessageBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundMessageHandler;
+import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelOutboundMessageHandler;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.ChannelStateHandlerAdapter;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.util.Queue;
-import java.util.Set;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -35,69 +27,35 @@ import org.slf4j.LoggerFactory;
 
 import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
+import rx.subjects.PublishSubject;
+import rx.subjects.ReplaySubject;
 
 import com.barchart.netty.client.Connectable;
 import com.barchart.netty.client.PipelineInitializer;
-import com.barchart.netty.client.transport.PassthroughStateHandler;
+import com.barchart.netty.client.transport.TransportFactory;
 import com.barchart.netty.client.transport.TransportProtocol;
-import com.barchart.netty.client.transport.WebSocketTransport;
 
 public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 		Connectable<T>, PipelineInitializer {
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	protected final Logger log = LoggerFactory.getLogger(getClass());
 
-	protected abstract static class Builder<B extends Builder<B, C>, C extends ConnectableBase<C>>
-			implements Connectable.Builder<C> {
+	protected abstract static class Builder<B extends Builder<B, C>, C extends ConnectableBase<C>> {
 
 		/* Standard fields */
-		protected InetSocketAddress address;
 		protected TransportProtocol transport;
 		protected EventLoopGroup eventLoop = new NioEventLoopGroup();
 
 		/* Implementation specific */
-		protected long reconnect = -1;
 		protected long timeout = 0;
 
 		@SuppressWarnings("unchecked")
-		@Override
-		public B address(final InetSocketAddress address_,
-				final TransportProtocol transport_) {
-
-			address = address_;
-			transport = transport_;
-
-			return (B) this;
-
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public B websocket(final URI uri) {
-
-			int port = uri.getPort();
-
-			if (port == -1) {
-				port = uri.getScheme().equalsIgnoreCase("wss") ? 443 : 80;
-			}
-
-			address = InetSocketAddress.createUnresolved(uri.getHost(), port);
-			transport = new WebSocketTransport(uri);
-
-			return (B) this;
-
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public B reconnect(final long delay_, final TimeUnit unit_) {
-			reconnect = TimeUnit.MILLISECONDS.convert(delay_, unit_);
+		public B host(final String url) {
+			transport = TransportFactory.create(url);
 			return (B) this;
 		}
 
 		@SuppressWarnings("unchecked")
-		@Override
 		public B timeout(final long timeout_, final TimeUnit unit_) {
 			timeout = TimeUnit.MILLISECONDS.convert(timeout_, unit_);
 			return (B) this;
@@ -110,10 +68,11 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 		}
 
 		protected C configure(final C client) {
-			client.reconnect(reconnect);
 			client.timeout(timeout);
 			return client;
 		}
+
+		protected abstract C build();
 
 	}
 
@@ -122,19 +81,18 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 			new ConcurrentHashMap<Class<?>, MessageSubscription<?>>();
 
 	/* Connection state */
-	private final ConnectionStateChange stateChanges =
-			new ConnectionStateChange();
+	private final PublishSubject<Connectable.StateChange<T>> stateChanges =
+			PublishSubject.create();
+	private Connectable.State lastState = null;
 
 	/* Netty resources */
 	protected Channel channel;
 	private final EventLoopGroup group;
-	private final InetSocketAddress address;
 	private final TransportProtocol transport;
 	private final ChannelInitializer<Channel> channelInitializer;
 
 	/* Timeout / reconnect */
 	private long timeout = 0;
-	private long reconnect = -1;
 
 	/**
 	 * Create a new connectable client. This method is intended to be called by
@@ -146,29 +104,15 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 	 * @param transport_ The transport type
 	 */
 	protected ConnectableBase(final EventLoopGroup eventLoop_,
-			final InetSocketAddress address_, final TransportProtocol transport_) {
+			final TransportProtocol transport_) {
 
 		group = eventLoop_;
-		address = address_;
 		transport = transport_;
 
 		channelInitializer = new ClientPipelineInitializer();
 
-	}
+		stateChanges.subscribe(new ConnectionStateObserver());
 
-	/**
-	 * The current reconnect delay in milliseconds. -1 indicates no automatic
-	 * reconnect.
-	 */
-	protected long reconnect() {
-		return reconnect;
-	}
-
-	/**
-	 * Set the reconnect delay in milliseconds. Set to -1 to disable reconnect.
-	 */
-	protected void reconnect(final long millis) {
-		reconnect = millis;
 	}
 
 	/**
@@ -188,10 +132,6 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 	@Override
 	public Observable<T> connect() {
 
-		if (address == null) {
-			throw new IllegalArgumentException("Peer address cannot be null");
-		}
-
 		if (transport == null) {
 			throw new IllegalArgumentException("Transport cannot be null");
 		}
@@ -201,12 +141,12 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 					"Channel initializer cannot be null");
 		}
 
-		log.debug("Client connecting to " + address.toString());
-		stateChanges.fire(Connectable.State.CONNECTING);
+		log.debug("Client connecting to " + transport.address().toString());
+		changeState(Connectable.State.CONNECTING);
 
 		final ChannelFuture future =
 				new Bootstrap().channel(transport.channel()).group(group)
-						.remoteAddress(address)
+						.remoteAddress(transport.address())
 						.option(ChannelOption.SO_REUSEADDR, true)
 						.option(ChannelOption.SO_SNDBUF, 262144)
 						.option(ChannelOption.SO_RCVBUF, 262144)
@@ -214,7 +154,7 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 
 		channel = future.channel();
 
-		final PushSubscription<T> connectObs = new PushSubscription<T>();
+		final ReplaySubject<T> connectObs = ReplaySubject.create();
 
 		future.addListener(new ChannelFutureListener() {
 
@@ -224,33 +164,18 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 					throws Exception {
 
 				if (!future.isSuccess()) {
-
-					stateChanges.fire(Connectable.State.CONNECT_FAIL);
-
-					if (reconnect > -1) {
-
-						future.channel().eventLoop().schedule(new Runnable() {
-							@Override
-							public void run() {
-								log.debug("Connect failed, reconnecting");
-								connect();
-							}
-						}, reconnect, TimeUnit.MILLISECONDS);
-
-					} else {
-						connectObs.error(future.cause());
-					}
-
+					changeState(Connectable.State.CONNECT_FAIL);
+					connectObs.onError(future.cause());
 				} else {
-					connectObs.push((T) ConnectableBase.this);
-					connectObs.complete();
+					connectObs.onNext((T) ConnectableBase.this);
+					connectObs.onCompleted();
 				}
 
 			}
 
 		});
 
-		return Observable.create(connectObs).cache();
+		return connectObs;
 
 	}
 
@@ -258,23 +183,20 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 	@Override
 	public Observable<T> disconnect() {
 
-		stateChanges.fire(Connectable.State.DISCONNECTING);
+		changeState(Connectable.State.DISCONNECTING);
 
-		reconnect = -1;
-
-		return Observable.create(new ChannelFutureSubscription<T>(channel
-				.close(), (T) this));
+		return ChannelFutureObservable.create(channel.close(), (T) this);
 
 	}
 
 	@Override
-	public Observable<Connectable.State> stateChanges() {
-		return Observable.create(stateChanges);
+	public Observable<Connectable.StateChange<T>> stateChanges() {
+		return stateChanges;
 	}
 
 	@Override
 	public Connectable.State state() {
-		return stateChanges.last();
+		return lastState;
 	}
 
 	/**
@@ -291,8 +213,7 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 
 		channel.write(message);
 
-		return Observable.create(new ChannelFutureSubscription<U>(channel
-				.flush(), message));
+		return ChannelFutureObservable.create(channel.flush(), message);
 
 	}
 
@@ -304,6 +225,9 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 	 * the subclass by overriding the initPipeline() method, otherwise the only
 	 * message type available will be ByteBuf.class.
 	 * 
+	 * This method is not thread-safe. It if is called at the same time as a
+	 * connect() attempt the message handler may fail to register.
+	 * 
 	 * @param type The message type
 	 */
 	@SuppressWarnings("unchecked")
@@ -314,7 +238,7 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 
 		if (subscription == null) {
 
-			subscription = new MessageSubscription<U>();
+			subscription = new MessageSubscription<U>(type);
 
 			final MessageSubscription<?> existing =
 					subscriptions.putIfAbsent(type, subscription);
@@ -325,68 +249,50 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 
 		}
 
-		return Observable.create(subscription);
+		return subscription.observable();
 
 	}
 
-	private class ClientChannelHandler extends ChannelDuplexHandler implements
-			ChannelInboundMessageHandler<Object>,
-			ChannelOutboundMessageHandler<Object> {
+	protected final void changeState(final Connectable.State state) {
+
+		final Connectable.State previous = lastState;
+
+		stateChanges.onNext(new Connectable.StateChange<T>() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public T connectable() {
+				return (T) T.this;
+			}
+
+			@Override
+			public Connectable.State state() {
+				return state;
+			}
+
+			@Override
+			public Connectable.State previous() {
+				return previous;
+			}
+
+		});
+
+	}
+
+	private class ConnectionStateHandler extends ChannelStateHandlerAdapter {
 
 		@Override
 		public void inboundBufferUpdated(final ChannelHandlerContext ctx) {
-
-			final Queue<Object> messages = ctx.inboundMessageBuffer();
-
-			final MessageBuf<Object> nextBuffer =
-					ctx.nextInboundMessageBuffer();
-
-			while (messages.size() > 0) {
-
-				try {
-
-					final Object message = messages.poll();
-
-					if (nextBuffer != null) {
-
-						final MessageSubscription<?> subscription =
-								subscriptions.get(message.getClass());
-
-						if (subscription != null) {
-							subscription.route(message);
-						} else {
-							nextBuffer.add(message);
-						}
-
-					}
-
-				} catch (final Exception e) {
-					log.warn("Exception processing inbound messages", e);
-				}
-
-			}
-
-			if (nextBuffer != null && nextBuffer.size() > 0) {
-				ctx.fireInboundBufferUpdated();
-			}
-
+			ctx.fireInboundBufferUpdated();
 		}
 
 		@Override
-		public void flush(final ChannelHandlerContext ctx,
-				final ChannelPromise promise) {
+		public void channelActive(final ChannelHandlerContext ctx)
+				throws Exception {
 
-			final Queue<Object> messages = ctx.outboundMessageBuffer();
+			changeState(Connectable.State.CONNECTED);
 
-			final MessageBuf<Object> nextBuffer =
-					ctx.nextOutboundMessageBuffer();
-
-			Object message;
-			while ((message = messages.poll()) != null) {
-				nextBuffer.add(message);
-			}
-
-			ctx.flush(promise);
+			super.channelActive(ctx);
 
 		}
 
@@ -394,40 +300,7 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 		public void channelInactive(final ChannelHandlerContext ctx)
 				throws Exception {
 
-			stateChanges.fire(Connectable.State.DISCONNECTED);
-
-			if (reconnect > -1) {
-				ctx.close().addListener(new ChannelFutureListener() {
-
-					@Override
-					public void operationComplete(final ChannelFuture future)
-							throws Exception {
-
-						if (!future.isSuccess()) {
-
-							if (reconnect > -1) {
-
-								future.channel().eventLoop()
-										.schedule(new Runnable() {
-											@Override
-											public void run() {
-												log.debug("Disconnected, reconnecting");
-												ConnectableBase.this.connect();
-											}
-										}, reconnect, TimeUnit.MILLISECONDS);
-
-							} else {
-								stateChanges
-										.fire(Connectable.State.CONNECT_FAIL);
-							}
-
-						}
-
-					}
-
-				});
-
-			}
+			changeState(Connectable.State.DISCONNECTED);
 
 			super.channelInactive(ctx);
 
@@ -448,28 +321,17 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 
 			} else if (cause instanceof ReadTimeoutException) {
 
-				// No activity from peer, close to trigger reconnect
-				stateChanges.fire(Connectable.State.TIMEOUT);
+				// No activity from peer
+				changeState(Connectable.State.TIMEOUT);
 				ctx.close();
 
 			} else {
 
+				log.warn("", cause);
 				ctx.fireExceptionCaught(cause);
 
 			}
 
-		}
-
-		@Override
-		public MessageBuf<Object> newOutboundBuffer(
-				final ChannelHandlerContext ctx) throws Exception {
-			return Unpooled.messageBuffer();
-		}
-
-		@Override
-		public MessageBuf<Object> newInboundBuffer(
-				final ChannelHandlerContext ctx) throws Exception {
-			return Unpooled.messageBuffer();
 		}
 
 	}
@@ -489,86 +351,27 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 
 			// Connection read timeout handler
 			if (timeout > 0) {
-				pipeline.addLast(new ReadTimeoutHandler(timeout,
+				// TODO This only handles initial read, re-write
+				pipeline.addFirst(new ReadTimeoutHandler(timeout,
 						TimeUnit.MILLISECONDS));
 			}
 
+			// Monitor connection state
+			pipeline.addLast(new ConnectionStateHandler());
+
 			// Process messages and route to observers
-			pipeline.addLast(new ClientChannelHandler());
-
-			// Listen for connected event from transport, re-fire as a
-			// connection state change
-			pipeline.addLast(new ConnectedEventNotifier());
+			pipeline.addLast(new MessageRouter(subscriptions.values()));
 
 		}
 
 	}
 
-	protected static class PushSubscription<T> implements
-			Observable.OnSubscribeFunc<T> {
+	protected static class ChannelFutureObservable {
 
-		protected final Logger log = LoggerFactory.getLogger(getClass());
-
-		private final Set<Observer<? super T>> observers =
-				new CopyOnWriteArraySet<Observer<? super T>>();
-
-		protected void push(final T item) {
-
-			for (final Observer<? super T> obs : observers) {
-				try {
-					obs.onNext(item);
-				} catch (final Throwable t) {
-					log.error("Uncaught exception", t);
-				}
-			}
-
-		}
-
-		protected void complete() {
-
-			for (final Observer<? super T> obs : observers) {
-				try {
-					obs.onCompleted();
-				} catch (final Throwable t) {
-					log.error("Uncaught exception", t);
-				}
-			}
-
-		}
-
-		protected void error(final Throwable error) {
-
-			for (final Observer<? super T> obs : observers) {
-				try {
-					obs.onError(error);
-				} catch (final Throwable t) {
-					log.error("Uncaught exception", t);
-				}
-			}
-
-		}
-
-		@Override
-		public Subscription onSubscribe(final Observer<? super T> observer) {
-
-			observers.add(observer);
-
-			return new Subscription() {
-				@Override
-				public void unsubscribe() {
-					observers.remove(observer);
-				}
-			};
-
-		}
-
-	}
-
-	protected static class ChannelFutureSubscription<T> extends
-			PushSubscription<T> {
-
-		public ChannelFutureSubscription(final ChannelFuture future,
+		public static <T> Observable<T> create(final ChannelFuture future,
 				final T result) {
+
+			final ReplaySubject<T> subject = ReplaySubject.create();
 
 			future.addListener(new ChannelFutureListener() {
 
@@ -577,60 +380,81 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 						throws Exception {
 
 					if (!future.isSuccess()) {
-						error(future.cause());
+						subject.onError(future.cause());
 					} else {
-						push(result);
-						complete();
+						subject.onNext(result);
+						subject.onCompleted();
 					}
 
 				}
 
 			});
 
+			return subject;
+
 		}
 
 	}
 
-	private static class ConnectionStateChange extends
-			PushSubscription<Connectable.State> {
+	private static class MessageRouter extends
+			ChannelInboundMessageHandlerAdapter<Object> {
 
-		private Connectable.State lastState;
+		private final Collection<MessageSubscription<?>> subscriptions;
 
-		protected void fire(final Connectable.State state) {
-			log.debug("Connection state fired: " + state);
-			lastState = state;
-			push(state);
+		public MessageRouter(
+				final Collection<MessageSubscription<?>> subscriptions_) {
+			super(Object.class);
+			subscriptions = subscriptions_;
 		}
-
-		public Connectable.State last() {
-			return lastState;
-		}
-
-	}
-
-	private static class MessageSubscription<M> extends PushSubscription<M> {
-
-		@SuppressWarnings("unchecked")
-		public void route(final Object message) {
-			push((M) message);
-		}
-
-	}
-
-	private class ConnectedEventNotifier extends PassthroughStateHandler {
 
 		@Override
-		public void userEventTriggered(final ChannelHandlerContext ctx,
-				final Object evt) throws Exception {
+		public void messageReceived(final ChannelHandlerContext ctx,
+				final Object msg) throws Exception {
 
-			if (evt == TransportProtocol.Event.CONNECTED) {
-				stateChanges.fire(Connectable.State.CONNECTED);
-			} else if (evt == TransportProtocol.Event.DISCONNECTED) {
-				stateChanges.fire(Connectable.State.DISCONNECTED);
+			for (final MessageSubscription<?> subscription : subscriptions) {
+				subscription.route(msg);
 			}
 
-			super.userEventTriggered(ctx, evt);
+		}
 
+	}
+
+	private static class MessageSubscription<M> {
+
+		private final Class<M> type;
+		private final PublishSubject<M> publish;
+
+		public MessageSubscription(final Class<M> type_) {
+			type = type_;
+			publish = PublishSubject.create();
+		}
+
+		public Observable<M> observable() {
+			return publish;
+		}
+
+		public void route(final Object msg) throws Exception {
+			if (type.isInstance(msg)) {
+				publish.onNext(type.cast(msg));
+			}
+		}
+
+	}
+
+	private class ConnectionStateObserver implements
+			Observer<Connectable.StateChange<T>> {
+
+		@Override
+		public void onNext(final Connectable.StateChange<T> state) {
+			lastState = state.state();
+		}
+
+		@Override
+		public void onCompleted() {
+		}
+
+		@Override
+		public void onError(final Throwable e) {
 		}
 
 	}

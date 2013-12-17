@@ -1,12 +1,11 @@
-package com.barchart.netty.client;
+package com.barchart.netty.client.facets;
 
 import rx.Observable;
 
 import com.barchart.account.api.Account;
 import com.barchart.account.api.AuthResult;
 
-public interface AuthenticatingConnectable<T extends AuthenticatingConnectable<T, A>, A extends Account>
-		extends Connectable<T> {
+public interface AuthenticationAware<A extends Account> {
 
 	public enum AuthState {
 
@@ -29,18 +28,6 @@ public interface AuthenticatingConnectable<T extends AuthenticatingConnectable<T
 		 * Authentication failed.
 		 */
 		AUTHENTICATION_FAILED
-
-	}
-
-	public interface Builder<C extends AuthenticatingConnectable<C, B>, B extends Account>
-			extends Connectable.Builder<C> {
-
-		/**
-		 * Authenticate the connection with the given credentials. Credentials
-		 * providers are specific to each Connectable implementation.
-		 */
-		Builder<? extends C, B> authenticator(
-				Authenticator<B> authenticator);
 
 	}
 

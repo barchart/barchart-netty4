@@ -1,14 +1,18 @@
 package com.barchart.netty.client;
 
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.util.concurrent.TimeUnit;
-
 import rx.Observable;
 
-import com.barchart.netty.client.transport.TransportProtocol;
-
 public interface Connectable<T extends Connectable<T>> {
+
+	interface StateChange<C extends Connectable<C>> {
+
+		C connectable();
+
+		State state();
+
+		State previous();
+
+	}
 
 	public enum State {
 
@@ -19,6 +23,12 @@ public interface Connectable<T extends Connectable<T>> {
 
 		/**
 		 * Connection succeeded.
+		 * 
+		 * This does not represent the underlying channel state, but indicates
+		 * that the connection is ready for application use. This is due to some
+		 * transports (i.e. websockets, TLS) requiring additional handshaking
+		 * after channel activation before the application should consider it
+		 * ready.
 		 */
 		CONNECTED,
 
@@ -44,45 +54,6 @@ public interface Connectable<T extends Connectable<T>> {
 
 	}
 
-	public interface Builder<C extends Connectable<C>> {
-
-		/**
-		 * The remote peer's address.
-		 * 
-		 * Either address() or websocket() should be called but not both.
-		 */
-		Builder<? extends C> address(InetSocketAddress address,
-				TransportProtocol protocol);
-
-		/**
-		 * Use a websocket connection. Automatically sets the peer address based
-		 * on the URI and connects over TCP.
-		 * 
-		 * Either address() or websocket() should be called but not both.
-		 */
-		Builder<? extends C> websocket(URI uri);
-
-		/**
-		 * Set the automatic reconnect delay after an unexpected disconnect or
-		 * read timeout. Disabled by default.
-		 */
-		Builder<? extends C> reconnect(long delay, TimeUnit unit);
-
-		/**
-		 * Set the read timeout for this connection. If a message has not been
-		 * received in the specified number of milliseconds, the connection will
-		 * be terminated (automatically triggering a reconnect attempt if
-		 * reconnect() is set). Disabled by default.
-		 */
-		Builder<? extends C> timeout(long timeout, TimeUnit unit);
-
-		/**
-		 * Build a Connectable instance with the current parameters.
-		 */
-		C build();
-
-	}
-
 	/**
 	 * Connect to the remote peer.
 	 */
@@ -96,7 +67,7 @@ public interface Connectable<T extends Connectable<T>> {
 	/**
 	 * Observe connection state changes.
 	 */
-	Observable<State> stateChanges();
+	Observable<StateChange<T>> stateChanges();
 
 	/**
 	 * Check the last connection state.
