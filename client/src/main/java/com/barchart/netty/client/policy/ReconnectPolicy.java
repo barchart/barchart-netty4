@@ -1,4 +1,4 @@
-package com.barchart.netty.client.base;
+package com.barchart.netty.client.policy;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -10,6 +10,15 @@ import rx.Observer;
 
 import com.barchart.netty.client.Connectable;
 
+/**
+ * An automatic reconnect policy for a connection. When a disconnect event is
+ * received, it will attempt to re-establish the connection after the specified
+ * delay.
+ * 
+ * To use, add as a connection state listener on a Connectable.
+ * 
+ * <pre>client.stateChanges().subscribe(new ReconnectPolicy(executor, 5, TimeUnit.SECONDS));</pre>
+ */
 public class ReconnectPolicy implements Observer<Connectable.StateChange<?>> {
 
 	private static final Logger log = LoggerFactory
@@ -23,6 +32,12 @@ public class ReconnectPolicy implements Observer<Connectable.StateChange<?>> {
 
 	private int attemptsMade = 0;
 
+	/**
+	 * Reconnect a Connectable after the specified delay when a disconnect event
+	 * is received.
+	 * 
+	 * @param executor_ The scheduled executor for the reconnect delay
+	 */
 	public ReconnectPolicy(final ScheduledExecutorService executor_,
 			final long delay_, final TimeUnit unit_) {
 
@@ -30,6 +45,13 @@ public class ReconnectPolicy implements Observer<Connectable.StateChange<?>> {
 
 	}
 
+	/**
+	 * Reconnect a Connectable after the specified delay when a disconnect event
+	 * is received, but only a limited number of attempts.
+	 * 
+	 * @param executor_ The scheduled executor for the reconnect delay
+	 * @param attempts_ The maximum number of retries
+	 */
 	public ReconnectPolicy(final ScheduledExecutorService executor_,
 			final long delay_, final TimeUnit unit_, final int attempts_) {
 

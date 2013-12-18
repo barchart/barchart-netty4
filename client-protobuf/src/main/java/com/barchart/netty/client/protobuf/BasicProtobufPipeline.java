@@ -1,7 +1,6 @@
 package com.barchart.netty.client.protobuf;
 
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
@@ -10,9 +9,7 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.openfeed.proto.generic.Packet;
 import org.openfeed.proto.generic.PacketType;
 
-import com.barchart.account.api.Account;
-import com.barchart.netty.client.base.AuthenticatingConnectableBase;
-import com.barchart.netty.client.transport.TransportProtocol;
+import com.barchart.netty.client.PipelineInitializer;
 import com.barchart.proto.buf.session.AuthRequestMessage;
 import com.barchart.proto.buf.session.AuthResponseMessage;
 import com.barchart.proto.buf.session.CapabilitiesMessage;
@@ -21,27 +18,12 @@ import com.barchart.proto.buf.session.SessionPacketMessage;
 import com.barchart.proto.buf.session.SessionTimestampMessage;
 import com.google.protobuf.MessageLite;
 
-public class ProtobufClientBase<T extends ProtobufClientBase<T>> extends
-		AuthenticatingConnectableBase<T, Account> {
-
-	protected abstract static class Builder<B extends Builder<B, C>, C extends ProtobufClientBase<C>>
-			extends AuthenticatingConnectableBase.Builder<B, C, Account> {
-
-		@SuppressWarnings("unchecked")
-		public B credentials(final String username, final String password) {
-			authenticator(new SessionAuthenticator(username, password));
-			return (B) this;
-		}
-
-	}
+public class BasicProtobufPipeline implements PipelineInitializer {
 
 	private final ProtobufPacketDecoder packetDecoder;
 	private final ProtobufSessionDecoder sessionDecoder;
 
-	protected ProtobufClientBase(final EventLoopGroup eventLoop_,
-			final TransportProtocol transport_) {
-
-		super(eventLoop_, transport_);
+	public BasicProtobufPipeline() {
 
 		packetDecoder = new ProtobufPacketDecoder();
 

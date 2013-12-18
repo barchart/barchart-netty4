@@ -1,5 +1,8 @@
 package com.barchart.netty.client.facets;
 
+/**
+ * Latency and clock skew monitoring for a Connectable.
+ */
 public interface LatencyAware {
 
 	/**

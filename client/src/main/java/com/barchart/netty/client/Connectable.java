@@ -2,8 +2,15 @@ package com.barchart.netty.client;
 
 import rx.Observable;
 
+/**
+ * A client that can be connected and disconnected from the remote host on
+ * request and provides methods for monitoring the connection state.
+ */
 public interface Connectable<T extends Connectable<T>> {
 
+	/**
+	 * Information on a state change transition.
+	 */
 	interface StateChange<C extends Connectable<C>> {
 
 		C connectable();
@@ -14,6 +21,9 @@ public interface Connectable<T extends Connectable<T>> {
 
 	}
 
+	/**
+	 * The connection state.
+	 */
 	public enum State {
 
 		/**

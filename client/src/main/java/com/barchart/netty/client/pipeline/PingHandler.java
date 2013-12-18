@@ -26,10 +26,14 @@ public class PingHandler extends ChannelInboundMessageHandlerAdapter<Object>
 
 	private ScheduledFuture<?> pingFuture = null;
 
-	private final long interval;
-	private final TimeUnit unit;
+	private long interval;
+	private TimeUnit unit;
 
 	public PingHandler(final long interval_, final TimeUnit unit_) {
+		interval(interval_, unit_);
+	}
+
+	public void interval(final long interval_, final TimeUnit unit_) {
 		interval = interval_;
 		unit = unit_;
 	}
@@ -73,6 +77,7 @@ public class PingHandler extends ChannelInboundMessageHandlerAdapter<Object>
 				}
 
 			});
+			ctx.flush();
 
 		} else if (msg instanceof Pong) {
 
@@ -104,6 +109,8 @@ public class PingHandler extends ChannelInboundMessageHandlerAdapter<Object>
 
 		startPing(ctx);
 
+		ctx.fireChannelActive();
+
 	}
 
 	@Override
@@ -112,25 +119,25 @@ public class PingHandler extends ChannelInboundMessageHandlerAdapter<Object>
 
 		stopPing();
 
+		ctx.fireChannelInactive();
+
 	}
 
 	private void startPing(final ChannelHandlerContext ctx) {
 
 		synchronized (this) {
 
-			if (pingFuture != null) {
+			if (pingFuture != null && !pingFuture.isDone()) {
 				pingFuture.cancel(false);
 			}
 
 			if (interval > 0) {
-				pingFuture =
-						ctx.channel().eventLoop()
-								.scheduleAtFixedRate(new Runnable() {
-									@Override
-									public void run() {
-										sendPing(ctx);
-									}
-								}, interval, interval, unit);
+				pingFuture = ctx.channel().eventLoop().schedule(new Runnable() {
+					@Override
+					public void run() {
+						sendPing(ctx);
+					}
+				}, interval, unit);
 			}
 
 		}
@@ -140,24 +147,51 @@ public class PingHandler extends ChannelInboundMessageHandlerAdapter<Object>
 	private void stopPing() {
 
 		synchronized (this) {
+
 			if (pingFuture != null) {
-				pingFuture.cancel(false);
+
+				if (!pingFuture.isDone()) {
+					pingFuture.cancel(false);
+				}
+
 				pingFuture = null;
+
 			}
+
 		}
 
 	}
 
 	public void sendPing(final ChannelHandlerContext ctx) {
 
-		ctx.write(new Ping() {
+		try {
 
-			@Override
-			public long timestamp() {
-				return System.currentTimeMillis();
+			if (pingFuture != null && !pingFuture.isDone()) {
+				pingFuture.cancel(false);
 			}
 
-		});
+			ctx.write(new Ping() {
+
+				@Override
+				public long timestamp() {
+					return System.currentTimeMillis();
+				}
+
+			});
+			ctx.flush();
+
+		} finally {
+
+			if (interval > 0) {
+				pingFuture = ctx.channel().eventLoop().schedule(new Runnable() {
+					@Override
+					public void run() {
+						sendPing(ctx);
+					}
+				}, interval, unit);
+			}
+
+		}
 
 	}
 

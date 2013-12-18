@@ -15,7 +15,8 @@ import com.barchart.util.flow.api.Point;
 import com.barchart.util.flow.api.State;
 import com.barchart.util.flow.provider.Provider;
 
-public class VersionFlowHandler extends MessageFlowHandler<VersionEvent, VersionState> {
+public class VersionFlowHandler extends
+		MessageFlowHandler<VersionEvent, VersionState> {
 
 	public static enum VersionEvent implements Event<VersionEvent> {
 		CONNECTED, //
@@ -163,6 +164,7 @@ public class VersionFlowHandler extends MessageFlowHandler<VersionEvent, Version
 						return version;
 					}
 				});
+				context.attachment().flush();
 
 				// Advance state machine
 				context.fire(VersionEvent.SEND_VERSION);

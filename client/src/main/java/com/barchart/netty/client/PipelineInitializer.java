@@ -2,6 +2,10 @@ package com.barchart.netty.client;
 
 import io.netty.channel.ChannelPipeline;
 
+/**
+ * Base interface for objects that are interested in adding handlers to a
+ * ChannelPipeline in preparation for communication to a remote host.
+ */
 public interface PipelineInitializer {
 
 	/**

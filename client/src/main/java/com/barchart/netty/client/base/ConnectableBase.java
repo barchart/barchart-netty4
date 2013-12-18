@@ -17,6 +17,7 @@ import io.netty.handler.codec.DecoderException;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -32,10 +33,15 @@ import rx.subjects.ReplaySubject;
 
 import com.barchart.netty.client.Connectable;
 import com.barchart.netty.client.PipelineInitializer;
+import com.barchart.netty.client.policy.ReconnectPolicy;
 import com.barchart.netty.client.transport.TransportFactory;
 import com.barchart.netty.client.transport.TransportProtocol;
 
-public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
+/**
+ * A base Connectable implementation which provides basic configuration,
+ * connection workflow, status monitoring, and message subscriptions.
+ */
+public abstract class ConnectableBase<T extends Connectable<T>> implements
 		Connectable<T>, PipelineInitializer {
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -49,22 +55,44 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 		/* Implementation specific */
 		protected long timeout = 0;
 
+		/**
+		 * Set the remote host address to connect to.
+		 * 
+		 * @see com.barchart.netty.client.transport.TransportFactory#create(URI)
+		 */
 		@SuppressWarnings("unchecked")
 		public B host(final String url) {
 			transport = TransportFactory.create(url);
 			return (B) this;
 		}
 
+		/**
+		 * Set the connection read timeout. If the specified time elapses
+		 * between inbound messages, the connection will terminate. To
+		 * automatically reconnect after a timeout, set a
+		 * {@link ReconnectPolicy}.
+		 */
 		@SuppressWarnings("unchecked")
 		public B timeout(final long timeout_, final TimeUnit unit_) {
 			timeout = TimeUnit.MILLISECONDS.convert(timeout_, unit_);
 			return (B) this;
 		}
 
+		/**
+		 * Set the Netty EventLoopGroup for this Connectable.
+		 */
 		@SuppressWarnings("unchecked")
 		public B eventLoop(final EventLoopGroup group_) {
 			eventLoop = group_;
 			return (B) this;
+		}
+
+		/**
+		 * Retrieve the EventLoopGroup for this connectable. Useful for
+		 * scheduling I/O related tasks on the event loop executor.
+		 */
+		public EventLoopGroup eventLoop() {
+			return eventLoop;
 		}
 
 		protected C configure(final C client) {
@@ -72,6 +100,9 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 			return client;
 		}
 
+		/**
+		 * Build a new Connectable client with the current configuration.
+		 */
 		protected abstract C build();
 
 	}
@@ -144,13 +175,15 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 		log.debug("Client connecting to " + transport.address().toString());
 		changeState(Connectable.State.CONNECTING);
 
-		final ChannelFuture future =
+		final Bootstrap bootstrap =
 				new Bootstrap().channel(transport.channel()).group(group)
 						.remoteAddress(transport.address())
 						.option(ChannelOption.SO_REUSEADDR, true)
 						.option(ChannelOption.SO_SNDBUF, 262144)
 						.option(ChannelOption.SO_RCVBUF, 262144)
-						.handler(new ClientPipelineInitializer()).connect();
+						.handler(new ClientPipelineInitializer());
+
+		final ChannelFuture future = bootstrap.connect();
 
 		channel = future.channel();
 
@@ -183,9 +216,15 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 	@Override
 	public Observable<T> disconnect() {
 
-		changeState(Connectable.State.DISCONNECTING);
+		if (channel.isActive()) {
 
-		return ChannelFutureObservable.create(channel.close(), (T) this);
+			changeState(Connectable.State.DISCONNECTING);
+
+			return ChannelFutureObservable.create(channel.close(), (T) this);
+
+		}
+
+		return Observable.<T> just((T) this);
 
 	}
 
@@ -262,7 +301,7 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 			@SuppressWarnings("unchecked")
 			@Override
 			public T connectable() {
-				return (T) T.this;
+				return (T) ConnectableBase.this;
 			}
 
 			@Override
@@ -304,6 +343,8 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 
 			super.channelInactive(ctx);
 
+			channel = null;
+
 		}
 
 		@Override
@@ -327,8 +368,8 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 
 			} else {
 
-				log.warn("", cause);
-				ctx.fireExceptionCaught(cause);
+				log.warn(cause.getClass().getName() + ": " + cause.getMessage());
+				// ctx.fireExceptionCaught(cause);
 
 			}
 
@@ -351,7 +392,6 @@ public abstract class ConnectableBase<T extends ConnectableBase<T>> implements
 
 			// Connection read timeout handler
 			if (timeout > 0) {
-				// TODO This only handles initial read, re-write
 				pipeline.addFirst(new ReadTimeoutHandler(timeout,
 						TimeUnit.MILLISECONDS));
 			}

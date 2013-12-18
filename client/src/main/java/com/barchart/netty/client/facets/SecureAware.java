@@ -1,15 +1,14 @@
 package com.barchart.netty.client.facets;
 
 /**
- * A Connectable facet that indicates the secure status of the current
- * connection.
+ * Secure channel status monitoring for a Connectable.
  */
 public interface SecureAware {
 
 	/**
 	 * The connection security requested.
 	 */
-	enum Request {
+	enum Encryption {
 
 		/**
 		 * Require a secure connection.

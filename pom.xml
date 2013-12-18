@@ -29,6 +29,8 @@ Layout Project.
 		<module>core</module>
 		<module>client</module>
 
+		<module>client-protobuf</module>
+
 		<module>test</module>
 
 	</modules>

@@ -3,8 +3,7 @@ package com.barchart.netty.client.facets;
 import com.barchart.netty.client.messages.Version;
 
 /**
- * A Connectable facet that returns the agreed-upon protocol version for this
- * connection.
+ * Protocol version monitoring for a Connectable.
  */
 public interface VersionAware {
 

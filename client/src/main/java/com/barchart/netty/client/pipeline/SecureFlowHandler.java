@@ -3,12 +3,14 @@ package com.barchart.netty.client.pipeline;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.ssl.SslHandler;
+import io.netty.handler.ssl.SslHandshakeCompletionEvent;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
+import com.barchart.netty.client.facets.SecureAware;
 import com.barchart.netty.client.messages.Capabilities;
 import com.barchart.netty.client.messages.StartTLS;
 import com.barchart.netty.client.messages.StopTLS;
@@ -25,7 +27,8 @@ import com.barchart.util.flow.provider.Provider;
  * Flow state machine for activating TLS on connect. Not sharable between
  * multiple connections.
  */
-public class SecureFlowHandler extends MessageFlowHandler<TLSEvent, TLSState> {
+public class SecureFlowHandler extends MessageFlowHandler<TLSEvent, TLSState>
+		implements SecureAware {
 
 	public static enum TLSEvent implements Event<TLSEvent> {
 		CONNECTED, //
@@ -48,6 +51,8 @@ public class SecureFlowHandler extends MessageFlowHandler<TLSEvent, TLSState> {
 
 	private final boolean require;
 	private final Flow<TLSEvent, TLSState, ChannelHandlerContext> flow;
+
+	private boolean secure = false;
 
 	private Context<TLSEvent, TLSState, ChannelHandlerContext> context = null;
 	private Capabilities capabilities = null;
@@ -108,9 +113,24 @@ public class SecureFlowHandler extends MessageFlowHandler<TLSEvent, TLSState> {
 	}
 
 	@Override
+	public boolean secure() {
+		return secure;
+	}
+
+	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
 		context = flow.contextBuilder().build(ctx);
 		super.channelActive(ctx);
+	}
+
+	@Override
+	public void userEventTriggered(final ChannelHandlerContext ctx,
+			final Object evt) throws Exception {
+
+		if (evt == SslHandshakeCompletionEvent.SUCCESS) {
+			secure = true;
+		}
+
 	}
 
 	@Override
@@ -162,6 +182,7 @@ public class SecureFlowHandler extends MessageFlowHandler<TLSEvent, TLSState> {
 				// Start TLS handshake
 				ctx.write(new StartTLS() {
 				});
+				ctx.flush();
 
 				// Fire event to advance state machine
 				context.fire(TLSEvent.START_TLS);

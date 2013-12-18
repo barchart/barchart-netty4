@@ -4,6 +4,7 @@ import io.netty.buffer.MessageBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandler;
+import io.netty.channel.ChannelStateHandlerAdapter;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -75,17 +76,18 @@ import com.barchart.util.flow.api.State;
  * @see com.barchart.util.flow.Flow
  */
 public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends Enum<S> & State<S>>
-		extends OutboundMessageBlockingHandler implements
+		extends ChannelStateHandlerAdapter implements
 		ChannelInboundMessageHandler<Object> {
 
-	private final static Logger log = LoggerFactory
-			.getLogger(MessageFlowHandler.class);
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final Queue<Object> inboundQueue = new LinkedList<Object>();
 
+	private boolean blockActivate;
+
 	/**
-	 * Construct a new Flow handler that blocks downstream communication until
-	 * it is complete.
+	 * Construct a new Flow handler that blocks downstream channel activation
+	 * until it is complete.
 	 */
 	public MessageFlowHandler() {
 		this(true);
@@ -94,13 +96,11 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	/**
 	 * Construct a new Flow handler.
 	 * 
-	 * @param block_ True to block communication between the remote host and
-	 *            downstream handlers until the state machine is complete
+	 * @param block_ True to block downstream channel activation until the state
+	 *            machine completes.
 	 */
-	public MessageFlowHandler(final boolean block_) {
-		if (block_) {
-			block();
-		}
+	public MessageFlowHandler(final boolean blockActivate_) {
+		blockActivate = blockActivate_;
 	}
 
 	/**
@@ -122,11 +122,33 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	 * 
 	 * @see OnComplete
 	 */
-	protected void complete(final ChannelHandlerContext ctx) {
+	protected void complete(final ChannelHandlerContext ctx) throws Exception {
 
-		log.debug("Completed flow");
+		log.debug("Flow complete, flushing inbound message queue");
 
-		unblock(ctx);
+		// Notify downstream that connection is active
+		if (blockActivate) {
+			super.channelActive(ctx);
+		}
+
+		// Forward queued messages to next handler
+		final MessageBuf<Object> next = ctx.nextInboundMessageBuffer();
+
+		next.addAll(inboundQueue);
+		inboundQueue.clear();
+
+		ctx.fireInboundBufferUpdated();
+
+		ctx.pipeline().remove(this);
+
+	}
+
+	private void error(final ChannelHandlerContext ctx, final Throwable t) {
+
+		log.error("Exception in flow handler", t);
+		ctx.fireExceptionCaught(t);
+
+		fail(ctx);
 
 	}
 
@@ -139,11 +161,8 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	 * @see OnError
 	 * @see OnFailed
 	 */
-	protected void error(final ChannelHandlerContext ctx, final Throwable t) {
+	protected void fail(final ChannelHandlerContext ctx) {
 
-		log.error("Exception in flow handler", t);
-
-		ctx.fireExceptionCaught(t);
 		ctx.close();
 
 	}
@@ -153,26 +172,16 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	 * when the state machine completes.
 	 */
 	protected void forwardOnComplete(final Object message) {
+		log.trace("Forwarding on completion: " + message);
 		inboundQueue.add(message);
 	}
 
 	@Override
-	public void unblock(final ChannelHandlerContext ctx) {
-
-		log.debug("Flow complete, flushing message queues");
-
-		// Forward queued messages to next handler
-		final MessageBuf<Object> next = ctx.nextInboundMessageBuffer();
-
-		next.addAll(inboundQueue);
-		inboundQueue.clear();
-
-		ctx.fireInboundBufferUpdated();
-
-		super.unblock(ctx);
-
-		ctx.pipeline().remove(this);
-
+	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
+		log.debug("Flow handler activated");
+		if (!blockActivate) {
+			super.channelActive(ctx);
+		}
 	}
 
 	@Override
@@ -188,6 +197,8 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 			if (msg == null) {
 				break;
 			}
+
+			log.trace("Message received: " + msg);
 
 			try {
 				if (!messageReceived(msg) && out != null) {
@@ -214,6 +225,10 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	 */
 	protected class StateTransition extends
 			Listener.Adapter<E, S, ChannelHandlerContext> {
+
+		public StateTransition() {
+		}
+
 	}
 
 	/**
@@ -226,6 +241,9 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	 * builder.listener(new OnError());
 	 */
 	protected class OnError extends StateTransition {
+
+		public OnError() {
+		}
 
 		@Override
 		public void enterError(final Point<E, S> past, final Point<E, S> next,
@@ -254,16 +272,15 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	 */
 	protected class OnFailed extends StateTransition {
 
+		public OnFailed() {
+		}
+
 		@Override
 		public void enter(final Point<E, S> past, final Point<E, S> next,
 				final Context<E, S, ChannelHandlerContext> context)
 				throws Exception {
 
-			error(context.attachment(),
-					new Exception(
-							"Flow machine failed at the following transition: "
-									+ past.state() + " -> " + next.event()
-									+ " -> " + next.state()));
+			fail(context.attachment());
 
 		}
 
@@ -279,6 +296,9 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	 * builder.at(COMPLETE_STATE).listener(new OnComplete());
 	 */
 	protected class OnComplete extends StateTransition {
+
+		public OnComplete() {
+		}
 
 		@Override
 		public void enter(final Point<E, S> past, final Point<E, S> next,

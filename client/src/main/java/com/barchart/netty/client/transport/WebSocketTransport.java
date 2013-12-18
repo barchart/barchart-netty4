@@ -24,11 +24,21 @@ import java.net.URI;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
+/**
+ * Websocket streaming transport. Automatically upgrades the HTTP connection to
+ * websockets and handles encoding/decoding bytes into WebSocket frames so that
+ * to downstream ChannelHandlers it just looks like a standard byte stream.
+ */
 public class WebSocketTransport implements TransportProtocol {
 
 	private final URI uri;
 	private final InetSocketAddress address;
 
+	/**
+	 * Construct a WebSocketTransport with the specified URI. If the
+	 * <code>wss://</code> protocol is specified, SSL-TLS will be activated for
+	 * the connection.
+	 */
 	public WebSocketTransport(final URI uri_) {
 
 		uri = uri_;
@@ -67,7 +77,7 @@ public class WebSocketTransport implements TransportProtocol {
 
 		}
 
-		// Fires CONNECTED event after handshake and removes self
+		// Fires channelActive() after handshake and removes self
 		pipeline.addLast(new WebSocketConnectedNotifier());
 
 		// BinaryWebSocketFrame <-> ByteBuf codec before user codecs
@@ -82,12 +92,19 @@ public class WebSocketTransport implements TransportProtocol {
 				final Object evt) throws Exception {
 
 			if (evt == WebSocketClientProtocolHandler.ClientHandshakeStateEvent.HANDSHAKE_COMPLETE) {
-				ctx.fireUserEventTriggered(Event.CONNECTED);
+
+				ctx.fireChannelActive();
+
 				ctx.pipeline().remove(this);
+
 			}
 
-			ctx.fireUserEventTriggered(evt);
+		}
 
+		@Override
+		public void channelActive(final ChannelHandlerContext ctx)
+				throws Exception {
+			// Block downstream relay until handshake completes
 		}
 
 		@Override
