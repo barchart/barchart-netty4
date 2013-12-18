@@ -41,7 +41,7 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 
 	}
 
-	private AuthenticationFacet<A> facet = null;
+	protected AuthenticationFacet<A> facet = null;
 
 	protected AuthenticatingConnectableBase(final TransportProtocol transport_) {
 		super(transport_);

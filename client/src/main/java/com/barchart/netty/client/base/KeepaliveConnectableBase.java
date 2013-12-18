@@ -47,7 +47,7 @@ public abstract class KeepaliveConnectableBase<T extends KeepaliveConnectableBas
 		}
 	}
 
-	private KeepaliveFacet facet = null;
+	protected KeepaliveFacet facet = null;
 
 	protected KeepaliveConnectableBase(final TransportProtocol transport_) {
 		super(transport_);

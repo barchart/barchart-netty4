@@ -33,7 +33,7 @@ public abstract class SecureConnectableBase<T extends SecureConnectableBase<T>>
 		}
 	}
 
-	private SecureFacet facet = null;
+	protected SecureFacet facet = null;
 
 	protected SecureConnectableBase(final TransportProtocol transport_) {
 		super(transport_);
