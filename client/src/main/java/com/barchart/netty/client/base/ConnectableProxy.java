@@ -1,7 +1,6 @@
 package com.barchart.netty.client.base;
 
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -45,10 +44,9 @@ public abstract class ConnectableProxy<T extends ConnectableProxy<T>> extends
 	private final ConcurrentMap<Method, Object> methods =
 			new ConcurrentHashMap<Method, Object>();
 
-	protected ConnectableProxy(final EventLoopGroup eventLoop_,
-			final TransportProtocol transport_) {
+	protected ConnectableProxy(final TransportProtocol transport_) {
 
-		super(eventLoop_, transport_);
+		super(transport_);
 
 		invokers.add(this);
 

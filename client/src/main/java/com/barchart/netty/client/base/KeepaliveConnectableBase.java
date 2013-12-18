@@ -1,7 +1,6 @@
 package com.barchart.netty.client.base;
 
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
 
 import java.util.concurrent.TimeUnit;
 
@@ -50,9 +49,8 @@ public abstract class KeepaliveConnectableBase<T extends KeepaliveConnectableBas
 
 	private KeepaliveFacet facet = null;
 
-	protected KeepaliveConnectableBase(final EventLoopGroup eventLoop_,
-			final TransportProtocol transport_) {
-		super(eventLoop_, transport_);
+	protected KeepaliveConnectableBase(final TransportProtocol transport_) {
+		super(transport_);
 	}
 
 	@Override

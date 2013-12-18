@@ -8,7 +8,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelStateHandlerAdapter;
 import io.netty.channel.EventLoopGroup;
@@ -31,6 +30,7 @@ import rx.Observer;
 import rx.subjects.PublishSubject;
 import rx.subjects.ReplaySubject;
 
+import com.barchart.netty.client.BootstrapInitializer;
 import com.barchart.netty.client.Connectable;
 import com.barchart.netty.client.PipelineInitializer;
 import com.barchart.netty.client.policy.ReconnectPolicy;
@@ -50,7 +50,8 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 
 		/* Standard fields */
 		protected TransportProtocol transport;
-		protected EventLoopGroup eventLoop = new NioEventLoopGroup();
+		protected EventLoopGroup eventLoop = null;
+		protected BootstrapInitializer bootstrapper = null;
 
 		/* Implementation specific */
 		protected long timeout = 0;
@@ -64,6 +65,14 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 		public B host(final String url) {
 			transport = TransportFactory.create(url);
 			return (B) this;
+		}
+
+		/**
+		 * Retrieve the host TransportProtocol for this connectable for subclass
+		 * builders.
+		 */
+		protected TransportProtocol host() {
+			return transport;
 		}
 
 		/**
@@ -88,16 +97,32 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 		}
 
 		/**
-		 * Retrieve the EventLoopGroup for this connectable. Useful for
-		 * scheduling I/O related tasks on the event loop executor.
+		 * Roll-your-own Netty bootstrap for additional flexibility in
+		 * configuration channel options. You should only call options() on the
+		 * provided Bootstrap, as other values (remote host, channel type,
+		 * channel initializer, etc) may be overwritten by the default
+		 * bootstrapping process.
 		 */
-		public EventLoopGroup eventLoop() {
-			return eventLoop;
+		@SuppressWarnings("unchecked")
+		public B bootstrapper(final BootstrapInitializer bootstrapper_) {
+			bootstrapper = bootstrapper_;
+			return (B) this;
 		}
 
 		protected C configure(final C client) {
+
+			if (eventLoop != null) {
+				client.eventLoopGroup(eventLoop);
+			}
+
+			if (bootstrapper != null) {
+				client.bootstrapper(bootstrapper);
+			}
+
 			client.timeout(timeout);
+
 			return client;
+
 		}
 
 		/**
@@ -118,9 +143,12 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 
 	/* Netty resources */
 	protected Channel channel;
-	private final EventLoopGroup group;
+
 	private final TransportProtocol transport;
 	private final ChannelInitializer<Channel> channelInitializer;
+
+	private EventLoopGroup group;
+	private BootstrapInitializer bootstrapper = null;
 
 	/* Timeout / reconnect */
 	private long timeout = 0;
@@ -134,11 +162,11 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 	 * @param address_ The remote peer address
 	 * @param transport_ The transport type
 	 */
-	protected ConnectableBase(final EventLoopGroup eventLoop_,
-			final TransportProtocol transport_) {
+	protected ConnectableBase(final TransportProtocol transport_) {
 
-		group = eventLoop_;
 		transport = transport_;
+
+		group = new NioEventLoopGroup();
 
 		channelInitializer = new ClientPipelineInitializer();
 
@@ -160,6 +188,26 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 		timeout = millis;
 	}
 
+	private Bootstrap bootstrap() {
+
+		final Bootstrap bootstrap = transport.bootstrap();
+
+		if (bootstrapper != null) {
+			bootstrapper.initBootstrap(bootstrap);
+		}
+
+		return bootstrap;
+
+	}
+
+	protected void bootstrapper(final BootstrapInitializer bi) {
+		bootstrapper = bi;
+	}
+
+	protected void eventLoopGroup(final EventLoopGroup group_) {
+		group = group_;
+	}
+
 	@Override
 	public Observable<T> connect() {
 
@@ -175,15 +223,10 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 		log.debug("Client connecting to " + transport.address().toString());
 		changeState(Connectable.State.CONNECTING);
 
-		final Bootstrap bootstrap =
-				new Bootstrap().channel(transport.channel()).group(group)
-						.remoteAddress(transport.address())
-						.option(ChannelOption.SO_REUSEADDR, true)
-						.option(ChannelOption.SO_SNDBUF, 262144)
-						.option(ChannelOption.SO_RCVBUF, 262144)
-						.handler(new ClientPipelineInitializer());
-
-		final ChannelFuture future = bootstrap.connect();
+		final ChannelFuture future = bootstrap() //
+				.group(group) //
+				.handler(new ClientPipelineInitializer()) //
+				.connect();
 
 		channel = future.channel();
 

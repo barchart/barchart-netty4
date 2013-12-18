@@ -1,5 +1,6 @@
 package com.barchart.netty.client.transport;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.MessageBuf;
 import io.netty.channel.Channel;
@@ -142,6 +143,12 @@ public class WebSocketTransport implements TransportProtocol {
 	@Override
 	public SocketAddress address() {
 		return address;
+	}
+
+	@Override
+	public Bootstrap bootstrap() {
+		return DEFAULT_BOOTSTRAP.clone().channel(channel())
+				.remoteAddress(address());
 	}
 
 }

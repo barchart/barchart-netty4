@@ -1,7 +1,5 @@
 package com.barchart.netty.client.example;
 
-import io.netty.channel.EventLoopGroup;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -38,8 +36,7 @@ public class ExampleProxyClient extends ConnectableProxy<ExampleProxyClient> {
 		@Override
 		public ExampleProxyClient build() {
 
-			final ExampleProxyClient client =
-					new ExampleProxyClient(eventLoop, transport);
+			final ExampleProxyClient client = new ExampleProxyClient(transport);
 
 			return super.configure(client);
 
@@ -51,11 +48,8 @@ public class ExampleProxyClient extends ConnectableProxy<ExampleProxyClient> {
 		return new Builder();
 	}
 
-	protected ExampleProxyClient(final EventLoopGroup eventLoop_,
-			final TransportProtocol transport_) {
-
-		super(eventLoop_, transport_);
-
+	protected ExampleProxyClient(final TransportProtocol transport_) {
+		super(transport_);
 	}
 
 	/**

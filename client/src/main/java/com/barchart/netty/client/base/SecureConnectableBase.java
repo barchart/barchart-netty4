@@ -1,7 +1,6 @@
 package com.barchart.netty.client.base;
 
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
 
 import com.barchart.netty.client.facets.SecureAware;
 import com.barchart.netty.client.facets.SecureFacet;
@@ -36,9 +35,8 @@ public abstract class SecureConnectableBase<T extends SecureConnectableBase<T>>
 
 	private SecureFacet facet = null;
 
-	protected SecureConnectableBase(final EventLoopGroup eventLoop_,
-			final TransportProtocol transport_) {
-		super(eventLoop_, transport_);
+	protected SecureConnectableBase(final TransportProtocol transport_) {
+		super(transport_);
 	}
 
 	@Override

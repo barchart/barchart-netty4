@@ -1,7 +1,6 @@
 package com.barchart.netty.client.base;
 
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
 import rx.Observable;
 
 import com.barchart.netty.client.facets.AuthenticationAware;
@@ -44,9 +43,8 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 
 	private AuthenticationFacet<A> facet = null;
 
-	protected AuthenticatingConnectableBase(final EventLoopGroup eventLoop_,
-			final TransportProtocol transport_) {
-		super(eventLoop_, transport_);
+	protected AuthenticatingConnectableBase(final TransportProtocol transport_) {
+		super(transport_);
 	}
 
 	@Override

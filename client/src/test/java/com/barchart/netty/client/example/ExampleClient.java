@@ -1,7 +1,6 @@
 package com.barchart.netty.client.example;
 
-import io.netty.channel.EventLoopGroup;
-
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import rx.util.functions.Action1;
@@ -44,7 +43,8 @@ public class ExampleClient extends
 		client = builder.build();
 
 		client.stateChanges().subscribe(
-				new ReconnectPolicy(builder.eventLoop(), 5, TimeUnit.SECONDS));
+				new ReconnectPolicy(Executors.newScheduledThreadPool(1), 5,
+						TimeUnit.SECONDS));
 
 		// Listen to state changes
 		client.stateChanges().subscribe(statePrinter);
@@ -64,22 +64,19 @@ public class ExampleClient extends
 		@Override
 		public ExampleClient build() {
 
-			final ExampleClient client =
-					new ExampleClient(eventLoop, transport);
+			final ExampleClient client = new ExampleClient(transport);
 
 			return super.configure(client);
 
 		}
-
 	}
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	protected ExampleClient(final EventLoopGroup eventLoop_,
-			final TransportProtocol transport_) {
-		super(eventLoop_, transport_);
+	protected ExampleClient(final TransportProtocol transport_) {
+		super(transport_);
 	}
 
 	final static Action1<AuthState> authPrinter = new Action1<AuthState>() {

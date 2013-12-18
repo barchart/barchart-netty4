@@ -1,5 +1,6 @@
 package com.barchart.netty.client.transport;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
 
@@ -37,6 +38,12 @@ public abstract class SimpleTransport implements TransportProtocol {
 	@Override
 	public SocketAddress address() {
 		return address;
+	}
+
+	@Override
+	public Bootstrap bootstrap() {
+		return DEFAULT_BOOTSTRAP.clone().channel(channel())
+				.remoteAddress(address());
 	}
 
 	@Override
