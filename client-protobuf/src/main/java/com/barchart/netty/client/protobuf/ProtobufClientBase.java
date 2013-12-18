@@ -1,7 +1,6 @@
 package com.barchart.netty.client.protobuf;
 
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
 
 import org.openfeed.proto.generic.PacketType;
 
@@ -38,10 +37,9 @@ public class ProtobufClientBase<T extends ProtobufClientBase<T>> extends
 
 	private final BasicProtobufPipeline basicPipeline;
 
-	protected ProtobufClientBase(final EventLoopGroup eventLoop_,
-			final TransportProtocol transport_) {
+	protected ProtobufClientBase(final TransportProtocol transport_) {
 
-		super(eventLoop_, transport_);
+		super(transport_);
 
 		basicPipeline = new BasicProtobufPipeline();
 	}

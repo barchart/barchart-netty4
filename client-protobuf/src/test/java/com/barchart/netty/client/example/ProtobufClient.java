@@ -1,7 +1,6 @@
 package com.barchart.netty.client.example;
 
-import io.netty.channel.EventLoopGroup;
-
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import rx.util.functions.Action1;
@@ -35,13 +34,14 @@ public class ProtobufClient extends ProtobufClientBase<ProtobufClient> {
 						.host("tcp://localhost:6497")
 						.timeout(30, TimeUnit.SECONDS)
 						.ping(10, TimeUnit.SECONDS)
-						.credentials("test", "test".toCharArray(), "test",
+						.credentials("bcnews", "bcnews".toCharArray(), "test",
 								"netty-test");
 
 		client = builder.build();
 
 		client.stateChanges().subscribe(
-				new ReconnectPolicy(builder.eventLoop(), 5, TimeUnit.SECONDS));
+				new ReconnectPolicy(Executors.newScheduledThreadPool(1), 5,
+						TimeUnit.SECONDS));
 
 		// Listen to state changes
 		client.stateChanges().subscribe(statePrinter);
@@ -60,8 +60,7 @@ public class ProtobufClient extends ProtobufClientBase<ProtobufClient> {
 		@Override
 		public ProtobufClient build() {
 
-			final ProtobufClient client =
-					new ProtobufClient(eventLoop, transport);
+			final ProtobufClient client = new ProtobufClient(transport);
 
 			return super.configure(client);
 
@@ -73,9 +72,8 @@ public class ProtobufClient extends ProtobufClientBase<ProtobufClient> {
 		return new Builder();
 	}
 
-	protected ProtobufClient(final EventLoopGroup eventLoop_,
-			final TransportProtocol transport_) {
-		super(eventLoop_, transport_);
+	protected ProtobufClient(final TransportProtocol transport_) {
+		super(transport_);
 	}
 
 	final static Action1<AuthState> authPrinter = new Action1<AuthState>() {
