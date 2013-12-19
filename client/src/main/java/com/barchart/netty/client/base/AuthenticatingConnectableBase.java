@@ -24,18 +24,18 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 	protected abstract static class Builder<B extends Builder<B, C, D>, C extends AuthenticatingConnectableBase<C, D>, D>
 			extends KeepaliveConnectableBase.Builder<B, C> {
 
-		protected AuthenticationHandler.Builder<D> builder;
+		protected AuthenticationHandler.Builder<D> authenticatorBuilder;
 
 		@SuppressWarnings("unchecked")
 		public B authenticator(final AuthenticationHandler.Builder<D> builder_) {
-			builder = builder_;
+			authenticatorBuilder = builder_;
 			return (B) this;
 		}
 
 		@Override
 		protected C configure(final C client) {
 			super.configure(client);
-			client.facet = new AuthenticationFacet<D>(builder);
+			client.facet = new AuthenticationFacet<D>(authenticatorBuilder);
 			return client;
 		}
 

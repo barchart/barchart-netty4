@@ -3,7 +3,6 @@ package com.barchart.netty.client.pipeline;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.ssl.SslHandler;
-import io.netty.handler.ssl.SslHandshakeCompletionEvent;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -124,16 +123,6 @@ public class SecureFlowHandler extends MessageFlowHandler<TLSEvent, TLSState>
 	}
 
 	@Override
-	public void userEventTriggered(final ChannelHandlerContext ctx,
-			final Object evt) throws Exception {
-
-		if (evt == SslHandshakeCompletionEvent.SUCCESS) {
-			secure = true;
-		}
-
-	}
-
-	@Override
 	protected boolean messageReceived(final Object message)
 			throws IllegalStateException {
 
@@ -222,9 +211,13 @@ public class SecureFlowHandler extends MessageFlowHandler<TLSEvent, TLSState>
 
 							if (future.isSuccess()) {
 
+								secure = true;
+
 								context.fire(TLSEvent.TLS_STARTED);
 
 							} else {
+
+								secure = false;
 
 								if (require) {
 

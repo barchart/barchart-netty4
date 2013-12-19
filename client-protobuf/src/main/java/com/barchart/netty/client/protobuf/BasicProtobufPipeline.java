@@ -10,43 +10,22 @@ import org.openfeed.proto.generic.Packet;
 import org.openfeed.proto.generic.PacketType;
 
 import com.barchart.netty.client.PipelineInitializer;
-import com.barchart.proto.buf.session.AuthRequestMessage;
-import com.barchart.proto.buf.session.AuthResponseMessage;
-import com.barchart.proto.buf.session.CapabilitiesMessage;
-import com.barchart.proto.buf.session.SessionHeartbeatMessage;
 import com.barchart.proto.buf.session.SessionPacketMessage;
-import com.barchart.proto.buf.session.SessionTimestampMessage;
 import com.google.protobuf.MessageLite;
 
 public class BasicProtobufPipeline implements PipelineInitializer {
 
-	private final ProtobufPacketDecoder packetDecoder;
-	private final ProtobufSessionDecoder sessionDecoder;
+	private final ProtobufPacketCodec packetCodec;
+	private final ProtobufSessionCodec sessionCodec;
 
 	public BasicProtobufPipeline() {
 
-		packetDecoder = new ProtobufPacketDecoder();
+		packetCodec = new ProtobufPacketCodec();
 
-		packetDecoder.decodeAs(PacketType.SESSION,
+		packetCodec.codec(PacketType.SESSION,
 				SessionPacketMessage.getDefaultInstance());
 
-		sessionDecoder = new ProtobufSessionDecoder();
-
-		// Server capabilities - encryption / auth
-		sessionDecoder.decodeAs(SessionPacketMessage.Type.CAPABILITIES,
-				CapabilitiesMessage.getDefaultInstance());
-
-		// Ping/pong
-		sessionDecoder.decodeAs(SessionPacketMessage.Type.SESSION_HEARTBEAT,
-				SessionHeartbeatMessage.getDefaultInstance());
-		sessionDecoder.decodeAs(SessionPacketMessage.Type.TIMESTAMP,
-				SessionTimestampMessage.getDefaultInstance());
-
-		// Auth
-		sessionDecoder.decodeAs(SessionPacketMessage.Type.AUTH_REQUEST,
-				AuthRequestMessage.getDefaultInstance());
-		sessionDecoder.decodeAs(SessionPacketMessage.Type.AUTH_RESPONSE,
-				AuthResponseMessage.getDefaultInstance());
+		sessionCodec = new ProtobufSessionCodec();
 
 	}
 
@@ -67,10 +46,10 @@ public class BasicProtobufPipeline implements PipelineInitializer {
 				new ProtobufDecoder(Packet.getDefaultInstance()));
 
 		// Decode base packets
-		pipeline.addLast("protobuf-packet-decoder", packetDecoder);
+		pipeline.addLast("protobuf-packet-decoder", packetCodec);
 
 		// Decode session packets
-		pipeline.addLast("protobuf-session-decoder", sessionDecoder);
+		pipeline.addLast("protobuf-session-decoder", sessionCodec);
 
 		// Decode protobuf representations into POJOs (optional)
 		pipeline.addLast("basic-codec", new BasicProtobufCodec());
@@ -83,8 +62,8 @@ public class BasicProtobufPipeline implements PipelineInitializer {
 	 * @param type The packet type
 	 * @param message The protobuf subtype
 	 */
-	protected void decodeAs(final PacketType type, final MessageLite message) {
-		packetDecoder.decodeAs(type, message);
+	protected void codec(final PacketType type, final MessageLite message) {
+		packetCodec.codec(type, message);
 	}
 
 }

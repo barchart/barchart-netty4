@@ -56,8 +56,8 @@ public class ProtobufClientBase<T extends ProtobufClientBase<T>> extends
 	 * @param type The packet type
 	 * @param message The protobuf subtype
 	 */
-	protected void decodeAs(final PacketType type, final MessageLite message) {
-		basicPipeline.decodeAs(type, message);
+	protected void codec(final PacketType type, final MessageLite message) {
+		basicPipeline.codec(type, message);
 	}
 
 }

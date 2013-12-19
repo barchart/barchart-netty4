@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import rx.Observable;
-import rx.Observer;
 import rx.subjects.PublishSubject;
 import rx.subjects.ReplaySubject;
 
@@ -150,11 +149,11 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 	private EventLoopGroup group;
 	private BootstrapInitializer bootstrapper = null;
 
-	/* Timeout / reconnect */
+	/* Read timeout */
 	private long timeout = 0;
 
 	/**
-	 * Create a new connectable client. This method is intended to be called by
+	 * Create a new Connectable client. This method is intended to be called by
 	 * subclass Builder implementations.
 	 * 
 	 * @param eventLoop_ The Netty EventLoopGroup to use for transport
@@ -169,8 +168,6 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 		group = new NioEventLoopGroup();
 
 		channelInitializer = new ClientPipelineInitializer();
-
-		stateChanges.subscribe(new ConnectionStateObserver());
 
 	}
 
@@ -259,7 +256,7 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 	@Override
 	public Observable<T> disconnect() {
 
-		if (channel.isActive()) {
+		if (channel != null && channel.isActive()) {
 
 			changeState(Connectable.State.DISCONNECTING);
 
@@ -338,6 +335,7 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 	protected final void changeState(final Connectable.State state) {
 
 		final Connectable.State previous = lastState;
+		lastState = state;
 
 		stateChanges.onNext(new Connectable.StateChange<T>() {
 
@@ -520,24 +518,6 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 			if (type.isInstance(msg)) {
 				publish.onNext(type.cast(msg));
 			}
-		}
-
-	}
-
-	private class ConnectionStateObserver implements
-			Observer<Connectable.StateChange<T>> {
-
-		@Override
-		public void onNext(final Connectable.StateChange<T> state) {
-			lastState = state.state();
-		}
-
-		@Override
-		public void onCompleted() {
-		}
-
-		@Override
-		public void onError(final Throwable e) {
 		}
 
 	}
