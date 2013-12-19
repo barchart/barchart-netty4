@@ -10,7 +10,7 @@
 
 	<groupId>com.barchart.netty</groupId>
 	<artifactId>barchart-netty-test</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<description>
@@ -29,7 +29,7 @@ Imports API bundle.
 		<url>https://github.com/barchart/barchart-netty4</url>
 		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
-		<tag>barchart-netty-test-1.0.1</tag>
+		<tag>semantic</tag>
 	</scm>
 
 	<properties>
