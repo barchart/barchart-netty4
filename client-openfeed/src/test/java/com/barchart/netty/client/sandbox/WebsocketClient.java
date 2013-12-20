@@ -4,10 +4,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.logging.ByteLoggingHandler;
-import io.netty.handler.logging.MessageLoggingHandler;
 
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
+import java.io.ByteArrayOutputStream;
 
 import rx.Observable;
 import rx.Observer;
@@ -30,13 +28,19 @@ public class WebsocketClient extends ConnectableBase<WebsocketClient> {
 				WebsocketClient
 						.builder()
 						.host("ws://ds1.dataserver.aws.barchart.com:6782/websocket")
-						.timeout(30, TimeUnit.SECONDS).build();
+						.build();
 
-		client.receive(Object.class).subscribe(new Observer<Object>() {
+		client.receive(ByteBuf.class).subscribe(new Observer<ByteBuf>() {
 
 			@Override
-			public void onNext(final Object msg) {
-				System.out.println("Received: " + msg);
+			public void onNext(final ByteBuf msg) {
+				try {
+					final byte[] content = new byte[msg.readableBytes()];
+					msg.readBytes(content);
+					System.out.println("Received: " + content);
+				} catch (final Throwable t) {
+					t.printStackTrace();
+				}
 			}
 
 			@Override
@@ -62,20 +66,35 @@ public class WebsocketClient extends ConnectableBase<WebsocketClient> {
 
 						if (change.state() == State.CONNECTED) {
 
+							client.channel.pipeline().addFirst(
+									new ByteLoggingHandler());
+
 							final SubscriptionRequest req =
-									SubscriptionRequest.newBuilder()
-											.setSymbol("ESZ13").build();
+									SubscriptionRequest
+											.newBuilder()
+											.setType(
+													SubscriptionRequest.Type.BY_SYMBOL)
+											.setSymbol("DXH14").build();
 
-							final ByteBuf buf = Unpooled.buffer();
+							try {
 
-							buf.writeShort(BarchartMessageType.SUBSCRIPTION_REQUEST
-									.ordinal());
-							buf.writeBytes(req.toByteArray());
-							buf.retain();
+								final ByteArrayOutputStream bos =
+										new ByteArrayOutputStream();
 
-							System.out.println(Arrays.toString(buf.array()));
+								req.writeDelimitedTo(bos);
 
-							client.send(buf);
+								final ByteBuf buf = Unpooled.buffer();
+								buf.writeShort(BarchartMessageType.SUBSCRIPTION_REQUEST_VALUE);
+								buf.writeBytes(bos.toByteArray());
+								buf.retain();
+
+								client.send(buf);
+
+							} catch (final Throwable t) {
+
+								t.printStackTrace();
+
+							}
 
 						}
 
@@ -122,9 +141,6 @@ public class WebsocketClient extends ConnectableBase<WebsocketClient> {
 
 	@Override
 	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
-
-		pipeline.addFirst(new MessageLoggingHandler());
-		pipeline.addFirst(new ByteLoggingHandler());
 
 	}
 

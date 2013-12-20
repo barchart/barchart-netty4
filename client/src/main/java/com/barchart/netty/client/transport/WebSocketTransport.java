@@ -134,6 +134,7 @@ public class WebSocketTransport implements TransportProtocol {
 		protected void decode(final ChannelHandlerContext ctx,
 				final BinaryWebSocketFrame msg, final MessageBuf<Object> out)
 				throws Exception {
+			msg.retain();
 			out.add(msg.content());
 		}
 
