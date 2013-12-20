@@ -47,6 +47,9 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 
 	protected abstract static class Builder<B extends Builder<B, C>, C extends ConnectableBase<C>> {
 
+		protected Builder() {
+		}
+
 		/* Standard fields */
 		protected TransportProtocol transport;
 		protected EventLoopGroup eventLoop = null;
