@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.base</groupId>
+		<artifactId>barchart-archon</artifactId>
+		<version>2.5.18</version>
+	</parent>
+
+	<groupId>com.barchart.netty</groupId>
+	<artifactId>barchart-netty-client-openfeed</artifactId>
+	<version>1.0.1-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<scm>
+		<url>https://github.com/barchart/barchart-netty4</url>
+		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
+		<tag>master</tag>
+	</scm>
+
+	<properties>
+		<projectJavaVersion>1.6</projectJavaVersion>
+	</properties>
+
+	<dependencies>
+
+		<!-- Dependencies -->
+		
+		<dependency>
+			<groupId>com.barchart.netty</groupId>
+			<artifactId>barchart-netty-client</artifactId>
+			<version>[1.0.0-SNAPSHOT,1.1.0-SNAPSHOT)</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.barchart.account</groupId>
+		    <artifactId>barchart-account-common</artifactId>
+		    <version>[2.0-SNAPSHOT,3.0-SNAPSHOT)</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+		</dependency>
+
+        <dependency>
+            <groupId>com.barchart.proto</groupId>
+            <artifactId>barchart-proto-buf-session</artifactId>
+            <version>[1.1.1-SNAPSHOT,2.0-SNAPSHOT)</version>
+        </dependency>
+        
+        <!-- Test -->
+        
+		<dependency>
+			<groupId>com.barchart.util</groupId>
+			<artifactId>barchart-util-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+	</dependencies>
+
+</project>

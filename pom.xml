@@ -30,6 +30,7 @@ Layout Project.
 		<module>client</module>
 
 		<module>client-protobuf</module>
+		<module>client-openfeed</module>
 
 		<module>test</module>
 

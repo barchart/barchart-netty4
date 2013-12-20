@@ -119,6 +119,10 @@ public class WebSocketTransport implements TransportProtocol {
 	private class WebSocketBinaryCodec extends
 			MessageToMessageCodec<BinaryWebSocketFrame, ByteBuf> {
 
+		public WebSocketBinaryCodec() {
+			super(BinaryWebSocketFrame.class, ByteBuf.class);
+		}
+
 		@Override
 		protected void encode(final ChannelHandlerContext ctx,
 				final ByteBuf msg, final MessageBuf<Object> out)
