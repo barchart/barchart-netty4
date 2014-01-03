@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.api.NettyBoot;
 import com.barchart.netty.api.NettyBootManager;
-import com.barchart.util.collections.BlockingConcurrentHashMap;
+import com.barchart.util.common.collections.BlockingConcurrentHashMap;
 
 /** bootstrap collector */
 @Component(immediate = true)

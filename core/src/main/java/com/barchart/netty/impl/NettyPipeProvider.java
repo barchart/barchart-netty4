@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.api.NettyPipe;
 import com.barchart.netty.api.NettyPipeManager;
-import com.barchart.util.collections.BlockingConcurrentHashMap;
+import com.barchart.util.common.collections.BlockingConcurrentHashMap;
 
 /** pipeline collector */
 @Component(immediate = true)
