@@ -62,7 +62,6 @@ Basic netty components can be extended by other providers.
 		<dependency>
 			<groupId>com.barchart.util</groupId>
 			<artifactId>barchart-util-common</artifactId>
-			<version>[1,2-SNAPSHOT)</version>
 		</dependency>
 
 		<!-- Netty components LIB. -->
