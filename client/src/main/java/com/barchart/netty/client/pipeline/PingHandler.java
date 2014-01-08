@@ -1,8 +1,7 @@
 package com.barchart.netty.client.pipeline;
 
-import io.netty.buffer.MessageBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundMessageHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.ScheduledFuture;
 
 import java.util.concurrent.TimeUnit;
@@ -13,8 +12,8 @@ import com.barchart.netty.client.messages.Pong;
 import com.yammer.metrics.core.Histogram;
 import com.yammer.metrics.core.MetricsRegistry;
 
-public class PingHandler extends ChannelInboundMessageHandlerAdapter<Object>
-		implements LatencyAware {
+public class PingHandler extends SimpleChannelInboundHandler<Object> implements
+		LatencyAware {
 
 	// Latency sample histogram
 	private final Histogram latencySampler = new MetricsRegistry()
@@ -59,8 +58,8 @@ public class PingHandler extends ChannelInboundMessageHandlerAdapter<Object>
 	}
 
 	@Override
-	public void messageReceived(final ChannelHandlerContext ctx,
-			final Object msg) throws Exception {
+	public void channelRead0(final ChannelHandlerContext ctx, final Object msg)
+			throws Exception {
 
 		if (msg instanceof Ping) {
 
@@ -91,11 +90,8 @@ public class PingHandler extends ChannelInboundMessageHandlerAdapter<Object>
 
 		}
 
-		// Add to outbound buffer in case downstream wants to listen to pings
-		final MessageBuf<Object> out = ctx.nextInboundMessageBuffer();
-		if (out != null) {
-			out.add(msg);
-		}
+		// Send upstream
+		ctx.fireChannelRead(msg);
 
 	}
 

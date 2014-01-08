@@ -2,11 +2,10 @@ package com.barchart.netty.client.transport;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.MessageBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelStateHandlerAdapter;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.handler.codec.http.HttpClientCodec;
@@ -21,6 +20,7 @@ import io.netty.handler.ssl.SslHandler;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URI;
+import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -86,7 +86,8 @@ public class WebSocketTransport implements TransportProtocol {
 
 	}
 
-	private class WebSocketConnectedNotifier extends ChannelStateHandlerAdapter {
+	private class WebSocketConnectedNotifier extends
+			ChannelInboundHandlerAdapter {
 
 		@Override
 		public void userEventTriggered(final ChannelHandlerContext ctx,
@@ -108,12 +109,6 @@ public class WebSocketTransport implements TransportProtocol {
 			// Block downstream relay until handshake completes
 		}
 
-		@Override
-		public void inboundBufferUpdated(final ChannelHandlerContext ctx)
-				throws Exception {
-			ctx.fireInboundBufferUpdated();
-		}
-
 	}
 
 	private class WebSocketBinaryCodec extends
@@ -125,14 +120,13 @@ public class WebSocketTransport implements TransportProtocol {
 
 		@Override
 		protected void encode(final ChannelHandlerContext ctx,
-				final ByteBuf msg, final MessageBuf<Object> out)
-				throws Exception {
+				final ByteBuf msg, final List<Object> out) throws Exception {
 			out.add(new BinaryWebSocketFrame(msg));
 		}
 
 		@Override
 		protected void decode(final ChannelHandlerContext ctx,
-				final BinaryWebSocketFrame msg, final MessageBuf<Object> out)
+				final BinaryWebSocketFrame msg, final List<Object> out)
 				throws Exception {
 			msg.retain();
 			out.add(msg.content());

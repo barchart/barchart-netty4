@@ -1,9 +1,10 @@
 package com.barchart.netty.client.protobuf;
 
-import io.netty.buffer.MessageBuf;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
+
+import java.util.List;
 
 import com.barchart.account.api.AuthResult;
 import com.barchart.account.common.request.AuthRequest;
@@ -18,7 +19,7 @@ public class BasicOpenfeedCodec extends MessageToMessageCodec<Object, Object> {
 
 	@Override
 	protected void encode(final ChannelHandlerContext ctx, final Object msg,
-			final MessageBuf<Object> out) throws Exception {
+			final List<Object> out) throws Exception {
 
 		if (msg instanceof Capabilities) {
 		} else if (msg instanceof Ping) {
@@ -35,7 +36,7 @@ public class BasicOpenfeedCodec extends MessageToMessageCodec<Object, Object> {
 
 	@Override
 	protected void decode(final ChannelHandlerContext ctx, final Object msg,
-			final MessageBuf<Object> out) throws Exception {
+			final List<Object> out) throws Exception {
 
 		out.add(msg);
 

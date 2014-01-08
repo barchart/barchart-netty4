@@ -1,9 +1,10 @@
 package com.barchart.netty.client.protobuf;
 
-import io.netty.buffer.MessageBuf;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
+
+import java.util.List;
 
 import com.barchart.proto.buf.session.AuthRequestMessage;
 import com.barchart.proto.buf.session.AuthResponseMessage;
@@ -23,7 +24,7 @@ public class ProtobufSessionCodec extends
 
 	@Override
 	protected void decode(final ChannelHandlerContext ctx,
-			final SessionPacketMessage msg, final MessageBuf<Object> out)
+			final SessionPacketMessage msg, final List<Object> out)
 			throws Exception {
 
 		switch (msg.getType()) {
@@ -54,8 +55,7 @@ public class ProtobufSessionCodec extends
 
 	@Override
 	protected void encode(final ChannelHandlerContext ctx,
-			final MessageLite msg, final MessageBuf<Object> out)
-			throws Exception {
+			final MessageLite msg, final List<Object> out) throws Exception {
 
 		if (msg instanceof CapabilitiesMessage) {
 			out.add(wrap(msg, SessionPacketMessage.Type.CAPABILITIES));

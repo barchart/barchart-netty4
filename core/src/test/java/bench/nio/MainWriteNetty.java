@@ -9,7 +9,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.handler.logging.MessageLoggingHandler;
+import io.netty.handler.logging.LoggingHandler;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -64,7 +64,7 @@ public class MainWriteNetty {
 		boot.option(ChannelOption.IP_MULTICAST_TTL, 123);
 		boot.group(new NioEventLoopGroup());
 		boot.channel(NioDatagramChannel.class);
-		boot.handler(new MessageLoggingHandler());
+		boot.handler(new LoggingHandler());
 		final ChannelFuture future = boot.bind().sync();
 
 		final Channel channel = future.channel();

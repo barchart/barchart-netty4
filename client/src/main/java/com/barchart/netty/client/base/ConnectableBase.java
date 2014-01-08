@@ -1,18 +1,16 @@
 package com.barchart.netty.client.base;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundMessageHandlerAdapter;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelStateHandlerAdapter;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.handler.codec.DecoderException;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 
@@ -293,9 +291,8 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 			throw new IllegalStateException("Channel is not active");
 		}
 
-		channel.write(message);
-
-		return ChannelFutureObservable.create(channel.flush(), message);
+		return ChannelFutureObservable.create(channel.writeAndFlush(message),
+				message);
 
 	}
 
@@ -362,12 +359,7 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 
 	}
 
-	private class ConnectionStateHandler extends ChannelStateHandlerAdapter {
-
-		@Override
-		public void inboundBufferUpdated(final ChannelHandlerContext ctx) {
-			ctx.fireInboundBufferUpdated();
-		}
+	private class ConnectionStateHandler extends ChannelInboundHandlerAdapter {
 
 		@Override
 		public void channelActive(final ChannelHandlerContext ctx)
@@ -395,16 +387,7 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 		public void exceptionCaught(final ChannelHandlerContext ctx,
 				final Throwable cause) {
 
-			if (cause instanceof DecoderException) {
-
-				// Discard inbound buffer on decode error
-				final ByteBuf buf = ctx.pipeline().inboundByteBuffer();
-				buf.skipBytes(buf.readableBytes());
-
-				log.info("Could not decode message, discarding inbound buffer");
-				log.debug("", cause);
-
-			} else if (cause instanceof ReadTimeoutException) {
+			if (cause instanceof ReadTimeoutException) {
 
 				// No activity from peer
 				changeState(Connectable.State.TIMEOUT);
@@ -481,7 +464,7 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 	}
 
 	private static class MessageRouter extends
-			ChannelInboundMessageHandlerAdapter<Object> {
+			SimpleChannelInboundHandler<Object> {
 
 		private final Collection<MessageSubscription<?>> subscriptions;
 
@@ -492,7 +475,7 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 		}
 
 		@Override
-		public void messageReceived(final ChannelHandlerContext ctx,
+		public void channelRead0(final ChannelHandlerContext ctx,
 				final Object msg) throws Exception {
 
 			for (final MessageSubscription<?> subscription : subscriptions) {

@@ -1,10 +1,7 @@
 package com.barchart.netty.client.pipeline;
 
-import io.netty.buffer.MessageBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundMessageHandler;
-import io.netty.channel.ChannelStateHandlerAdapter;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -76,8 +73,7 @@ import com.barchart.util.flow.api.State;
  * @see com.barchart.util.flow.Flow
  */
 public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends Enum<S> & State<S>>
-		extends ChannelStateHandlerAdapter implements
-		ChannelInboundMessageHandler<Object> {
+		extends ChannelInboundHandlerAdapter {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -131,13 +127,16 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 			super.channelActive(ctx);
 		}
 
-		// Forward queued messages to next handler
-		final MessageBuf<Object> next = ctx.nextInboundMessageBuffer();
+		Object msg;
+		for (;;) {
+			msg = inboundQueue.poll();
+			if (msg == null) {
+				break;
+			}
+			ctx.fireChannelRead(msg);
+		}
 
-		next.addAll(inboundQueue);
-		inboundQueue.clear();
-
-		ctx.fireInboundBufferUpdated();
+		ctx.fireChannelReadComplete();
 
 		ctx.pipeline().remove(this);
 
@@ -185,39 +184,19 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	}
 
 	@Override
-	public void inboundBufferUpdated(final ChannelHandlerContext ctx)
+	public void channelRead(final ChannelHandlerContext ctx, final Object msg)
 			throws Exception {
 
-		final MessageBuf<Object> in = ctx.inboundMessageBuffer();
-		final MessageBuf<Object> out = ctx.nextInboundMessageBuffer();
+		log.trace("Message received: " + msg);
 
-		for (;;) {
-
-			final Object msg = in.poll();
-			if (msg == null) {
-				break;
+		try {
+			if (!messageReceived(msg)) {
+				ctx.fireChannelRead(msg);
 			}
-
-			log.trace("Message received: " + msg);
-
-			try {
-				if (!messageReceived(msg) && out != null) {
-					out.add(msg);
-				}
-			} catch (final Throwable t) {
-				error(ctx, t);
-			}
-
+		} catch (final Throwable t) {
+			error(ctx, t);
 		}
 
-		ctx.fireInboundBufferUpdated();
-
-	}
-
-	@Override
-	public MessageBuf<Object> newInboundBuffer(final ChannelHandlerContext ctx)
-			throws Exception {
-		return Unpooled.messageBuffer();
 	}
 
 	/**

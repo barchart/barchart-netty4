@@ -4,7 +4,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.handler.logging.MessageLoggingHandler;
+import io.netty.handler.logging.LoggingHandler;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -67,7 +67,7 @@ public class MainReadNetty {
 
 		boot.group(new NioEventLoopGroup());
 		boot.channel(NioDatagramChannel.class);
-		boot.handler(new MessageLoggingHandler());
+		boot.handler(new LoggingHandler());
 
 		boot.bind().sync();
 

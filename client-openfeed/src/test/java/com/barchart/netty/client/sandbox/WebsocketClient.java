@@ -3,7 +3,7 @@ package com.barchart.netty.client.sandbox;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.logging.ByteLoggingHandler;
+import io.netty.handler.logging.LoggingHandler;
 
 import java.io.ByteArrayOutputStream;
 
@@ -22,13 +22,11 @@ public class WebsocketClient extends ConnectableBase<WebsocketClient> {
 	 ** USAGE EXAMPLE
 	 **/
 
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws Exception {
 
-		final WebsocketClient client =
-				WebsocketClient
-						.builder()
-						.host("ws://ds1.dataserver.aws.barchart.com:6782/websocket")
-						.build();
+		final WebsocketClient client = WebsocketClient.builder()
+		// .host("ws://ds1.dataserver.aws.barchart.com:6782/websocket")
+				.host("ws://10.222.4.40:5782/websocket").build();
 
 		client.receive(ByteBuf.class).subscribe(new Observer<ByteBuf>() {
 
@@ -67,7 +65,7 @@ public class WebsocketClient extends ConnectableBase<WebsocketClient> {
 						if (change.state() == State.CONNECTED) {
 
 							client.channel.pipeline().addFirst(
-									new ByteLoggingHandler());
+									new LoggingHandler());
 
 							final SubscriptionRequest req =
 									SubscriptionRequest
