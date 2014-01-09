@@ -9,8 +9,8 @@
 	</parent>
 
 	<groupId>com.barchart.netty</groupId>
-	<artifactId>barchart-netty-client</artifactId>
-	<version>2.0.1-SNAPSHOT</version>
+	<artifactId>barchart-netty-server</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<scm>
@@ -21,7 +21,7 @@
 	</scm>
 
 	<properties>
-		<projectJavaVersion>1.6</projectJavaVersion>
+		<projectJavaVersion>1.7</projectJavaVersion>
 	</properties>
 
 	<dependencies>
@@ -79,8 +79,19 @@
 			<artifactId>netty-transport-udt</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+
         <!-- Test -->
         
+		<dependency>
+			<groupId>com.barchart.wrap</groupId>
+			<artifactId>barchart-wrap-apache-http-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>com.barchart.util</groupId>
 			<artifactId>barchart-util-test</artifactId>
