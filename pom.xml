@@ -27,6 +27,7 @@ Layout Project.
 
 		<module>api</module>
 		<module>client</module>
+		<module>server</module>
 		<module>core</module>
 
 		<module>client-protobuf</module>
