@@ -80,8 +80,7 @@ public class TestHttpServer {
 
 		server =
 				Servers.createHttpServer().requestHandler("/basic", basic)
-						.parentGroup(new NioEventLoopGroup(1))
-						.childGroup(new NioEventLoopGroup(1))
+						.group(new NioEventLoopGroup(1))
 						.requestHandler("/async", async)
 						.requestHandler("/async-delayed", asyncDelayed)
 						.requestHandler("/client-disconnect", clientDisconnect)

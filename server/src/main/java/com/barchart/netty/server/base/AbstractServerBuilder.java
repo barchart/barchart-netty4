@@ -1,41 +1,38 @@
 package com.barchart.netty.server.base;
 
+import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.ServerChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 
+import com.barchart.netty.common.PipelineInitializer;
 import com.barchart.netty.server.Server;
 import com.barchart.netty.server.ServerBuilder;
 
-public abstract class AbstractServerBuilder<S extends Server<S>, B extends AbstractServerBuilder<S, B>>
-		implements ServerBuilder<S, B> {
+public abstract class AbstractServerBuilder<S extends Server<S>, T extends AbstractBootstrap<T, ?>, B extends AbstractServerBuilder<S, T, B>>
+		implements ServerBuilder<S, T, B> {
 
-	private final EventLoopGroup defaultGroup = new NioEventLoopGroup();
-
-	protected EventLoopGroup parentGroup = defaultGroup;
-	protected EventLoopGroup childGroup = defaultGroup;
-	protected Class<? extends ServerChannel> channelType =
-			NioServerSocketChannel.class;
+	protected EventLoopGroup defaultGroup = new NioEventLoopGroup();
+	protected PipelineInitializer pipelineInit = null;
+	protected BootstrapInitializer<T> bootstrapInit = null;
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public B parentGroup(final EventLoopGroup group) {
-		parentGroup = group;
+	public B group(final EventLoopGroup group) {
+		defaultGroup = group;
 		return (B) this;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public B childGroup(final EventLoopGroup group) {
-		childGroup = group;
+	@SuppressWarnings("unchecked")
+	public B pipeline(final PipelineInitializer inititalizer) {
+		pipelineInit = inititalizer;
 		return (B) this;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public B channel(final Class<? extends ServerChannel> type) {
-		channelType = type;
+	@SuppressWarnings("unchecked")
+	public B bootstrapper(final BootstrapInitializer<T> inititalizer) {
+		bootstrapInit = inititalizer;
 		return (B) this;
 	}
 

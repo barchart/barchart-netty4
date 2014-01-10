@@ -1,12 +1,12 @@
 package com.barchart.netty.server.base;
 
-import io.netty.bootstrap.ServerBootstrap;
+import io.netty.bootstrap.AbstractBootstrap;
 
 /**
  * Base interface for objects that are interested in configuring channel options
  * before the remote connect is initiated.
  */
-public interface BootstrapInitializer {
+public interface BootstrapInitializer<B extends AbstractBootstrap<B, ?>> {
 
 	/**
 	 * Initialize a Netty Bootstrap for additional flexibility in configuring
@@ -15,6 +15,6 @@ public interface BootstrapInitializer {
 	 * initializer, etc) may be overwritten by the default bootstrapping
 	 * process.
 	 */
-	public void initBootstrap(final ServerBootstrap bootstrap);
+	public void initBootstrap(final B bootstrap);
 
 }

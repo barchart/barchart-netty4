@@ -8,11 +8,6 @@ import java.net.SocketAddress;
 public interface Server<T extends Server<T>> {
 
 	/**
-	 * Start a server on the specified port.
-	 */
-	ChannelFuture listen(final int port);
-
-	/**
 	 * Start a server on the specified port and hostname (or IP).
 	 */
 	ChannelFuture listen(final int port, final String hostOrIp);

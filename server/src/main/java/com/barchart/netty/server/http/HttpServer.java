@@ -7,15 +7,19 @@
  */
 package com.barchart.netty.server.http;
 
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -26,13 +30,13 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
+import java.net.InetSocketAddress;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import com.barchart.netty.server.HandlerFactory;
-import com.barchart.netty.server.base.AbstractServer;
 import com.barchart.netty.server.http.error.DefaultErrorHandler;
 import com.barchart.netty.server.http.error.ErrorHandler;
 import com.barchart.netty.server.http.logging.NullRequestLogger;
@@ -40,12 +44,13 @@ import com.barchart.netty.server.http.logging.RequestLogger;
 import com.barchart.netty.server.http.pipeline.HttpRequestChannelHandler;
 import com.barchart.netty.server.http.request.HandlerMapping;
 import com.barchart.netty.server.http.request.RequestHandler;
+import com.barchart.netty.server.stream.StreamServer;
 import com.barchart.netty.server.util.SingleHandlerFactory;
 
 /**
  * Asynchronous HTTP server.
  */
-public class HttpServer extends AbstractServer<HttpServer> {
+public class HttpServer extends StreamServer<HttpServer> {
 
 	private final Map<String, HandlerFactory<RequestHandler>> handlers =
 			new ConcurrentSkipListMap<String, HandlerFactory<RequestHandler>>(
@@ -67,6 +72,24 @@ public class HttpServer extends AbstractServer<HttpServer> {
 
 	public HttpServer() {
 		channelHandler = new HttpRequestChannelHandler(this);
+	}
+
+	@Override
+	protected ServerBootstrap bootstrap() {
+
+		return new ServerBootstrap() //
+				.group(defaultGroup) //
+				.channel(NioServerSocketChannel.class) //
+				.childHandler(new ServerChannelInitializer()) //
+				.option(ChannelOption.SO_REUSEADDR, true) //
+				.option(ChannelOption.SO_SNDBUF, 262144) //
+				.option(ChannelOption.SO_RCVBUF, 262144);
+
+	}
+
+	@Override
+	public ChannelFuture listen(final int port) {
+		return listen(new InetSocketAddress("0.0.0.0", port));
 	}
 
 	@Override
@@ -227,17 +250,10 @@ public class HttpServer extends AbstractServer<HttpServer> {
 	}
 
 	/**
-	 * Get the parent Netty event loop group.
+	 * Get the Netty event loop group.
 	 */
-	public EventLoopGroup parentGroup() {
-		return parentGroup;
-	}
-
-	/**
-	 * Get the child Netty event loop group.
-	 */
-	public EventLoopGroup childGroup() {
-		return childGroup;
+	public EventLoopGroup group() {
+		return defaultGroup;
 	}
 
 	/**
@@ -277,11 +293,6 @@ public class HttpServer extends AbstractServer<HttpServer> {
 
 	public Object removeWebSocketHandler(final String path) {
 		return webSocketHandlers.remove(path);
-	}
-
-	@Override
-	public HttpServer build() {
-		return this;
 	}
 
 	@Sharable

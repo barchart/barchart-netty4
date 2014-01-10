@@ -1,7 +1,10 @@
 package com.barchart.netty.server;
 
+import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.ServerChannel;
+
+import com.barchart.netty.common.PipelineInitializer;
+import com.barchart.netty.server.base.BootstrapInitializer;
 
 /**
  * Base class for building a Netty server.
@@ -9,22 +12,22 @@ import io.netty.channel.ServerChannel;
  * @param <S> The server type
  * @param <B> This builder type
  */
-public interface ServerBuilder<S extends Server<S>, B extends ServerBuilder<S, B>> {
-
-	/**
-	 * Set the socket channel type.
-	 */
-	B channel(final Class<? extends ServerChannel> type);
+public interface ServerBuilder<S extends Server<S>, T extends AbstractBootstrap<T, ?>, B extends ServerBuilder<S, T, B>> {
 
 	/**
 	 * Set the parent (listen port) event loop group.
 	 */
-	B parentGroup(final EventLoopGroup group);
+	B group(final EventLoopGroup group);
 
 	/**
-	 * Set the child (request handler) event loop group.
+	 * Pipeline initializer for new channels.
 	 */
-	B childGroup(final EventLoopGroup group);
+	B pipeline(final PipelineInitializer inititalizer);
+
+	/**
+	 * Bootstrap initializer for the acceptor channel.
+	 */
+	B bootstrapper(final BootstrapInitializer<T> inititalizer);
 
 	/**
 	 * Build the server from current configuration.

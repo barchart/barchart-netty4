@@ -7,13 +7,12 @@
  */
 package com.barchart.netty.server.base;
 
-import io.netty.bootstrap.ServerBootstrap;
+import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.ChannelGroupFuture;
@@ -33,14 +32,14 @@ import com.barchart.netty.server.Server;
 /**
  * High performance HTTP server.
  */
-public abstract class AbstractServer<T extends AbstractServer<T>> extends
-		AbstractServerBuilder<T, T> implements Server<T>, PipelineInitializer,
-		BootstrapInitializer {
+public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends AbstractBootstrap<B, ?>>
+		extends AbstractServerBuilder<T, B, T> implements Server<T>,
+		PipelineInitializer {
 
-	private final ChannelGroup serverChannels = new DefaultChannelGroup(
+	protected final ChannelGroup serverChannels = new DefaultChannelGroup(
 			GlobalEventExecutor.INSTANCE);
 
-	private final ChannelGroup clientChannels = new DefaultChannelGroup(
+	protected final ChannelGroup clientChannels = new DefaultChannelGroup(
 			GlobalEventExecutor.INSTANCE);
 
 	private final DefaultPromise<T> shutdownFuture = new DefaultPromise<T>(
@@ -50,27 +49,6 @@ public abstract class AbstractServer<T extends AbstractServer<T>> extends
 			new ServerShutdownListener();
 
 	private final ClientTracker clientTracker = new ClientTracker();
-
-	private ServerBootstrap bootstrap() {
-
-		final ServerBootstrap bootstrap = new ServerBootstrap() //
-				.group(parentGroup, childGroup) //
-				.channel(channelType) //
-				.childHandler(new ServerChannelInitializer()) //
-				.option(ChannelOption.SO_REUSEADDR, true) //
-				.option(ChannelOption.SO_SNDBUF, 262144) //
-				.option(ChannelOption.SO_RCVBUF, 262144);
-
-		initBootstrap(bootstrap);
-
-		return bootstrap;
-
-	}
-
-	@Override
-	public ChannelFuture listen(final int port) {
-		return listen(new InetSocketAddress("0.0.0.0", port));
-	}
 
 	@Override
 	public ChannelFuture listen(final int port, final String hostOrIp) {
@@ -128,19 +106,29 @@ public abstract class AbstractServer<T extends AbstractServer<T>> extends
 		return serverChannels.size() > 0;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public T build() {
+		return (T) this;
+	}
+
 	protected int connections() {
 		return clientChannels.size();
 	}
 
 	/**
-	 * Empty default implementation, override to customize bootstrap.
+	 * Default bootstrap for this server.
 	 */
-	@Override
-	public void initBootstrap(final ServerBootstrap bootstrap) {
-	}
+	protected abstract B bootstrap();
 
-	private class ServerChannelInitializer extends
+	/**
+	 * Default pipeline initializer.
+	 */
+	protected class ServerChannelInitializer extends
 			ChannelInitializer<SocketChannel> {
+
+		public ServerChannelInitializer() {
+		}
 
 		@Override
 		public void initChannel(final SocketChannel ch) throws Exception {

@@ -29,8 +29,7 @@ public class TestBenchmark {
 						.requestHandler("/test", new TestWebSocketPage())
 						.webSocketHandler("/ws", new TestWebsocketHandler("1"))
 						.webSocketHandler("/ws2", new TestWebsocketHandler("2"))
-						.parentGroup(new NioEventLoopGroup())
-						.childGroup(new NioEventLoopGroup()).maxConnections(-1);
+						.group(new NioEventLoopGroup()).maxConnections(-1);
 
 		server.listen(8080);
 
