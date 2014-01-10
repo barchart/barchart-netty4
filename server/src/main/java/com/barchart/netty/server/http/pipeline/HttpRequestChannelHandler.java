@@ -35,18 +35,18 @@ import com.barchart.netty.server.http.request.RequestHandlerMapping;
  */
 @Sharable
 public class HttpRequestChannelHandler extends
-		SimpleChannelInboundHandler<FullHttpRequest> {
+		SimpleChannelInboundHandler<FullHttpRequest> implements KeepaliveHelper {
 
-	public static final AttributeKey<PooledServerResponse> ATTR_RESPONSE =
-			AttributeKey.<PooledServerResponse> valueOf("response");
+	public static final AttributeKey<PooledHttpServerRequest> ATTR_REQUEST =
+			AttributeKey.<PooledHttpServerRequest> valueOf("request");
 
 	private final HttpServerConfig config;
-	private final ServerMessagePool messagePool;
+	private final HttpServerRequestPool requestPool;
 
 	public HttpRequestChannelHandler(final HttpServerConfig config_) {
 		super();
 		config = config_;
-		messagePool = new ServerMessagePool(config.maxConnections());
+		requestPool = new HttpServerRequestPool(config.maxConnections());
 	}
 
 	@Override
@@ -62,8 +62,9 @@ public class HttpRequestChannelHandler extends
 			relativePath = relativePath.substring(mapping.path().length());
 		}
 
-		// Create request/response
-		final PooledServerRequest request = messagePool.getRequest();
+		// Get an initialized request object from the pool
+		final PooledHttpServerRequest request =
+				requestPool.provision(ctx, msg, relativePath, this);
 
 		// Handle 503 - sanity check, should be caught in acceptor
 		if (request == null) {
@@ -72,47 +73,44 @@ public class HttpRequestChannelHandler extends
 			return;
 		}
 
-		request.init(ctx.channel(), msg, relativePath);
-
 		final RequestHandler handler =
-				mapping == null ? null : mapping.handler(request);
-
-		final PooledServerResponse response = messagePool.getResponse();
-		response.init(ctx, this, handler, request, config.logger());
+				mapping == null ? null : mapping.factory().newHandler(request);
 
 		// Store in ChannelHandlerContext for future reference
-		ctx.attr(ATTR_RESPONSE).set(response);
+		ctx.attr(ATTR_REQUEST).set(request);
 
 		try {
 
 			if (handler == null) {
-				response.setStatus(HttpResponseStatus.NOT_FOUND);
-				config.errorHandler().onError(request, response, null);
+				request.response().setStatus(HttpResponseStatus.NOT_FOUND);
+				config.errorHandler().onError(request, null);
 			} else {
-				handler.onRequest(request, response);
+				handler.handle(request);
 			}
 
 		} catch (final Throwable t) {
 
 			// Catch server errors
-			response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+			request.response().setStatus(
+					HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
 			try {
-				config.errorHandler().onError(request, response, t);
+				config.errorHandler().onError(request, t);
 			} catch (final Throwable t2) {
-				response.write(t.getClass()
-						+ " was thrown while processing this request.  Additionally, "
-						+ t2.getClass()
-						+ " was thrown while handling this exception.");
+				request.response()
+						.write(t.getClass()
+								+ " was thrown while processing this request.  Additionally, "
+								+ t2.getClass()
+								+ " was thrown while handling this exception.");
 			}
 
-			config.logger().error(request, response, t);
+			config.logger().error(request, t);
 
 			// Force request to end on exception, async handlers cannot allow
 			// unchecked exceptions and still expect to return data
 			try {
-				if (!response.isFinished()) {
-					response.finish();
+				if (!request.response().isFinished()) {
+					request.response().finish();
 				}
 			} catch (final IOException ioe) {
 				// Pretty likely at this point, swallow it because we don't care
@@ -152,31 +150,7 @@ public class HttpRequestChannelHandler extends
 	@Override
 	public void channelInactive(final ChannelHandlerContext ctx) {
 
-		final PooledServerResponse response = ctx.attr(ATTR_RESPONSE).get();
-
-		if (response != null) {
-
-			try {
-
-				if (!response.isFinished()) {
-
-					response.close();
-
-					final RequestHandler handler = response.handler();
-
-					if (handler != null) {
-						handler.onAbort(response.request(), response);
-					}
-
-				}
-
-			} finally {
-
-				freeHandlers(ctx);
-
-			}
-
-		}
+		requestComplete(ctx);
 
 	}
 
@@ -184,42 +158,30 @@ public class HttpRequestChannelHandler extends
 	public void exceptionCaught(final ChannelHandlerContext ctx,
 			final Throwable exception) throws Exception {
 
-		final PooledServerResponse response = ctx.attr(ATTR_RESPONSE).get();
+		final PooledHttpServerRequest request = ctx.attr(ATTR_REQUEST).get();
 
-		if (response != null) {
+		if (request != null) {
+
+			final PooledHttpServerResponse response = request.response();
 
 			try {
 
-				try {
+				if (!response.isFinished()) {
 
+					response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+
+					config.errorHandler().onError(request, exception);
+
+					// Bad handler, forgot to finish
 					if (!response.isFinished()) {
-
-						response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
-
-						config.errorHandler().onError(response.request(),
-								response, exception);
-
-						response.close();
-
-						final RequestHandler handler = response.handler();
-
-						if (handler != null) {
-							handler.onException(response.request(), response,
-									exception);
-						}
-
+						response.finish();
 					}
-
-				} finally {
-
-					config.logger().error(response.request(), response,
-							exception);
 
 				}
 
 			} finally {
 
-				freeHandlers(ctx);
+				config.logger().error(request, exception);
 
 			}
 
@@ -228,36 +190,57 @@ public class HttpRequestChannelHandler extends
 	}
 
 	/**
-	 * Free any request/response handlers related to the current channel handler
-	 * context.
+	 * Free any handlers related to the current request, record access and
+	 * notify handler of completion.
 	 */
-	public void freeHandlers(final ChannelHandlerContext ctx) {
+	@Override
+	public PooledHttpServerRequest requestComplete(
+			final ChannelHandlerContext ctx) {
 
-		final PooledServerResponse response =
-				ctx.attr(ATTR_RESPONSE).getAndRemove();
+		final PooledHttpServerRequest request =
+				ctx.attr(ATTR_REQUEST).getAndRemove();
 
-		if (response != null) {
+		if (request != null) {
+
+			// Record to access log
+			config.logger().access(request,
+					System.currentTimeMillis() - request.requestTime());
 
 			try {
 
-				final RequestHandler handler = response.handler();
+				try {
 
-				if (handler != null) {
-					handler.onComplete(response.request(), response);
+					if (!request.response().isFinished()) {
+
+						request.response().close();
+
+						final RequestHandler handler = request.handler();
+
+						if (handler != null) {
+							handler.cancel(request);
+						}
+
+					}
+
+				} finally {
+
+					final RequestHandler handler = request.handler();
+
+					if (handler != null) {
+						handler.release(request);
+					}
+
 				}
 
 			} finally {
 
-				response.request().release();
-				messagePool.makeAvailable(response.request());
-
-				response.close();
-
-				messagePool.makeAvailable(response);
+				requestPool.release(request);
 
 			}
 
 		}
+
+		return request;
 
 	}
 

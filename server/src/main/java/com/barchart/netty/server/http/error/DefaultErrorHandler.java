@@ -12,8 +12,8 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.barchart.netty.server.http.request.ServerRequest;
-import com.barchart.netty.server.http.request.ServerResponse;
+import com.barchart.netty.server.http.request.HttpServerRequest;
+import com.barchart.netty.server.http.request.HttpServerResponse;
 
 /**
  * Very basic default error handler.
@@ -24,9 +24,10 @@ public class DefaultErrorHandler implements ErrorHandler {
 			.getLogger(DefaultErrorHandler.class);
 
 	@Override
-	public void onError(final ServerRequest request,
-			final ServerResponse response, final Throwable cause)
+	public void onError(final HttpServerRequest request, final Throwable cause)
 			throws IOException {
+
+		final HttpServerResponse response = request.response();
 
 		if (cause != null) {
 

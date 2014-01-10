@@ -22,14 +22,15 @@ import com.barchart.netty.server.http.logging.RequestLogger;
 import com.barchart.netty.server.http.request.RequestHandler;
 import com.barchart.netty.server.http.request.RequestHandlerFactory;
 import com.barchart.netty.server.http.request.RequestHandlerMapping;
+import com.barchart.netty.server.http.request.HttpServerRequest;
 
 /**
  * Configuration values for initializing HttpServer.
  */
 public class HttpServerConfig {
 
-	private final Map<String, Object> handlers =
-			new ConcurrentSkipListMap<String, Object>(
+	private final Map<String, RequestHandlerFactory> handlers =
+			new ConcurrentSkipListMap<String, RequestHandlerFactory>(
 					new ReverseLengthComparator());
 
 	private SocketAddress address;
@@ -134,7 +135,7 @@ public class HttpServerConfig {
 	 */
 	public HttpServerConfig requestHandler(final String prefix,
 			final RequestHandler handler) {
-		handlers.put(prefix, handler);
+		handlers.put(prefix, new SingletonHandlerFactory(handler));
 		return this;
 	}
 
@@ -183,7 +184,7 @@ public class HttpServerConfig {
 	 * For Builder access.
 	 */
 	protected HttpServerConfig requestHandlers(
-			final Map<String, Object> handlers_) {
+			final Map<String, RequestHandlerFactory> handlers_) {
 		handlers.putAll(handlers_);
 		return this;
 	}
@@ -242,9 +243,10 @@ public class HttpServerConfig {
 	 */
 	public RequestHandlerMapping getRequestMapping(final String uri) {
 
-		for (final Map.Entry<String, Object> entry : handlers.entrySet()) {
+		for (final Map.Entry<String, RequestHandlerFactory> entry : handlers
+				.entrySet()) {
 			if (uri.startsWith(entry.getKey())) {
-				return RequestHandlerMapping.create(entry.getKey(),
+				return new RequestHandlerMapping(entry.getKey(),
 						entry.getValue());
 			}
 		}
@@ -287,6 +289,22 @@ public class HttpServerConfig {
 				return o1.compareTo(o2);
 			}
 
+		}
+
+	}
+
+	private static class SingletonHandlerFactory implements
+			RequestHandlerFactory {
+
+		private final RequestHandler handler;
+
+		protected SingletonHandlerFactory(final RequestHandler handler_) {
+			handler = handler_;
+		}
+
+		@Override
+		public RequestHandler newHandler(final HttpServerRequest request) {
+			return handler;
 		}
 
 	}

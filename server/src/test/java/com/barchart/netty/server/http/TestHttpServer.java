@@ -176,6 +176,7 @@ public class TestHttpServer {
 		final HttpGet get =
 				new HttpGet("http://localhost:" + port + "/unknown");
 		final HttpResponse response = client.execute(get);
+		EntityUtils.consume(response.getEntity());
 		assertEquals(404, response.getStatusLine().getStatusCode());
 
 	}
@@ -185,6 +186,7 @@ public class TestHttpServer {
 
 		final HttpGet get = new HttpGet("http://localhost:" + port + "/error");
 		final HttpResponse response = client.execute(get);
+		EntityUtils.consume(response.getEntity());
 		assertEquals(500, response.getStatusLine().getStatusCode());
 
 	}
@@ -266,6 +268,7 @@ public class TestHttpServer {
 							client.execute(new HttpGet("http://localhost:"
 									+ port + "/client-disconnect"));
 					status.add(response.getStatusLine().getStatusCode());
+					EntityUtils.consume(response.getEntity());
 				} catch (final Exception e) {
 					e.printStackTrace();
 				}
@@ -322,6 +325,7 @@ public class TestHttpServer {
 		final HttpGet get =
 				new HttpGet("http://localhost:" + port + "/client-disconnect");
 		final HttpResponse response = client.execute(get);
+		EntityUtils.consume(response.getEntity());
 		assertEquals(200, response.getStatusLine().getStatusCode());
 		// assertTrue(pass.get());
 
@@ -346,7 +350,7 @@ public class TestHttpServer {
 				new HttpGet("http://localhost:" + port + "/client-disconnect");
 
 		// Should throw exception
-		client.execute(get);
+		client.execute(get).getEntity();
 
 	}
 

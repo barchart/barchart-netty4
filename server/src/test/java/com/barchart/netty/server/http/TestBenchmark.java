@@ -12,9 +12,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import java.io.IOException;
 
 import com.barchart.netty.server.Servers;
+import com.barchart.netty.server.http.request.HttpServerRequest;
 import com.barchart.netty.server.http.request.RequestHandlerBase;
-import com.barchart.netty.server.http.request.ServerRequest;
-import com.barchart.netty.server.http.request.ServerResponse;
 
 public class TestBenchmark {
 
@@ -37,9 +36,9 @@ public class TestBenchmark {
 	private static class TestRequestHandler extends RequestHandlerBase {
 
 		@Override
-		public void onRequest(final ServerRequest request,
-				final ServerResponse response) throws IOException {
-			response.write("testing");
+		public void handle(final HttpServerRequest request) throws IOException {
+			request.response().write("testing");
+			request.response().finish();
 		}
 
 	}

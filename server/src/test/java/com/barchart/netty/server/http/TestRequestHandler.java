@@ -9,9 +9,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.barchart.netty.server.http.request.HttpServerRequest;
+import com.barchart.netty.server.http.request.HttpServerResponse;
 import com.barchart.netty.server.http.request.RequestHandlerBase;
-import com.barchart.netty.server.http.request.ServerRequest;
-import com.barchart.netty.server.http.request.ServerResponse;
 
 public class TestRequestHandler extends RequestHandlerBase {
 
@@ -45,13 +45,12 @@ public class TestRequestHandler extends RequestHandlerBase {
 	}
 
 	@Override
-	public void onRequest(final ServerRequest request,
-			final ServerResponse response) throws IOException {
+	public void handle(final HttpServerRequest request) throws IOException {
 
 		requests.incrementAndGet();
 		parameters = request.getParameters();
 
-		final Runnable task = response(response);
+		final Runnable task = response(request.response());
 
 		// response.setChunkedEncoding(true);
 
@@ -64,7 +63,7 @@ public class TestRequestHandler extends RequestHandlerBase {
 
 	}
 
-	public Runnable response(final ServerResponse response) {
+	public Runnable response(final HttpServerResponse response) {
 
 		return new Runnable() {
 

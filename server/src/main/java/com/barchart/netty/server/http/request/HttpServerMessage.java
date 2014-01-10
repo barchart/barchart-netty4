@@ -16,7 +16,7 @@ import aQute.bnd.annotation.ProviderType;
  * Information about an inbound request.
  */
 @ProviderType
-public interface ServerMessage extends HttpMessage {
+public interface HttpServerMessage extends HttpMessage {
 
 	@Override
 	public HttpHeaders headers();

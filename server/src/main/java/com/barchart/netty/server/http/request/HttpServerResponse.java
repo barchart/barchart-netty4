@@ -24,16 +24,16 @@ import aQute.bnd.annotation.ProviderType;
  * Encapsulates a response to an inbound ServerRequest.
  */
 @ProviderType
-public interface ServerResponse extends ServerMessage, HttpResponse {
+public interface HttpServerResponse extends HttpServerMessage, HttpResponse {
 
 	@Override
 	HttpResponseStatus getStatus();
 
 	@Override
-	ServerResponse setStatus(HttpResponseStatus status);
+	HttpServerResponse setStatus(HttpResponseStatus status);
 
 	@Override
-	ServerResponse setProtocolVersion(HttpVersion version);
+	HttpServerResponse setProtocolVersion(HttpVersion version);
 
 	boolean isChunkedEncoding();
 

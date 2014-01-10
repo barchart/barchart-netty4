@@ -188,9 +188,12 @@ public class HttpServer extends NettyServer {
 
 				return;
 
+			} else {
+
+				channelGroup.add(context.channel());
+
 			}
 
-			channelGroup.add(context.channel());
 			context.fireChannelActive();
 
 		}

@@ -9,8 +9,7 @@ package com.barchart.netty.server.http.logging;
 
 import aQute.bnd.annotation.ConsumerType;
 
-import com.barchart.netty.server.http.request.ServerRequest;
-import com.barchart.netty.server.http.request.ServerResponse;
+import com.barchart.netty.server.http.request.HttpServerRequest;
 
 /**
  * HTTP request logging API.
@@ -21,13 +20,11 @@ public interface RequestLogger {
 	/**
 	 * Log a completed request.
 	 */
-	public void access(ServerRequest request, ServerResponse response,
-			long duration);
+	public void access(HttpServerRequest request, long duration);
 
 	/**
 	 * Log a failed request.
 	 */
-	public void error(ServerRequest request, ServerResponse response,
-			Throwable exception);
+	public void error(HttpServerRequest request, Throwable exception);
 
 }

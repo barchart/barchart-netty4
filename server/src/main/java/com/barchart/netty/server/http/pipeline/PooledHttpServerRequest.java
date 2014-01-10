@@ -9,7 +9,7 @@ package com.barchart.netty.server.http.pipeline;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.Cookie;
 import io.netty.handler.codec.http.CookieDecoder;
@@ -30,20 +30,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.barchart.netty.server.http.request.HttpServerRequest;
 import com.barchart.netty.server.http.request.RequestAttribute;
 import com.barchart.netty.server.http.request.RequestAttributeKey;
-import com.barchart.netty.server.http.request.ServerRequest;
+import com.barchart.netty.server.http.request.RequestHandler;
 
 /**
  * Implements a server request from a low garbage collection use pool
  */
-public class PooledServerRequest implements ServerRequest {
+public class PooledHttpServerRequest implements HttpServerRequest {
 
 	private FullHttpRequest nettyRequest;
+	private boolean released = false;
+
+	private ChannelHandlerContext context;
+	private RequestHandler handler;
 
 	private String baseUri;
 	private String pathInfo;
 	private String queryString;
+	private long requestTime = 0;
 
 	private InetSocketAddress local;
 	private InetSocketAddress remote;
@@ -55,17 +61,25 @@ public class PooledServerRequest implements ServerRequest {
 
 	private String remoteUser = null;
 
-	public PooledServerRequest() {
+	private final PooledHttpServerResponse response;
+
+	public PooledHttpServerRequest() {
+		response = new PooledHttpServerResponse();
 	}
 
-	void init(final Channel channel_, final FullHttpRequest nettyRequest_,
-			final String relativeUri_) {
+	PooledHttpServerRequest init(final ChannelHandlerContext context_,
+			final FullHttpRequest nettyRequest_, final String relativeUri_,
+			final KeepaliveHelper keepaliveHelper_) {
 
-		local = (InetSocketAddress) channel_.localAddress();
-		remote = (InetSocketAddress) channel_.remoteAddress();
+		requestTime = System.currentTimeMillis();
+
+		context = context_;
+		local = (InetSocketAddress) context.channel().localAddress();
+		remote = (InetSocketAddress) context.channel().remoteAddress();
 
 		nettyRequest = nettyRequest_;
 		nettyRequest.retain();
+		released = false;
 
 		baseUri = relativeUri_;
 
@@ -85,12 +99,42 @@ public class PooledServerRequest implements ServerRequest {
 		attributes = null;
 
 		remoteUser = null;
+
+		response.init(context, keepaliveHelper_, this);
+
+		return this;
+
 	}
 
-	void release() {
-		if (nettyRequest != null) {
-			nettyRequest.release();
+	synchronized PooledHttpServerRequest release() {
+
+		if (!released) {
+
+			released = true;
+
+			if (nettyRequest != null) {
+				nettyRequest.release();
+			}
+
+			response.close();
+
 		}
+
+		return this;
+
+	}
+
+	RequestHandler handler() {
+		return handler;
+	}
+
+	long requestTime() {
+		return requestTime;
+	}
+
+	@Override
+	public PooledHttpServerResponse response() {
+		return response;
 	}
 
 	@Override
@@ -275,7 +319,7 @@ public class PooledServerRequest implements ServerRequest {
 	}
 
 	@Override
-	public ServerRequest setMethod(final HttpMethod method) {
+	public HttpServerRequest setMethod(final HttpMethod method) {
 		nettyRequest.setMethod(method);
 		return this;
 	}
@@ -286,7 +330,7 @@ public class PooledServerRequest implements ServerRequest {
 	}
 
 	@Override
-	public ServerRequest setUri(final String uri) {
+	public HttpServerRequest setUri(final String uri) {
 		nettyRequest.setUri(uri);
 		return this;
 	}
@@ -302,7 +346,7 @@ public class PooledServerRequest implements ServerRequest {
 	}
 
 	@Override
-	public ServerRequest setProtocolVersion(final HttpVersion version) {
+	public HttpServerRequest setProtocolVersion(final HttpVersion version) {
 		nettyRequest.setProtocolVersion(version);
 		return this;
 	}

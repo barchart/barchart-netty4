@@ -7,7 +7,6 @@
  */
 package com.barchart.netty.server.http.request;
 
-
 /**
  * Base request handler that provides default implementations of some less-used
  * methods.
@@ -15,18 +14,11 @@ package com.barchart.netty.server.http.request;
 public abstract class RequestHandlerBase implements RequestHandler {
 
 	@Override
-	public void onAbort(final ServerRequest request,
-			final ServerResponse response) {
+	public void cancel(final HttpServerRequest request) {
 	}
 
 	@Override
-	public void onException(final ServerRequest request,
-			final ServerResponse response, final Throwable exception) {
-	}
-
-	@Override
-	public void onComplete(final ServerRequest request,
-			final ServerResponse response) {
+	public void release(final HttpServerRequest request) {
 	}
 
 }

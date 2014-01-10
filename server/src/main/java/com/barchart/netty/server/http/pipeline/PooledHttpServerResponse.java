@@ -36,27 +36,22 @@ import java.util.HashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.barchart.netty.server.http.logging.RequestLogger;
-import com.barchart.netty.server.http.request.RequestHandler;
-import com.barchart.netty.server.http.request.ServerResponse;
+import com.barchart.netty.server.http.request.HttpServerResponse;
 
 /**
  * Not thread safe.
  */
-public class PooledServerResponse extends DefaultFullHttpResponse implements
-		ServerResponse {
+public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
+		HttpServerResponse {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(PooledServerResponse.class);
-
-	final ServerMessagePool pool;
+			.getLogger(PooledHttpServerResponse.class);
 
 	private final Collection<Cookie> cookies = new HashSet<Cookie>();
 
-	private HttpRequestChannelHandler channelHandler;
+	private KeepaliveHelper keepaliveHelper;
 	private ChannelHandlerContext context;
-	private RequestHandler handler;
-	private PooledServerRequest request;
+	private PooledHttpServerRequest request;
 
 	private OutputStream out;
 	private Writer writer;
@@ -66,18 +61,16 @@ public class PooledServerResponse extends DefaultFullHttpResponse implements
 	private boolean started = false;
 	private boolean finished = false;
 
-	private long requestTime = 0;
-	private RequestLogger logger;
-
-	public PooledServerResponse(final ServerMessagePool pool_) {
+	public PooledHttpServerResponse() {
 		super(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-		pool = pool_;
 	}
 
 	void init(final ChannelHandlerContext context_,
-			final HttpRequestChannelHandler channelHandler_,
-			final RequestHandler handler_, final PooledServerRequest request_,
-			final RequestLogger logger_) {
+			final KeepaliveHelper keepaliveHelper_,
+			final PooledHttpServerRequest request_) {
+
+		// Prevent underlying ByteBuf from being collected between requests
+		retain();
 
 		// Reset default request values if this is a recycled handler
 		if (finished) {
@@ -86,15 +79,9 @@ public class PooledServerResponse extends DefaultFullHttpResponse implements
 			setStatus(HttpResponseStatus.OK);
 		}
 
-		// Reference count increment so underlying ByteBuf is not collected
-		// between requests
-		retain();
-
 		context = context_;
-		channelHandler = channelHandler_;
-		handler = handler_;
 		request = request_;
-		logger = logger_;
+		keepaliveHelper = keepaliveHelper_;
 
 		charSet = CharsetUtil.UTF_8;
 
@@ -103,8 +90,6 @@ public class PooledServerResponse extends DefaultFullHttpResponse implements
 
 		out = new ByteBufOutputStream(content());
 		writer = new OutputStreamWriter(out, charSet);
-
-		requestTime = System.currentTimeMillis();
 
 	}
 
@@ -134,13 +119,13 @@ public class PooledServerResponse extends DefaultFullHttpResponse implements
 	}
 
 	@Override
-	public PooledServerResponse setProtocolVersion(final HttpVersion version) {
+	public PooledHttpServerResponse setProtocolVersion(final HttpVersion version) {
 		super.setProtocolVersion(version);
 		return this;
 	}
 
 	@Override
-	public PooledServerResponse setStatus(final HttpResponseStatus status) {
+	public PooledHttpServerResponse setStatus(final HttpResponseStatus status) {
 		super.setStatus(status);
 		return this;
 	}
@@ -294,12 +279,9 @@ public class PooledServerResponse extends DefaultFullHttpResponse implements
 			writeFuture.addListener(ChannelFutureListener.CLOSE);
 		}
 
-		// Record to access log
-		logger.access(request, this, System.currentTimeMillis() - requestTime);
-
 		// Keep alive, need to tell channel handler it can return us to the pool
 		if (HttpHeaders.isKeepAlive(request)) {
-			channelHandler.freeHandlers(context);
+			keepaliveHelper.requestComplete(context);
 		}
 
 		return writeFuture;
@@ -331,14 +313,6 @@ public class PooledServerResponse extends DefaultFullHttpResponse implements
 
 		finished = true;
 
-	}
-
-	PooledServerRequest request() {
-		return request;
-	}
-
-	RequestHandler handler() {
-		return handler;
 	}
 
 	/**

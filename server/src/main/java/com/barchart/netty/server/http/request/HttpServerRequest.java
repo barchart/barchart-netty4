@@ -26,7 +26,7 @@ import aQute.bnd.annotation.ProviderType;
  * Information about an inbound request.
  */
 @ProviderType
-public interface ServerRequest extends ServerMessage, HttpRequest {
+public interface HttpServerRequest extends HttpServerMessage, HttpRequest {
 
 	/* Request metadata */
 
@@ -37,13 +37,13 @@ public interface ServerRequest extends ServerMessage, HttpRequest {
 	HttpMethod getMethod();
 
 	@Override
-	ServerRequest setProtocolVersion(HttpVersion version);
+	HttpServerRequest setProtocolVersion(HttpVersion version);
 
 	@Override
-	ServerRequest setMethod(HttpMethod method);
+	HttpServerRequest setMethod(HttpMethod method);
 
 	@Override
-	ServerRequest setUri(String uri);
+	HttpServerRequest setUri(String uri);
 
 	boolean isChunkedEncoding();
 
@@ -162,6 +162,12 @@ public interface ServerRequest extends ServerMessage, HttpRequest {
 	 * character encoding.
 	 */
 	BufferedReader getReader();
+
+	/**
+	 * Associated response object.
+	 */
+
+	HttpServerResponse response();
 
 	/* Request attributes */
 

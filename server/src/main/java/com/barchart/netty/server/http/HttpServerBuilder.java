@@ -11,11 +11,13 @@ import com.barchart.netty.server.http.logging.NullRequestLogger;
 import com.barchart.netty.server.http.logging.RequestLogger;
 import com.barchart.netty.server.http.request.RequestHandler;
 import com.barchart.netty.server.http.request.RequestHandlerFactory;
+import com.barchart.netty.server.http.request.SingleHandlerFactory;
 
 public class HttpServerBuilder extends
 		AbstractServerBuilder<HttpServer, HttpServerBuilder> {
 
-	protected Map<String, Object> handlers = new HashMap<String, Object>();
+	protected Map<String, RequestHandlerFactory> handlers =
+			new HashMap<String, RequestHandlerFactory>();
 	protected int maxRequestSize = 1024 * 1024;
 	protected boolean chunked = true;
 	protected long timeout = 0;
@@ -92,7 +94,7 @@ public class HttpServerBuilder extends
 	 */
 	public HttpServerBuilder requestHandler(final String prefix,
 			final RequestHandler handler) {
-		handlers.put(prefix, handler);
+		handlers.put(prefix, new SingleHandlerFactory(handler));
 		return this;
 	}
 
