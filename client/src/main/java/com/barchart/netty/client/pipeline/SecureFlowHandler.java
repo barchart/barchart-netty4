@@ -10,11 +10,12 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
 import com.barchart.netty.client.facets.SecureAware;
-import com.barchart.netty.client.messages.Capabilities;
-import com.barchart.netty.client.messages.StartTLS;
-import com.barchart.netty.client.messages.StopTLS;
 import com.barchart.netty.client.pipeline.SecureFlowHandler.TLSEvent;
 import com.barchart.netty.client.pipeline.SecureFlowHandler.TLSState;
+import com.barchart.netty.common.messages.Capabilities;
+import com.barchart.netty.common.messages.StartTLS;
+import com.barchart.netty.common.messages.StopTLS;
+import com.barchart.netty.common.pipeline.MessageFlowHandler;
 import com.barchart.util.flow.api.Context;
 import com.barchart.util.flow.api.Event;
 import com.barchart.util.flow.api.Flow;

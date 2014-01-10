@@ -1,6 +1,6 @@
 package com.barchart.netty.client.facets;
 
-import com.barchart.netty.client.messages.Version;
+import com.barchart.netty.common.messages.Version;
 
 /**
  * Protocol version monitoring for a Connectable.

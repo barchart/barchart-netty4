@@ -11,9 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import com.barchart.netty.client.Connectable;
-import com.barchart.netty.client.PipelineInitializer;
 import com.barchart.netty.client.facets.ConnectableFacet;
 import com.barchart.netty.client.transport.TransportProtocol;
+import com.barchart.netty.common.PipelineInitializer;
 
 /**
  * Connectable proxy generator for pluggable combinations of client features.

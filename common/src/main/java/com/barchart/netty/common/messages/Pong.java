@@ -1,4 +1,4 @@
-package com.barchart.netty.client.messages;
+package com.barchart.netty.common.messages;
 
 /**
  * A response to a heartbeat Ping message from a peer. This should be sent

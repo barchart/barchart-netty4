@@ -1,4 +1,4 @@
-package com.barchart.netty.client.messages;
+package com.barchart.netty.common.messages;
 
 /**
  * Peer response to a Version request message.

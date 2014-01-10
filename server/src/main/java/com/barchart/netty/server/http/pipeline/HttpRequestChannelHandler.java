@@ -23,7 +23,7 @@ import io.netty.util.AttributeKey;
 
 import java.io.IOException;
 
-import com.barchart.netty.server.http.HttpServerConfig;
+import com.barchart.netty.server.http.HttpServer;
 import com.barchart.netty.server.http.error.ServerException;
 import com.barchart.netty.server.http.error.ServerTooBusyException;
 import com.barchart.netty.server.http.request.RequestHandler;
@@ -40,10 +40,10 @@ public class HttpRequestChannelHandler extends
 	public static final AttributeKey<PooledHttpServerRequest> ATTR_REQUEST =
 			AttributeKey.<PooledHttpServerRequest> valueOf("request");
 
-	private final HttpServerConfig config;
+	private final HttpServer config;
 	private final HttpServerRequestPool requestPool;
 
-	public HttpRequestChannelHandler(final HttpServerConfig config_) {
+	public HttpRequestChannelHandler(final HttpServer config_) {
 		super();
 		config = config_;
 		requestPool = new HttpServerRequestPool(config.maxConnections());

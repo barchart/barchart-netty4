@@ -1,4 +1,4 @@
-package com.barchart.netty.client.messages;
+package com.barchart.netty.common.messages;
 
 /**
  * A heartbeat ping to the remote peer. When the peer receives this message,

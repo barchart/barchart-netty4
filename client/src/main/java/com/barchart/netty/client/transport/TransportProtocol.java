@@ -6,7 +6,7 @@ import io.netty.channel.ChannelOption;
 
 import java.net.SocketAddress;
 
-import com.barchart.netty.client.PipelineInitializer;
+import com.barchart.netty.common.PipelineInitializer;
 
 public interface TransportProtocol extends PipelineInitializer {
 

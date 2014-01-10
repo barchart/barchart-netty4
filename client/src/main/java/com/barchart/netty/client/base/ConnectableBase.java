@@ -29,10 +29,10 @@ import rx.subjects.ReplaySubject;
 
 import com.barchart.netty.client.BootstrapInitializer;
 import com.barchart.netty.client.Connectable;
-import com.barchart.netty.client.PipelineInitializer;
 import com.barchart.netty.client.policy.ReconnectPolicy;
 import com.barchart.netty.client.transport.TransportFactory;
 import com.barchart.netty.client.transport.TransportProtocol;
+import com.barchart.netty.common.PipelineInitializer;
 
 /**
  * A base Connectable implementation which provides basic configuration,

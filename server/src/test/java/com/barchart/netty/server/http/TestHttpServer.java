@@ -89,7 +89,9 @@ public class TestHttpServer {
 						.requestHandler("/error", error)
 						.requestHandler("/service/info", infoHandler)
 						.requestHandler("/service", serviceHandler)
-						.maxConnections(1).listen(port, "localhost");
+						.maxConnections(1);
+
+		server.listen(port, "localhost");
 
 		client = new DefaultHttpClient(new PoolingClientConnectionManager());
 
@@ -97,7 +99,7 @@ public class TestHttpServer {
 
 	@After
 	public void tearDown() throws Exception {
-		if (server.isRunning()) {
+		if (server.running()) {
 			server.shutdown().sync();
 		}
 	}

@@ -23,8 +23,9 @@ public class TestBenchmark {
 				Servers.createHttpServer()
 						.requestHandler("", new TestRequestHandler())
 						.parentGroup(new NioEventLoopGroup())
-						.childGroup(new NioEventLoopGroup()).maxConnections(-1)
-						.listen(8080);
+						.childGroup(new NioEventLoopGroup()).maxConnections(-1);
+
+		server.listen(8080);
 
 		try {
 			server.shutdownFuture().sync();

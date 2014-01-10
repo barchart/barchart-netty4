@@ -1,14 +1,14 @@
 package com.barchart.netty.server;
 
-import com.barchart.netty.server.http.HttpServerBuilder;
+import com.barchart.netty.server.http.HttpServer;
 
 public final class Servers {
 
 	private Servers() {
 	}
 
-	public static HttpServerBuilder createHttpServer() {
-		return new HttpServerBuilder();
+	public static HttpServer createHttpServer() {
+		return new HttpServer();
 	}
 
 }

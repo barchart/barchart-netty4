@@ -18,8 +18,8 @@ import com.barchart.netty.client.pipeline.PingHandler;
  * 
  * 2) The host returns a Pong message immediately on receipt of a Ping
  * 
- * @see com.barchart.netty.client.messages.Ping
- * @see com.barchart.netty.client.messages.Pong
+ * @see com.barchart.netty.common.messages.Ping
+ * @see com.barchart.netty.common.messages.Pong
  */
 public class KeepaliveFacet implements ConnectableFacet<LatencyAware>,
 		LatencyAware {

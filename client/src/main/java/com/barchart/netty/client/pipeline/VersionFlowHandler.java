@@ -2,12 +2,13 @@ package com.barchart.netty.client.pipeline;
 
 import io.netty.channel.ChannelHandlerContext;
 
-import com.barchart.netty.client.messages.Capabilities;
-import com.barchart.netty.client.messages.Version;
-import com.barchart.netty.client.messages.VersionRequest;
-import com.barchart.netty.client.messages.VersionResponse;
 import com.barchart.netty.client.pipeline.VersionFlowHandler.VersionEvent;
 import com.barchart.netty.client.pipeline.VersionFlowHandler.VersionState;
+import com.barchart.netty.common.messages.Capabilities;
+import com.barchart.netty.common.messages.Version;
+import com.barchart.netty.common.messages.VersionRequest;
+import com.barchart.netty.common.messages.VersionResponse;
+import com.barchart.netty.common.pipeline.MessageFlowHandler;
 import com.barchart.util.flow.api.Context;
 import com.barchart.util.flow.api.Event;
 import com.barchart.util.flow.api.Flow;

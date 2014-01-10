@@ -7,8 +7,8 @@ import io.netty.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import com.barchart.netty.client.facets.LatencyAware;
-import com.barchart.netty.client.messages.Ping;
-import com.barchart.netty.client.messages.Pong;
+import com.barchart.netty.common.messages.Ping;
+import com.barchart.netty.common.messages.Pong;
 import com.yammer.metrics.core.Histogram;
 import com.yammer.metrics.core.MetricsRegistry;
 

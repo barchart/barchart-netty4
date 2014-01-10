@@ -1,4 +1,4 @@
-package com.barchart.netty.client.messages;
+package com.barchart.netty.common.messages;
 
 public class Version implements Comparable<Version> {
 
