@@ -82,10 +82,6 @@ public class HttpServer extends AbstractServer<HttpServer> {
 
 	}
 
-	/*
-	 * Configuration methods
-	 */
-
 	/**
 	 * Set the maximum number of client connections.
 	 */

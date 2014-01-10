@@ -18,9 +18,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.ChannelGroupFuture;
 import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.concurrent.DefaultPromise;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -53,17 +51,11 @@ public abstract class AbstractServer<T extends AbstractServer<T>> extends
 
 	private final ClientTracker clientTracker = new ClientTracker();
 
-	private final ServerBootstrap bootstrap;
-
-	protected AbstractServer() {
-		bootstrap = bootstrap();
-	}
-
 	private ServerBootstrap bootstrap() {
 
 		final ServerBootstrap bootstrap = new ServerBootstrap() //
-				.group(new NioEventLoopGroup()) //
-				.channel(NioServerSocketChannel.class) //
+				.group(parentGroup, childGroup) //
+				.channel(channelType) //
 				.childHandler(new ServerChannelInitializer()) //
 				.option(ChannelOption.SO_REUSEADDR, true) //
 				.option(ChannelOption.SO_SNDBUF, 262144) //
@@ -88,7 +80,7 @@ public abstract class AbstractServer<T extends AbstractServer<T>> extends
 	@Override
 	public ChannelFuture listen(final SocketAddress address) {
 
-		final ChannelFuture future = bootstrap.bind(address);
+		final ChannelFuture future = bootstrap().bind(address);
 
 		serverChannels.add(future.channel());
 
@@ -142,8 +134,6 @@ public abstract class AbstractServer<T extends AbstractServer<T>> extends
 
 	/**
 	 * Empty default implementation, override to customize bootstrap.
-	 * 
-	 * Default settings: NIO TCP with a shared NioEventLoopGroup.
 	 */
 	@Override
 	public void initBootstrap(final ServerBootstrap bootstrap) {

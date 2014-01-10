@@ -154,7 +154,7 @@ public class HttpRequestChannelHandler extends
 
 		ctx.fireChannelRead(msg);
 
-		// Remove HTTP handler
+		// Remove self from pipeline, no need to process further HTTP messages
 		ctx.pipeline().remove(this);
 
 	}
@@ -191,6 +191,8 @@ public class HttpRequestChannelHandler extends
 
 		requestComplete(ctx);
 
+		ctx.fireChannelInactive();
+
 	}
 
 	@Override
@@ -225,6 +227,8 @@ public class HttpRequestChannelHandler extends
 			}
 
 		}
+
+		ctx.fireExceptionCaught(exception);
 
 	}
 
