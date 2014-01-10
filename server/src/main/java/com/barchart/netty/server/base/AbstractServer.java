@@ -14,9 +14,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.ChannelGroupFuture;
 import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.DefaultPromise;
 import io.netty.util.concurrent.Future;
@@ -28,13 +30,14 @@ import java.net.SocketAddress;
 
 import com.barchart.netty.common.PipelineInitializer;
 import com.barchart.netty.server.Server;
+import com.barchart.netty.server.ServerBuilder;
 
 /**
- * High performance HTTP server.
+ * Base abstract server that functions as its own builder to allow for runtime
+ * configuration changes.
  */
 public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends AbstractBootstrap<B, ?>>
-		extends AbstractServerBuilder<T, B, T> implements Server<T>,
-		PipelineInitializer {
+		implements Server<T>, ServerBuilder<T, B, T>, PipelineInitializer {
 
 	protected final ChannelGroup serverChannels = new DefaultChannelGroup(
 			GlobalEventExecutor.INSTANCE);
@@ -49,6 +52,31 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 			new ServerShutdownListener();
 
 	private final ClientTracker clientTracker = new ClientTracker();
+
+	protected EventLoopGroup defaultGroup = new NioEventLoopGroup();
+	protected PipelineInitializer pipelineInit = null;
+	protected BootstrapInitializer<B> bootstrapInit = null;
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public T group(final EventLoopGroup group) {
+		defaultGroup = group;
+		return (T) this;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public T pipeline(final PipelineInitializer inititalizer) {
+		pipelineInit = inititalizer;
+		return (T) this;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public T bootstrapper(final BootstrapInitializer<B> inititalizer) {
+		bootstrapInit = inititalizer;
+		return (T) this;
+	}
 
 	@Override
 	public ChannelFuture listen(final int port, final String hostOrIp) {
@@ -120,6 +148,13 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 	 * Default bootstrap for this server.
 	 */
 	protected abstract B bootstrap();
+
+	@Override
+	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
+		if (pipelineInit != null) {
+			pipelineInit.initPipeline(pipeline);
+		}
+	}
 
 	/**
 	 * Default pipeline initializer.

@@ -4,7 +4,6 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.util.NetUtil;
 import io.netty.util.concurrent.Future;
@@ -15,28 +14,20 @@ import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketAddress;
 
-import com.barchart.netty.common.PipelineInitializer;
 import com.barchart.netty.server.base.AbstractServer;
-import com.barchart.netty.server.base.BootstrapInitializer;
 
+/**
+ * A multicast transceiver that can send and receive messages in a UDP multicast
+ * group.
+ */
 public class MulticastTransceiver extends
 		AbstractServer<MulticastTransceiver, Bootstrap> {
 
-	protected PipelineInitializer pipelineInit = null;
-	protected BootstrapInitializer<Bootstrap> bootstrapInit = null;
 	protected InetSocketAddress multicast;
 
-	public MulticastTransceiver pipeline(final PipelineInitializer inititalizer) {
-		pipelineInit = inititalizer;
-		return this;
-	}
-
-	public MulticastTransceiver bootstrapper(
-			final BootstrapInitializer<Bootstrap> inititalizer) {
-		bootstrapInit = inititalizer;
-		return this;
-	}
-
+	/**
+	 * The multicast group address.
+	 */
 	public MulticastTransceiver multicast(final InetSocketAddress address) {
 		multicast = address;
 		return this;
@@ -62,11 +53,10 @@ public class MulticastTransceiver extends
 
 	}
 
-	@Override
-	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
-		pipelineInit.initPipeline(pipeline);
-	}
-
+	/**
+	 * Join the multicast group address using the network interface associated
+	 * with the given address.
+	 */
 	@Override
 	public ChannelFuture listen(final SocketAddress address) {
 

@@ -5,7 +5,9 @@ import io.netty.channel.sctp.nio.NioSctpServerChannel;
 
 import java.net.SocketAddress;
 
-public class SCTPServer extends StreamServer<SCTPServer> {
+import com.barchart.netty.server.base.AbstractStatefulServer;
+
+public class SCTPServer extends AbstractStatefulServer<SCTPServer> {
 
 	public SCTPServer() {
 		channel(NioSctpServerChannel.class);

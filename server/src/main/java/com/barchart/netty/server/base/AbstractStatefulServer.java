@@ -1,19 +1,20 @@
-package com.barchart.netty.server.stream;
+package com.barchart.netty.server.base;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.ServerChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 import java.net.InetSocketAddress;
 
-import com.barchart.netty.server.base.AbstractServer;
-
-public abstract class StreamServer<T extends StreamServer<T>> extends
-		AbstractServer<T, ServerBootstrap> {
+/**
+ * Abstract implementation of a stateful server over various protocols, with
+ * separate channels for acceptor and child connections.
+ */
+public abstract class AbstractStatefulServer<T extends AbstractStatefulServer<T>>
+		extends AbstractServer<T, ServerBootstrap> {
 
 	protected Class<? extends ServerChannel> channelType =
 			NioServerSocketChannel.class;
@@ -50,11 +51,6 @@ public abstract class StreamServer<T extends StreamServer<T>> extends
 
 		return bootstrap;
 
-	}
-
-	@Override
-	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
-		pipelineInit.initPipeline(pipeline);
 	}
 
 	public ChannelFuture listen(final int port) {

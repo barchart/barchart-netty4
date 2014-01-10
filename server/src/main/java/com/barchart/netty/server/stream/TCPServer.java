@@ -5,7 +5,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 import java.net.SocketAddress;
 
-public class TCPServer extends StreamServer<TCPServer> {
+import com.barchart.netty.server.base.AbstractStatefulServer;
+
+public class TCPServer extends AbstractStatefulServer<TCPServer> {
 
 	public TCPServer() {
 		channel(NioServerSocketChannel.class);

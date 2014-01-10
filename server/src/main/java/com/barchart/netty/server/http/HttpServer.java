@@ -37,6 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import com.barchart.netty.server.HandlerFactory;
+import com.barchart.netty.server.base.AbstractStatefulServer;
 import com.barchart.netty.server.http.error.DefaultErrorHandler;
 import com.barchart.netty.server.http.error.ErrorHandler;
 import com.barchart.netty.server.http.logging.NullRequestLogger;
@@ -44,13 +45,12 @@ import com.barchart.netty.server.http.logging.RequestLogger;
 import com.barchart.netty.server.http.pipeline.HttpRequestChannelHandler;
 import com.barchart.netty.server.http.request.HandlerMapping;
 import com.barchart.netty.server.http.request.RequestHandler;
-import com.barchart.netty.server.stream.StreamServer;
 import com.barchart.netty.server.util.SingleHandlerFactory;
 
 /**
  * Asynchronous HTTP server.
  */
-public class HttpServer extends StreamServer<HttpServer> {
+public class HttpServer extends AbstractStatefulServer<HttpServer> {
 
 	private final Map<String, HandlerFactory<RequestHandler>> handlers =
 			new ConcurrentSkipListMap<String, HandlerFactory<RequestHandler>>(

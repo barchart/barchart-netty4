@@ -5,7 +5,9 @@ import io.netty.channel.udt.nio.NioUdtAcceptorChannel;
 
 import java.net.SocketAddress;
 
-public class UDTServer extends StreamServer<UDTServer> {
+import com.barchart.netty.server.base.AbstractStatefulServer;
+
+public class UDTServer extends AbstractStatefulServer<UDTServer> {
 
 	public UDTServer() {
 		channel(NioUdtAcceptorChannel.class);

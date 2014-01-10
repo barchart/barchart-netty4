@@ -3,36 +3,20 @@ package com.barchart.netty.server.stream;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-import com.barchart.netty.common.PipelineInitializer;
 import com.barchart.netty.server.base.AbstractServer;
-import com.barchart.netty.server.base.BootstrapInitializer;
 
 public class UnicastTransceiver extends
 		AbstractServer<UnicastTransceiver, Bootstrap> {
 
-	protected PipelineInitializer pipelineInit = null;
-	protected BootstrapInitializer<Bootstrap> bootstrapInit = null;
 	protected InetSocketAddress remote;
 
 	public UnicastTransceiver remote(final InetSocketAddress address) {
 		remote = address;
-		return this;
-	}
-
-	public UnicastTransceiver pipeline(final PipelineInitializer inititalizer) {
-		pipelineInit = inititalizer;
-		return this;
-	}
-
-	public UnicastTransceiver bootstrapper(
-			final BootstrapInitializer<Bootstrap> inititalizer) {
-		bootstrapInit = inititalizer;
 		return this;
 	}
 
@@ -55,11 +39,6 @@ public class UnicastTransceiver extends
 
 		return bootstrap;
 
-	}
-
-	@Override
-	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
-		pipelineInit.initPipeline(pipeline);
 	}
 
 	@Override
