@@ -12,6 +12,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
@@ -27,27 +28,31 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import com.barchart.netty.server.HandlerFactory;
 import com.barchart.netty.server.base.AbstractServer;
 import com.barchart.netty.server.http.error.DefaultErrorHandler;
 import com.barchart.netty.server.http.error.ErrorHandler;
 import com.barchart.netty.server.http.logging.NullRequestLogger;
 import com.barchart.netty.server.http.logging.RequestLogger;
 import com.barchart.netty.server.http.pipeline.HttpRequestChannelHandler;
+import com.barchart.netty.server.http.request.HandlerMapping;
 import com.barchart.netty.server.http.request.RequestHandler;
-import com.barchart.netty.server.http.request.RequestHandlerFactory;
-import com.barchart.netty.server.http.request.RequestHandlerMapping;
-import com.barchart.netty.server.http.request.SingleHandlerFactory;
+import com.barchart.netty.server.util.SingleHandlerFactory;
 
 /**
  * Asynchronous HTTP server.
  */
 public class HttpServer extends AbstractServer<HttpServer> {
 
-	private final Map<String, RequestHandlerFactory> handlers =
-			new ConcurrentSkipListMap<String, RequestHandlerFactory>(
+	private final Map<String, HandlerFactory<RequestHandler>> handlers =
+			new ConcurrentSkipListMap<String, HandlerFactory<RequestHandler>>(
 					new ReverseLengthComparator());
+
+	private final Map<String, HandlerFactory<ChannelInboundHandler>> webSocketHandlers =
+			new ConcurrentHashMap<String, HandlerFactory<ChannelInboundHandler>>();
 
 	protected int maxConnections = -1;
 	protected int maxRequestSize = 1024 * 1024;
@@ -65,14 +70,14 @@ public class HttpServer extends AbstractServer<HttpServer> {
 	}
 
 	@Override
-	public void initPipeline(final ChannelPipeline pipeline) {
+	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
 
-		pipeline.addLast(new HttpResponseEncoder(), //
+		pipeline.addLast( //
+				new HttpResponseEncoder(), //
 				new ChunkedWriteHandler(), //
-				clientTracker, //
+				clientTracker, // After encoders, needs to write HTTP responses
 				new HttpRequestDecoder(), //
 				new HttpObjectAggregator(maxRequestSize), //
-				// new MessageLoggingHandler(LogLevel.INFO), //
 				channelHandler);
 
 	}
@@ -160,7 +165,7 @@ public class HttpServer extends AbstractServer<HttpServer> {
 	 */
 	public HttpServer requestHandler(final String prefix,
 			final RequestHandler handler) {
-		handlers.put(prefix, new SingleHandlerFactory(handler));
+		handlers.put(prefix, new SingleHandlerFactory<RequestHandler>(handler));
 		return this;
 	}
 
@@ -173,8 +178,27 @@ public class HttpServer extends AbstractServer<HttpServer> {
 	 * @see HttpServer#requestHandler(String, RequestHandler)
 	 */
 	public HttpServer requestHandler(final String prefix,
-			final RequestHandlerFactory factory) {
+			final HandlerFactory<RequestHandler> factory) {
 		handlers.put(prefix, factory);
+		return this;
+	}
+
+	/**
+	 * Add a websocket handler for the given prefix.
+	 */
+	public HttpServer webSocketHandler(final String prefix,
+			final ChannelInboundHandler handler) {
+		webSocketHandlers.put(prefix,
+				new SingleHandlerFactory<ChannelInboundHandler>(handler));
+		return this;
+	}
+
+	/**
+	 * Add a websocket handler factory for the given prefix.
+	 */
+	public HttpServer webSocketHandler(final String prefix,
+			final HandlerFactory<ChannelInboundHandler> factory) {
+		webSocketHandlers.put(prefix, factory);
 		return this;
 	}
 
@@ -223,12 +247,12 @@ public class HttpServer extends AbstractServer<HttpServer> {
 	/**
 	 * Get the request handler mapping for the specified URI.
 	 */
-	public RequestHandlerMapping getRequestMapping(final String uri) {
+	public HandlerMapping<RequestHandler> getRequestMapping(final String uri) {
 
-		for (final Map.Entry<String, RequestHandlerFactory> entry : handlers
+		for (final Map.Entry<String, HandlerFactory<RequestHandler>> entry : handlers
 				.entrySet()) {
 			if (uri.startsWith(entry.getKey())) {
-				return new RequestHandlerMapping(entry.getKey(),
+				return new HandlerMapping<RequestHandler>(entry.getKey(),
 						entry.getValue());
 			}
 		}
@@ -237,8 +261,26 @@ public class HttpServer extends AbstractServer<HttpServer> {
 
 	}
 
+	/**
+	 * Get the websocket handler mapping for the specified URI.
+	 */
+	public HandlerFactory<ChannelInboundHandler> webSocketFactory(
+			final String uri) {
+
+		if (webSocketHandlers.containsKey(uri)) {
+			return webSocketHandlers.get(uri);
+		}
+
+		return null;
+
+	}
+
 	public Object removeRequestHandler(final String path) {
 		return handlers.remove(path);
+	}
+
+	public Object removeWebSocketHandler(final String path) {
+		return webSocketHandlers.remove(path);
 	}
 
 	@Override

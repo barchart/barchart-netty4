@@ -7,17 +7,18 @@
  */
 package com.barchart.netty.server.http.request;
 
+import com.barchart.netty.server.HandlerFactory;
+
 /**
- * Convenience tuple for returning the results of a RequestHandler / path prefix
+ * Convenience tuple for returning the results of a handler / path prefix
  * lookup.
  */
-public class RequestHandlerMapping {
+public class HandlerMapping<H> {
 
 	private final String path;
-	private final RequestHandlerFactory factory;
+	private final HandlerFactory<H> factory;
 
-	public RequestHandlerMapping(final String path_,
-			final RequestHandlerFactory factory_) {
+	public HandlerMapping(final String path_, final HandlerFactory<H> factory_) {
 		path = path_;
 		factory = factory_;
 	}
@@ -32,7 +33,7 @@ public class RequestHandlerMapping {
 	/**
 	 * The request handler factory for this request.
 	 */
-	public RequestHandlerFactory factory() {
+	public HandlerFactory<H> factory() {
 		return factory;
 	}
 
