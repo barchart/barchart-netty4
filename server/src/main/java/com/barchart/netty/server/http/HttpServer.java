@@ -28,6 +28,7 @@ import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
 import java.net.InetSocketAddress;
@@ -96,9 +97,15 @@ public class HttpServer extends AbstractStatefulServer<HttpServer> {
 	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
 
 		pipeline.addLast( //
+				new LoggingHandler(), //
 				new HttpResponseEncoder(), //
-				new ChunkedWriteHandler(), //
-				clientTracker, // After encoders, needs to write HTTP responses
+				new ChunkedWriteHandler());
+
+		if (clientTracker != null) {
+			pipeline.addLast(clientTracker);
+		}
+
+		pipeline.addLast( //
 				new HttpRequestDecoder(), //
 				new HttpObjectAggregator(maxRequestSize), //
 				channelHandler);
