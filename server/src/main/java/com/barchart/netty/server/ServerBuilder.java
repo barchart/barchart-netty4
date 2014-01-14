@@ -3,7 +3,7 @@ package com.barchart.netty.server;
 import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.channel.EventLoopGroup;
 
-import com.barchart.netty.common.PipelineInitializer;
+import com.barchart.netty.common.pipeline.PipelineInitializer;
 import com.barchart.netty.server.base.BootstrapInitializer;
 
 /**

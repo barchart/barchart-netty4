@@ -2,9 +2,9 @@ package com.barchart.netty.client.base;
 
 import io.netty.channel.ChannelPipeline;
 
-import com.barchart.netty.client.facets.SecureAware;
 import com.barchart.netty.client.facets.SecureFacet;
 import com.barchart.netty.client.transport.TransportProtocol;
+import com.barchart.netty.common.metadata.SecureAware;
 
 /**
  * A Connectable client that negotiates SSL-TLS state on connect according to

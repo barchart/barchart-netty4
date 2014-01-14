@@ -1,4 +1,4 @@
-package com.barchart.netty.client.facets;
+package com.barchart.netty.common.metadata;
 
 import rx.Observable;
 

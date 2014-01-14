@@ -3,6 +3,7 @@ package com.barchart.netty.client.facets;
 import io.netty.channel.ChannelPipeline;
 
 import com.barchart.netty.client.pipeline.SecureFlowHandler;
+import com.barchart.netty.common.metadata.SecureAware;
 
 /**
  * Connectable proxy facet that implements the SecureAware interface and

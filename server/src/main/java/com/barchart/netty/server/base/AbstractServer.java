@@ -28,7 +28,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-import com.barchart.netty.common.PipelineInitializer;
+import com.barchart.netty.common.pipeline.PipelineInitializer;
 import com.barchart.netty.server.Server;
 import com.barchart.netty.server.ServerBuilder;
 

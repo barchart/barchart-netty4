@@ -32,7 +32,7 @@ import com.barchart.netty.client.Connectable;
 import com.barchart.netty.client.policy.ReconnectPolicy;
 import com.barchart.netty.client.transport.TransportFactory;
 import com.barchart.netty.client.transport.TransportProtocol;
-import com.barchart.netty.common.PipelineInitializer;
+import com.barchart.netty.common.pipeline.PipelineInitializer;
 
 /**
  * A base Connectable implementation which provides basic configuration,

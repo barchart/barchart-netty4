@@ -1,4 +1,4 @@
-package com.barchart.netty.client.pipeline;
+package com.barchart.netty.common.pipeline;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -6,9 +6,9 @@ import io.netty.util.concurrent.ScheduledFuture;
 
 import java.util.concurrent.TimeUnit;
 
-import com.barchart.netty.client.facets.LatencyAware;
 import com.barchart.netty.common.messages.Ping;
 import com.barchart.netty.common.messages.Pong;
+import com.barchart.netty.common.metadata.LatencyAware;
 import com.yammer.metrics.core.Histogram;
 import com.yammer.metrics.core.MetricsRegistry;
 
@@ -25,8 +25,11 @@ public class PingHandler extends SimpleChannelInboundHandler<Object> implements
 
 	private ScheduledFuture<?> pingFuture = null;
 
-	private long interval;
-	private TimeUnit unit;
+	private long interval = 0;
+	private TimeUnit unit = TimeUnit.SECONDS;
+
+	public PingHandler() {
+	}
 
 	public PingHandler(final long interval_, final TimeUnit unit_) {
 		interval(interval_, unit_);

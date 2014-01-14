@@ -1,6 +1,6 @@
 package com.barchart.netty.client.facets;
 
-import com.barchart.netty.common.PipelineInitializer;
+import com.barchart.netty.common.pipeline.PipelineInitializer;
 
 /**
  * A facet for dynamically constructing client proxies with pluggable

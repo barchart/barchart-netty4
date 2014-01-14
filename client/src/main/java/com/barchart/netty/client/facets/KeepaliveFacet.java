@@ -4,7 +4,8 @@ import io.netty.channel.ChannelPipeline;
 
 import java.util.concurrent.TimeUnit;
 
-import com.barchart.netty.client.pipeline.PingHandler;
+import com.barchart.netty.common.metadata.LatencyAware;
+import com.barchart.netty.common.pipeline.PingHandler;
 
 /**
  * A Connectable proxy facet that implements the LatencyAware interface. To

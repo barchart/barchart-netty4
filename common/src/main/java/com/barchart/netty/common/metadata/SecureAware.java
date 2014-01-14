@@ -1,4 +1,4 @@
-package com.barchart.netty.client.facets;
+package com.barchart.netty.common.metadata;
 
 /**
  * Secure channel status monitoring for a Connectable.

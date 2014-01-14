@@ -3,8 +3,8 @@ package com.barchart.netty.client.example;
 import io.netty.channel.ChannelHandlerAdapter;
 import rx.Observable;
 
-import com.barchart.netty.client.facets.AuthenticationAware;
 import com.barchart.netty.client.pipeline.AuthenticationHandler;
+import com.barchart.netty.common.metadata.AuthenticationAware;
 
 public class DummyAuthenticationHandler extends ChannelHandlerAdapter implements
 		AuthenticationHandler<Object> {

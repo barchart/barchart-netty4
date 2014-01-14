@@ -5,6 +5,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import com.barchart.netty.client.pipeline.AuthenticationHandler;
+import com.barchart.netty.common.metadata.AuthenticationAware;
 
 /**
  * A Connectable proxy facet that implements the AuthenticationAware interface.

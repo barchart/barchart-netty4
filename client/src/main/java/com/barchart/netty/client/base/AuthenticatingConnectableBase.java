@@ -3,10 +3,10 @@ package com.barchart.netty.client.base;
 import io.netty.channel.ChannelPipeline;
 import rx.Observable;
 
-import com.barchart.netty.client.facets.AuthenticationAware;
 import com.barchart.netty.client.facets.AuthenticationFacet;
 import com.barchart.netty.client.pipeline.AuthenticationHandler;
 import com.barchart.netty.client.transport.TransportProtocol;
+import com.barchart.netty.common.metadata.AuthenticationAware;
 
 /**
  * An authenticating Connectable proxy that authenticates a user with the host.

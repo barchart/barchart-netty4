@@ -2,7 +2,7 @@ package com.barchart.netty.client.pipeline;
 
 import io.netty.channel.ChannelHandler;
 
-import com.barchart.netty.client.facets.AuthenticationAware;
+import com.barchart.netty.common.metadata.AuthenticationAware;
 
 /**
  * Superclass for pluggable authentication handlers.

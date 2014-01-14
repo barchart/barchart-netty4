@@ -8,15 +8,15 @@ import rx.util.functions.Action1;
 import com.barchart.netty.client.Connectable;
 import com.barchart.netty.client.base.ConnectableBase;
 import com.barchart.netty.client.base.ConnectableProxy;
-import com.barchart.netty.client.facets.AuthenticationAware;
-import com.barchart.netty.client.facets.AuthenticationAware.AuthState;
 import com.barchart.netty.client.facets.AuthenticationFacet;
 import com.barchart.netty.client.facets.KeepaliveFacet;
-import com.barchart.netty.client.facets.LatencyAware;
-import com.barchart.netty.client.facets.SecureAware;
 import com.barchart.netty.client.facets.SecureFacet;
 import com.barchart.netty.client.policy.ReconnectPolicy;
 import com.barchart.netty.client.transport.TransportProtocol;
+import com.barchart.netty.common.metadata.AuthenticationAware;
+import com.barchart.netty.common.metadata.LatencyAware;
+import com.barchart.netty.common.metadata.SecureAware;
+import com.barchart.netty.common.metadata.AuthenticationAware.AuthState;
 
 /**
  * Example of ExampleClient if it was implemented as a dynamic proxy.

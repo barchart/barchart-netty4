@@ -1,4 +1,4 @@
-package com.barchart.netty.client.facets;
+package com.barchart.netty.common.metadata;
 
 /**
  * Latency and clock skew monitoring for a Connectable.

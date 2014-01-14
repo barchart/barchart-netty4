@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.barchart.netty.client.Connectable;
 import com.barchart.netty.client.facets.KeepaliveFacet;
-import com.barchart.netty.client.facets.LatencyAware;
 import com.barchart.netty.client.transport.TransportProtocol;
+import com.barchart.netty.common.metadata.LatencyAware;
 
 /**
  * A Connectable client that provides heartbeat functionality both for keeping

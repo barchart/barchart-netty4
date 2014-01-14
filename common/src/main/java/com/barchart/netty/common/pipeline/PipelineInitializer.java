@@ -1,4 +1,4 @@
-package com.barchart.netty.common;
+package com.barchart.netty.common.pipeline;
 
 import io.netty.channel.ChannelPipeline;
 
