@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.base</groupId>
+		<artifactId>barchart-archon</artifactId>
+		<version>2.6.1</version>
+	</parent>
+
+	<groupId>com.barchart.netty</groupId>
+	<artifactId>barchart-netty-rest-server</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<scm>
+		<url>https://github.com/barchart/barchart-netty4</url>
+		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
+		<tag>master</tag>
+	</scm>
+
+	<dependencies>
+
+		<!-- Dependencies -->
+		
+		<dependency>
+			<groupId>com.barchart.netty</groupId>
+			<artifactId>barchart-netty-server</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+			
+		<dependency>
+			<groupId>com.barchart.util</groupId>
+			<artifactId>barchart-util-common</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.barchart.store</groupId>
+			<artifactId>store-heap</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.barchart.util</groupId>
+			<artifactId>barchart-util-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.barchart.wrap</groupId>
+			<artifactId>barchart-wrap-apache-http-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+	
+	<build>
+	
+		<plugins>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		
+		</plugins>
+		
+	</build>
+  
+</project>
