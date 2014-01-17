@@ -95,9 +95,11 @@ public class HttpServer extends AbstractStatefulServer<HttpServer> {
 	@Override
 	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
 
-		pipeline.addLast( //
-				new HttpResponseEncoder(), //
-				new ChunkedWriteHandler());
+		pipeline.addLast(new HttpResponseEncoder());
+
+		if (chunked) {
+			pipeline.addLast(new ChunkedWriteHandler());
+		}
 
 		if (clientTracker != null) {
 			pipeline.addLast(clientTracker);

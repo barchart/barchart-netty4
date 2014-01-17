@@ -1,4 +1,6 @@
-package com.barchart.netty.common.pipeline;
+package com.barchart.netty.server.http.websocket;
+
+import com.barchart.netty.common.pipeline.PipelineInitializer;
 
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
