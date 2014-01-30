@@ -7,13 +7,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.barchart.netty.rest.server.Router;
-import com.barchart.netty.rest.server.Router.URLPattern;
-
 public class TestRouter {
 
 	@Test
-	public void testFlat() {
+	public void testFlat() throws Exception {
 
 		final TestHandler root = new TestHandler("root");
 		final TestHandler account = new TestHandler("account");
@@ -21,38 +18,34 @@ public class TestRouter {
 		final TestHandler prefix = new TestHandler("prefix");
 		final TestHandler permission = new TestHandler("permission");
 
-		final Router router = new Router().add(null, root) //
+		final Router router = new Router().add("/", root) //
 				.add("/{id}", account) //
 				.add("/{id}/permissions", permissions) //
 				.add("/{id}/permissions/{prefix}", prefix) //
 				.add("/{id}/permission/{token}", permission);
 
-		assertEquals(root, router.match("/").handler());
-		assertEquals(account, router.match("/1234").handler());
-		assertEquals(account, router.match("/acds").handler());
-		assertEquals(account, router.match("/acds/").handler());
-		assertEquals(account, router.match("/acds/x").handler());
-		assertEquals(permissions, router.match("/1234/permissions").handler());
-		assertEquals(prefix, router
-				.match("/1234/permissions/com.barchart.feed").handler());
-		assertEquals(
-				permission,
-				router.match(
-						"/1234/permission/com.barchart.feed.stream.symbols")
-						.handler());
+		assertEquals(root, router.route(new TestRequest(null, "/", null)).handler);
+		assertEquals(account, router.route(new TestRequest(null, "/1234", null)).handler);
+		assertEquals(account, router.route(new TestRequest(null, "/acds", null)).handler);
+		assertEquals(account, router.route(new TestRequest(null, "/acds/", null)).handler);
+		assertEquals(account, router.route(new TestRequest(null, "/acds/x", null)).handler);
+		assertEquals(permissions, router.route(new TestRequest(null, "/1234/permissions", null)).handler);
+		assertEquals(prefix, router.route(new TestRequest(null, "/1234/permissions/com.barchart.feed", null)).handler);
+		assertEquals(permission,
+				router.route(new TestRequest(null, "/1234/permission/com.barchart.feed.stream.symbols", null)).handler);
 
 	}
 
 	@Test
-	public void testNested() {
+	public void testNested() throws Exception {
 
 		final TestHandler account = new TestHandler("account");
 		final Router accounts = new Router().add("/{id}", account);
 
 		final Router root = new Router().add("/accounts", accounts);
 
-		assertEquals(accounts, root.match("/accounts/1234").handler());
-		assertEquals(account, accounts.match("/1234").handler());
+		assertEquals(accounts, root.route(new TestRequest(null, "/accounts/1234", null)).handler);
+		assertEquals(account, accounts.route(new TestRequest(null, "/1234", null)).handler);
 
 	}
 
@@ -143,10 +136,10 @@ public class TestRouter {
 	@Test
 	public void testKeyEquivalence() throws Exception {
 
-		final URLPattern u1 = new URLPattern("");
-		final URLPattern u2 = new URLPattern("/settings");
-		final URLPattern u3 = new URLPattern("/profiles");
-		final URLPattern u4 = new URLPattern("/settings");
+		final RestEndpoint u1 = new RestEndpoint("");
+		final RestEndpoint u2 = new RestEndpoint("/settings");
+		final RestEndpoint u3 = new RestEndpoint("/profiles");
+		final RestEndpoint u4 = new RestEndpoint("/settings");
 
 		assertEquals(u1, u1);
 		assertEquals(u2, u2);

@@ -23,27 +23,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Base handler for REST request processing. Subclasses should override the HTTP
  * methods that they support (get(), post(), put(), delete()).
  */
-public class RestHandlerBase extends RequestHandlerBase {
+public class RestHandlerBase extends RequestHandlerBase implements RestHandler {
 
 	private static final ObjectMapper mapper = new ObjectMapper();
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
+	@Override
 	public void get(final HttpServerRequest request) throws IOException {
 		complete(request.response(), HttpResponseStatus.METHOD_NOT_ALLOWED,
 				"GET not implemented");
 	}
 
+	@Override
 	public void post(final HttpServerRequest request) throws IOException {
 		complete(request.response(), HttpResponseStatus.METHOD_NOT_ALLOWED,
 				"POST not implemented");
 	}
 
+	@Override
 	public void put(final HttpServerRequest request) throws IOException {
 		complete(request.response(), HttpResponseStatus.METHOD_NOT_ALLOWED,
 				"PUT not implemented");
 	}
 
+	@Override
 	public void delete(final HttpServerRequest request) throws IOException {
 		complete(request.response(), HttpResponseStatus.METHOD_NOT_ALLOWED,
 				"DELETE not implemented");
@@ -78,7 +82,7 @@ public class RestHandlerBase extends RequestHandlerBase {
 	/**
 	 * Verify that the specified parameters are provided in the request. If they
 	 * are missing, send an error response.
-	 * 
+	 *
 	 * @param params The list of required parameters
 	 * @return True if parameters exist, false if an error response was sent
 	 */
@@ -144,7 +148,7 @@ public class RestHandlerBase extends RequestHandlerBase {
 	 * Utility observer class that outputs a "200 OK" status and message when
 	 * onComplete() is called and finishes the response. If onError() is called,
 	 * a 500 status is returned.
-	 * 
+	 *
 	 * @param <T> The callback type
 	 */
 	protected static class BasicResponder<T> implements Observer<T> {
@@ -214,7 +218,7 @@ public class RestHandlerBase extends RequestHandlerBase {
 	 * Utility observer class that outputs any data received from an Observable
 	 * as a serialized JSON object (or list of objects). If onError() is called,
 	 * a 500 status is returned.
-	 * 
+	 *
 	 * @param <T> The callback type
 	 */
 	protected static class JsonResponder<T> extends BasicResponder<T> {
