@@ -33,9 +33,10 @@ Layout Project.
 		<module>rest/server</module>
 		<module>rest/client</module>
 
-		<!-- Deprecated -->
+		<!-- Deprecated 
 		<module>api</module>
 		<module>core</module>
+		-->
 
 	</modules>
 
