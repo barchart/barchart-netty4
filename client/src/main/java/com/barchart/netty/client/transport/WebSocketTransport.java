@@ -66,7 +66,11 @@ public class WebSocketTransport implements TransportProtocol {
 
 		pipeline.addFirst(new HttpClientCodec(), //
 				new HttpObjectAggregator(65536), //
-				wsHandler);
+				wsHandler,
+				// Fires channelActive() after handshake and removes self
+				new WebSocketConnectedNotifier(),
+				// BinaryWebSocketFrame <-> ByteBuf codec before user codecs
+				new WebSocketBinaryCodec());
 
 		if (uri.getScheme().equalsIgnoreCase("wss")
 				&& pipeline.get(SslHandler.class) == null) {
@@ -77,12 +81,6 @@ public class WebSocketTransport implements TransportProtocol {
 			pipeline.addFirst("ssl", new SslHandler(sslEngine));
 
 		}
-
-		// Fires channelActive() after handshake and removes self
-		pipeline.addLast(new WebSocketConnectedNotifier());
-
-		// BinaryWebSocketFrame <-> ByteBuf codec before user codecs
-		pipeline.addLast(new WebSocketBinaryCodec());
 
 	}
 
