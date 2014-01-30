@@ -12,9 +12,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
@@ -56,8 +56,8 @@ public class HttpServer extends AbstractStatefulServer<HttpServer> {
 			new ConcurrentSkipListMap<String, HandlerFactory<RequestHandler>>(
 					new ReverseLengthComparator());
 
-	private final Map<String, HandlerFactory<ChannelInboundHandler>> webSocketHandlers =
-			new ConcurrentHashMap<String, HandlerFactory<ChannelInboundHandler>>();
+	private final Map<String, HandlerFactory<? extends ChannelHandler>> webSocketHandlers =
+			new ConcurrentHashMap<String, HandlerFactory<? extends ChannelHandler>>();
 
 	protected int maxConnections = -1;
 	protected int maxRequestSize = 1024 * 1024;
@@ -169,21 +169,21 @@ public class HttpServer extends AbstractStatefulServer<HttpServer> {
 	 * path segments, so you should avoid overlapping handler prefixes when
 	 * possible. For more complex handler routing using URL pattern matching see
 	 * com.barchart.rest.Router.
-	 * 
+	 *
 	 * Assuming two request handlers defined as:
-	 * 
+	 *
 	 * <pre>
 	 * requestHandler("/service", serviceHandler);
 	 * requestHandler("/service/info", infoHandler);
 	 * </pre>
-	 * 
+	 *
 	 * A request to "/service/info/10" will go to infoHandler, but a request to
 	 * "/service/something/else" will go to serviceHandler.
-	 * 
+	 *
 	 * Inside the handler, ServerRequest.getPathInfo() will return the URL path
 	 * portion that comes *after* the matched handler prefix. So, in the case of
 	 * the examples above, getPathInfo() would return:
-	 * 
+	 *
 	 * <pre>
 	 * /service/info/10: "/10"
 	 * /service/something/else: "/something/else"
@@ -200,7 +200,7 @@ public class HttpServer extends AbstractStatefulServer<HttpServer> {
 	 * {@link HttpServer#requestHandler(String, RequestHandler)}, but allows
 	 * greater control over the handler lifecycle for use cases like
 	 * handler-per-connection or object pooling.
-	 * 
+	 *
 	 * @see HttpServer#requestHandler(String, RequestHandler)
 	 */
 	public HttpServer requestHandler(final String prefix,
@@ -213,9 +213,9 @@ public class HttpServer extends AbstractStatefulServer<HttpServer> {
 	 * Add a websocket handler for the given prefix.
 	 */
 	public HttpServer webSocketHandler(final String prefix,
-			final ChannelInboundHandler handler) {
+			final ChannelHandler handler) {
 		webSocketHandlers.put(prefix,
-				new SingleHandlerFactory<ChannelInboundHandler>(handler));
+				new SingleHandlerFactory<ChannelHandler>(handler));
 		return this;
 	}
 
@@ -223,7 +223,7 @@ public class HttpServer extends AbstractStatefulServer<HttpServer> {
 	 * Add a websocket handler factory for the given prefix.
 	 */
 	public HttpServer webSocketHandler(final String prefix,
-			final HandlerFactory<ChannelInboundHandler> factory) {
+			final HandlerFactory<? extends ChannelHandler> factory) {
 		webSocketHandlers.put(prefix, factory);
 		return this;
 	}
@@ -283,7 +283,7 @@ public class HttpServer extends AbstractStatefulServer<HttpServer> {
 	/**
 	 * Get the websocket handler mapping for the specified URI.
 	 */
-	public HandlerFactory<ChannelInboundHandler> webSocketFactory(
+	public HandlerFactory<? extends ChannelHandler> webSocketFactory(
 			final String uri) {
 
 		if (webSocketHandlers.containsKey(uri)) {
@@ -294,11 +294,11 @@ public class HttpServer extends AbstractStatefulServer<HttpServer> {
 
 	}
 
-	public Object removeRequestHandler(final String path) {
+	public HandlerFactory<RequestHandler> removeRequestHandler(final String path) {
 		return handlers.remove(path);
 	}
 
-	public Object removeWebSocketHandler(final String path) {
+	public HandlerFactory<? extends ChannelHandler> removeWebSocketHandler(final String path) {
 		return webSocketHandlers.remove(path);
 	}
 
@@ -346,16 +346,16 @@ public class HttpServer extends AbstractStatefulServer<HttpServer> {
 	}
 
 	/**
-	 * 
+	 *
 	 * Sorts strings by reverse length first, then normal comparison. For
 	 * example:
-	 * 
+	 *
 	 * 2 handlers defined as requestHandler("/service", serviceHandler);
 	 * requestHandler("/service/info", infoHandler);
-	 * 
+	 *
 	 * A request to "/service/info/10" will go to infoHandler, but a request to
 	 * "/service/something/else" will go to serviceHandler.
-	 * 
+	 *
 	 */
 	private class ReverseLengthComparator implements Comparator<String> {
 

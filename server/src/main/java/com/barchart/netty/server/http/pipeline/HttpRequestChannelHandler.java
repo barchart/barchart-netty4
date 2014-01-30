@@ -10,9 +10,9 @@ package com.barchart.netty.server.http.pipeline;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -59,7 +59,7 @@ public class HttpRequestChannelHandler extends
 			final FullHttpRequest msg) throws Exception {
 
 		// Check if this path is a websocket
-		final HandlerFactory<ChannelInboundHandler> factory =
+		final HandlerFactory<? extends ChannelHandler> factory =
 				server.webSocketFactory(msg.getUri());
 
 		if (factory != null) {
@@ -137,7 +137,7 @@ public class HttpRequestChannelHandler extends
 
 	private void startWebSocket(final ChannelHandlerContext ctx,
 			final FullHttpRequest msg,
-			final HandlerFactory<ChannelInboundHandler> factory)
+			final HandlerFactory<? extends ChannelHandler> factory)
 			throws Exception {
 
 		// Websocket handshaker / decoder
