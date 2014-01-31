@@ -18,6 +18,7 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpHeaders.Names;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
@@ -25,14 +26,14 @@ import io.netty.util.AttributeKey;
 
 import java.io.IOException;
 
+import com.barchart.netty.common.pipeline.WebSocketBinaryCodec;
+import com.barchart.netty.common.pipeline.WebSocketConnectedNotifier;
 import com.barchart.netty.server.HandlerFactory;
 import com.barchart.netty.server.http.HttpServer;
 import com.barchart.netty.server.http.error.ServerException;
 import com.barchart.netty.server.http.error.ServerTooBusyException;
 import com.barchart.netty.server.http.request.HandlerMapping;
 import com.barchart.netty.server.http.request.RequestHandler;
-import com.barchart.netty.server.http.websocket.WebSocketFramePacker;
-import com.barchart.netty.server.http.websocket.WebSocketFrameUnpacker;
 
 /**
  * Netty channel handler for routing inbound requests to the proper
@@ -58,14 +59,29 @@ public class HttpRequestChannelHandler extends
 	public void channelRead0(final ChannelHandlerContext ctx,
 			final FullHttpRequest msg) throws Exception {
 
-		// Check if this path is a websocket
-		final HandlerFactory<? extends ChannelHandler> factory =
-				server.webSocketFactory(msg.getUri());
+		if (msg.headers().contains(Names.UPGRADE)) {
 
-		if (factory != null) {
-			startWebSocket(ctx, msg, factory);
-			return;
+			if ("websocket".equals(msg.headers().get(Names.UPGRADE))) {
+
+				handleWebSocket(ctx, msg);
+
+			} else {
+
+				sendServerError(ctx, new ServerException(HttpResponseStatus.NOT_IMPLEMENTED,
+						"Unsupported protocol upgrade request"));
+
+			}
+
+		} else {
+
+			handleRequest(ctx, msg);
+
 		}
+
+	}
+
+	private void handleRequest(final ChannelHandlerContext ctx,
+			final FullHttpRequest msg) throws Exception {
 
 		// Find request handler
 		final HandlerMapping<RequestHandler> mapping =
@@ -135,27 +151,40 @@ public class HttpRequestChannelHandler extends
 
 	}
 
-	private void startWebSocket(final ChannelHandlerContext ctx,
-			final FullHttpRequest msg,
-			final HandlerFactory<? extends ChannelHandler> factory)
-			throws Exception {
+	private void handleWebSocket(final ChannelHandlerContext ctx, final FullHttpRequest msg) throws Exception {
 
-		// Websocket handshaker / decoder
-		ctx.pipeline()
-				.addLast(new WebSocketServerProtocolHandler(msg.getUri()));
+		// Check if this path is a websocket
+		final HandlerFactory<? extends ChannelHandler> factory =
+				server.webSocketFactory(msg.getUri());
 
-		// Pack/unpack binary frames to ByteBuf
-		ctx.pipeline().addLast(new WebSocketFramePacker(),
-				new WebSocketFrameUnpacker());
+		if (factory == null) {
 
-		// Handlers should add any codecs they need to the pipeline using their
-		// handlerAdded() method.
-		ctx.pipeline().addLast(factory.newHandler());
+			sendServerError(ctx, new ServerException(HttpResponseStatus.NOT_IMPLEMENTED,
+					"Websocket upgrade not available at this path"));
 
-		ctx.fireChannelRead(msg);
+		} else {
 
-		// Remove self from pipeline, no need to process further HTTP messages
-		ctx.pipeline().remove(this);
+			// TODO log request
+			// server.logger().access(request, 0);
+
+			ctx.pipeline().addLast(
+					// Handshaker
+					new WebSocketServerProtocolHandler(msg.getUri()),
+					// Fires channelActive() after handshake and removes self
+					new WebSocketConnectedNotifier(),
+					// BinaryWebSocketFrame <-> ByteBuf codec before user codecs
+					new WebSocketBinaryCodec(),
+					// Handlers should add any other codecs they need to the
+					// pipeline using their handlerAdded() method.
+					factory.newHandler());
+
+			// Relay handshake to websocket handler
+			ctx.fireChannelRead(msg);
+
+			// Remove self from pipeline
+			ctx.pipeline().remove(this);
+
+		}
 
 	}
 
@@ -163,6 +192,9 @@ public class HttpRequestChannelHandler extends
 			final ServerException cause) throws Exception {
 
 		if (ctx.channel().isActive()) {
+
+			// TODO log error
+			// server.logger().error(request, cause);
 
 			final ByteBuf content = Unpooled.buffer();
 

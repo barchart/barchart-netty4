@@ -1,16 +1,11 @@
 package com.barchart.netty.client.transport;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
@@ -20,10 +15,12 @@ import io.netty.handler.ssl.SslHandler;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URI;
-import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
+
+import com.barchart.netty.common.pipeline.WebSocketBinaryCodec;
+import com.barchart.netty.common.pipeline.WebSocketConnectedNotifier;
 
 /**
  * Websocket streaming transport. Automatically upgrades the HTTP connection to
@@ -80,54 +77,6 @@ public class WebSocketTransport implements TransportProtocol {
 			sslEngine.setUseClientMode(true);
 			pipeline.addFirst("ssl", new SslHandler(sslEngine));
 
-		}
-
-	}
-
-	private class WebSocketConnectedNotifier extends
-			ChannelInboundHandlerAdapter {
-
-		@Override
-		public void userEventTriggered(final ChannelHandlerContext ctx,
-				final Object evt) throws Exception {
-
-			if (evt == WebSocketClientProtocolHandler.ClientHandshakeStateEvent.HANDSHAKE_COMPLETE) {
-
-				ctx.fireChannelActive();
-
-				ctx.pipeline().remove(this);
-
-			}
-
-		}
-
-		@Override
-		public void channelActive(final ChannelHandlerContext ctx)
-				throws Exception {
-			// Block downstream relay until handshake completes
-		}
-
-	}
-
-	private class WebSocketBinaryCodec extends
-			MessageToMessageCodec<BinaryWebSocketFrame, ByteBuf> {
-
-		public WebSocketBinaryCodec() {
-			super(BinaryWebSocketFrame.class, ByteBuf.class);
-		}
-
-		@Override
-		protected void encode(final ChannelHandlerContext ctx,
-				final ByteBuf msg, final List<Object> out) throws Exception {
-			out.add(new BinaryWebSocketFrame(msg));
-		}
-
-		@Override
-		protected void decode(final ChannelHandlerContext ctx,
-				final BinaryWebSocketFrame msg, final List<Object> out)
-				throws Exception {
-			msg.retain();
-			out.add(msg.content());
 		}
 
 	}
