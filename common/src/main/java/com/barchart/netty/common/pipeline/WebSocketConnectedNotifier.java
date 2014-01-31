@@ -3,6 +3,7 @@ package com.barchart.netty.common.pipeline;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 
 /**
  * Blocks downstream channelActive() notifications until a websocket handshake
@@ -15,7 +16,8 @@ public class WebSocketConnectedNotifier extends
 	public void userEventTriggered(final ChannelHandlerContext ctx,
 			final Object evt) throws Exception {
 
-		if (evt == WebSocketClientProtocolHandler.ClientHandshakeStateEvent.HANDSHAKE_COMPLETE) {
+		if (evt == WebSocketClientProtocolHandler.ClientHandshakeStateEvent.HANDSHAKE_COMPLETE ||
+				evt == WebSocketServerProtocolHandler.ServerHandshakeStateEvent.HANDSHAKE_COMPLETE) {
 
 			ctx.fireChannelActive();
 
