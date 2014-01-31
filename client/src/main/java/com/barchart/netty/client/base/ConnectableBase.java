@@ -58,7 +58,7 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 
 		/**
 		 * Set the remote host address to connect to.
-		 * 
+		 *
 		 * @see com.barchart.netty.client.transport.TransportFactory#create(URI)
 		 */
 		@SuppressWarnings("unchecked")
@@ -156,7 +156,7 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 	/**
 	 * Create a new Connectable client. This method is intended to be called by
 	 * subclass Builder implementations.
-	 * 
+	 *
 	 * @param eventLoop_ The Netty EventLoopGroup to use for transport
 	 *            operations
 	 * @param address_ The remote peer address
@@ -282,7 +282,7 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 	/**
 	 * Send a message to the connected peer. The message type must be supported
 	 * by the internal Netty pipeline.
-	 * 
+	 *
 	 * @param message An object to encode and send to the remote peer
 	 */
 	protected <U> Observable<U> send(final U message) {
@@ -298,15 +298,15 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 
 	/**
 	 * Receive messages of a specific type from the connected peer.
-	 * 
+	 *
 	 * The message type must be supported by the internal Netty pipeline.
 	 * Channel handlers to decode different message types should be provided by
 	 * the subclass by overriding the initPipeline() method, otherwise the only
 	 * message type available will be ByteBuf.class.
-	 * 
+	 *
 	 * This method is not thread-safe. It if is called at the same time as a
 	 * connect() attempt the message handler may fail to register.
-	 * 
+	 *
 	 * @param type The message type
 	 */
 	@SuppressWarnings("unchecked")

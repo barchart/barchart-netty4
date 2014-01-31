@@ -2,6 +2,7 @@ package com.barchart.netty.client.facets;
 
 import io.netty.channel.ChannelPipeline;
 
+import com.barchart.netty.client.pipeline.CapabilitiesRequest;
 import com.barchart.netty.client.pipeline.SecureFlowHandler;
 import com.barchart.netty.common.metadata.SecureAware;
 
@@ -44,7 +45,12 @@ public class SecureFacet implements ConnectableFacet<SecureAware>, SecureAware {
 		}
 
 		if (handler != null) {
+
+			if (pipeline.get(CapabilitiesRequest.class) == null)
+				pipeline.addLast(new CapabilitiesRequest());
+
 			pipeline.addLast(handler);
+
 		}
 
 	}

@@ -5,6 +5,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import com.barchart.netty.client.pipeline.AuthenticationHandler;
+import com.barchart.netty.client.pipeline.CapabilitiesRequest;
 import com.barchart.netty.common.metadata.AuthenticationAware;
 
 /**
@@ -14,7 +15,7 @@ import com.barchart.netty.common.metadata.AuthenticationAware;
  * class for writing authentication handlers in order to block downstream
  * handlers from receiving channelActive() events until authentication is
  * complete.
- * 
+ *
  * @param <A> The account object type
  */
 // Can't return a parameterized class object so need to make it the base type
@@ -42,6 +43,9 @@ public class AuthenticationFacet<A> implements
 
 	@Override
 	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
+
+		if (pipeline.get(CapabilitiesRequest.class) == null)
+			pipeline.addLast(new CapabilitiesRequest());
 
 		authenticator = builder.build();
 		authenticator.authStateChanges().subscribe(stateRelay);

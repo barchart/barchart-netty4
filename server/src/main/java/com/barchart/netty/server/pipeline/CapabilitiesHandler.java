@@ -1,7 +1,7 @@
 package com.barchart.netty.server.pipeline;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,7 +18,7 @@ import com.barchart.netty.common.metadata.VersionAware;
  * on connect.
  */
 public class CapabilitiesHandler extends
-		SimpleChannelInboundHandler<VersionRequest> implements VersionAware {
+		ChannelInboundHandlerAdapter implements VersionAware {
 
 	private final Version version;
 	private final Version minVersion;
@@ -36,60 +36,16 @@ public class CapabilitiesHandler extends
 	}
 
 	@Override
-	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
+	public void channelRead(final ChannelHandlerContext ctx,
+			final Object msg) throws Exception {
 
-		ctx.writeAndFlush(new Capabilities() {
+		if (msg instanceof Capabilities) {
 
-			@Override
-			public Set<String> capabilities() {
-				return capabilities;
-			}
-
-			@Override
-			public Version version() {
-				return version;
-			}
-
-			@Override
-			public Version minVersion() {
-				return minVersion;
-			}
-
-		});
-
-	}
-
-	@Override
-	protected void channelRead0(final ChannelHandlerContext ctx,
-			final VersionRequest request) throws Exception {
-
-		final Version v = request.version();
-
-		if (minVersion.lessThanOrEqual(v) && version.greaterThanOrEqual(v)) {
-
-			activeVersion = v;
-
-			ctx.writeAndFlush(new VersionResponse() {
+			ctx.writeAndFlush(new Capabilities() {
 
 				@Override
-				public boolean success() {
-					return true;
-				}
-
-				@Override
-				public Version version() {
-					return v;
-				}
-
-			});
-
-		} else {
-
-			ctx.writeAndFlush(new VersionResponse() {
-
-				@Override
-				public boolean success() {
-					return false;
+				public Set<String> capabilities() {
+					return capabilities;
 				}
 
 				@Override
@@ -97,7 +53,58 @@ public class CapabilitiesHandler extends
 					return version;
 				}
 
+				@Override
+				public Version minVersion() {
+					return minVersion;
+				}
+
 			});
+
+		} else if (msg instanceof VersionRequest) {
+
+			final VersionRequest request = (VersionRequest) msg;
+
+			final Version v = request.version();
+
+			if (minVersion.lessThanOrEqual(v) && version.greaterThanOrEqual(v)) {
+
+				activeVersion = v;
+
+				ctx.writeAndFlush(new VersionResponse() {
+
+					@Override
+					public boolean success() {
+						return true;
+					}
+
+					@Override
+					public Version version() {
+						return v;
+					}
+
+				});
+
+			} else {
+
+				ctx.writeAndFlush(new VersionResponse() {
+
+					@Override
+					public boolean success() {
+						return false;
+					}
+
+					@Override
+					public Version version() {
+						return version;
+					}
+
+				});
+
+			}
+
+		} else {
+
+			ctx.fireChannelRead(msg);
 
 		}
 

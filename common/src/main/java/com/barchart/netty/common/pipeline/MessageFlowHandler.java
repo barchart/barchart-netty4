@@ -21,15 +21,15 @@ import com.barchart.util.flow.api.State;
  * interactions with the remote host on connect (negotiating encryption,
  * websocket handshaking, authentication, etc) while blocking downstream
  * handlers from sending and receiving messages that may interrupt the process.
- * 
+ *
  * If this handler is blocking, once the state machine is finished, the handler
  * unblocks the channel and removes itself from the pipeline to allow messages
  * to flow freely between the remote host and downstream handlers. Any messages
  * sent by downstream handlers while the Flow machine is running are queued and
  * flushed once all state machines are complete.
- * 
+ *
  * Simple implementation example:
- * 
+ *
  * <pre>
  * public class TestFlow extends MessageFlowHandler<MyEvent, MyState>() {
  *
@@ -43,10 +43,10 @@ import com.barchart.util.flow.api.State;
  *        builder.listener(new OnError());
  *        builder.at(MyState.COMPLETE).listener(new OnComplete());
  *        builder.at(MyState.FAILED).listener(new OnFailed());
- *              
+ *
  *        builder.at(MyState.START).on(MyEvent.PASS).to(MyState.COMPLETE);
  *        builder.at(MyState.START).on(MyEvent.FAIL).to(MyState.FAILED);
- *      
+ *
  *        flow = builder.build();
  *
  *    }
@@ -69,7 +69,7 @@ import com.barchart.util.flow.api.State;
  *
  * }
  * </pre>
- * 
+ *
  * @see com.barchart.util.flow.Flow
  */
 public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends Enum<S> & State<S>>
@@ -91,7 +91,7 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 
 	/**
 	 * Construct a new Flow handler.
-	 * 
+	 *
 	 * @param block_ True to block downstream channel activation until the state
 	 *            machine completes.
 	 */
@@ -103,7 +103,7 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	 * Handle an inbound message, firing any events necessary on the current
 	 * context. If a received message is not allowed given the current state,
 	 * this method should throw an IllegalStateException.
-	 * 
+	 *
 	 * @param message The message
 	 * @return True if the message was consumed, false to pass downstream
 	 * @throw IllegalStateException If the message is not allowed given the
@@ -115,7 +115,7 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	/**
 	 * Must be called by subclass when the flow completes. The simplest way to
 	 * do this is usually by using the OnComplete() state listener in your Flow.
-	 * 
+	 *
 	 * @see OnComplete
 	 */
 	protected void complete(final ChannelHandlerContext ctx) throws Exception {
@@ -156,7 +156,7 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	 * exception on the ChannelHandlerContext and closes the channel. The
 	 * simplest way to do this is usually by using the OnError() and OnFailed()
 	 * state listeners in your Flow.
-	 * 
+	 *
 	 * @see OnError
 	 * @see OnFailed
 	 */
@@ -213,10 +213,10 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	/**
 	 * A state transition listener for uniform handling of transition errors.
 	 * When an error is raised, it calls MessageFlowHandler.error().
-	 * 
+	 *
 	 * It is recommended that all Flow instances use this as a global state
 	 * listener:
-	 * 
+	 *
 	 * builder.listener(new OnError());
 	 */
 	protected class OnError extends StateTransition {
@@ -243,10 +243,10 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	/**
 	 * A state transition listener that marks this handler as failed and calls
 	 * MessageFlowHandler.error().
-	 * 
+	 *
 	 * It is recommended that all Flow instances use this as a failed state
 	 * listener:
-	 * 
+	 *
 	 * builder.at(FAILED_STATE).listener(new OnFailed());
 	 */
 	protected class OnFailed extends StateTransition {
@@ -268,10 +268,10 @@ public abstract class MessageFlowHandler<E extends Enum<E> & Event<E>, S extends
 	/**
 	 * A state transition listener that marks this handler as complete and calls
 	 * MessageFlowHandler.complete().
-	 * 
+	 *
 	 * It is recommended that all Flow instances use this as a failed state
 	 * listener:
-	 * 
+	 *
 	 * builder.at(COMPLETE_STATE).listener(new OnComplete());
 	 */
 	protected class OnComplete extends StateTransition {

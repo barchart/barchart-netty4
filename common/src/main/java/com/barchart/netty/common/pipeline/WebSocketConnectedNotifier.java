@@ -5,12 +5,17 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Blocks downstream channelActive() notifications until a websocket handshake
  * completes.
  */
 public class WebSocketConnectedNotifier extends
 		ChannelInboundHandlerAdapter {
+
+	List<Object> messages = new ArrayList<Object>();
 
 	@Override
 	public void userEventTriggered(final ChannelHandlerContext ctx,
@@ -20,6 +25,11 @@ public class WebSocketConnectedNotifier extends
 				evt == WebSocketServerProtocolHandler.ServerHandshakeStateEvent.HANDSHAKE_COMPLETE) {
 
 			ctx.fireChannelActive();
+
+			for (final Object msg : messages)
+				ctx.fireChannelRead(msg);
+
+			messages.clear();
 
 			ctx.pipeline().remove(this);
 
@@ -31,6 +41,14 @@ public class WebSocketConnectedNotifier extends
 	public void channelActive(final ChannelHandlerContext ctx)
 			throws Exception {
 		// Block downstream relay until handshake completes
+	}
+
+	@Override
+	public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
+		// Queue inbound messages; sometimes the first messages can arrive
+		// before the handshake complete event so downstream handlers haven't
+		// reacted to channelActive() yet
+		messages.add(msg);
 	}
 
 }
