@@ -1,4 +1,4 @@
-package com.barchart.rest.client;
+package com.barchart.netty.rest.client;
 
 import java.net.MalformedURLException;
 import java.net.URL;

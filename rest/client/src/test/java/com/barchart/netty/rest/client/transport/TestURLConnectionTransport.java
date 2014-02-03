@@ -1,4 +1,4 @@
-package com.barchart.rest.client.transport;
+package com.barchart.netty.rest.client.transport;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -12,13 +12,14 @@ import java.net.ServerSocket;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.barchart.netty.rest.client.RestRequest;
+import com.barchart.netty.rest.client.RestResponse;
+import com.barchart.netty.rest.client.RestRequest.Method;
+import com.barchart.netty.rest.client.transport.URLConnectionTransport;
 import com.barchart.netty.server.Servers;
 import com.barchart.netty.server.http.HttpServer;
 import com.barchart.netty.server.http.request.HttpServerRequest;
 import com.barchart.netty.server.http.request.RequestHandlerBase;
-import com.barchart.rest.client.RestRequest;
-import com.barchart.rest.client.RestRequest.Method;
-import com.barchart.rest.client.RestResponse;
 import com.barchart.util.test.concurrent.TestObserver;
 
 public class TestURLConnectionTransport {

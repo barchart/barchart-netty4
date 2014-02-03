@@ -1,4 +1,4 @@
-package com.barchart.rest.client;
+package com.barchart.netty.rest.client;
 
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;

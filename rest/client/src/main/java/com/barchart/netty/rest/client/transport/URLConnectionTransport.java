@@ -1,4 +1,4 @@
-package com.barchart.rest.client.transport;
+package com.barchart.netty.rest.client.transport;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,10 +17,10 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 
-import com.barchart.rest.client.RestRequest;
-import com.barchart.rest.client.RestRequest.Method;
-import com.barchart.rest.client.RestResponse;
-import com.barchart.rest.client.RestTransport;
+import com.barchart.netty.rest.client.RestRequest;
+import com.barchart.netty.rest.client.RestResponse;
+import com.barchart.netty.rest.client.RestTransport;
+import com.barchart.netty.rest.client.RestRequest.Method;
 
 public class URLConnectionTransport implements RestTransport {
 

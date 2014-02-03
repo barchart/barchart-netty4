@@ -1,4 +1,4 @@
-package com.barchart.rest.client.credentials;
+package com.barchart.netty.rest.client.credentials;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -7,8 +7,8 @@ import java.nio.charset.Charset;
 
 import javax.xml.bind.DatatypeConverter;
 
-import com.barchart.rest.client.Credentials;
-import com.barchart.rest.client.RestRequest;
+import com.barchart.netty.rest.client.Credentials;
+import com.barchart.netty.rest.client.RestRequest;
 
 public class UsernamePasswordCredentials implements Credentials {
 

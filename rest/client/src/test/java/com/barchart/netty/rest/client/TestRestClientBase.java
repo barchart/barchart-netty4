@@ -1,4 +1,4 @@
-package com.barchart.rest.client;
+package com.barchart.netty.rest.client;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -14,8 +14,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.barchart.netty.rest.client.RestClientBase;
+import com.barchart.netty.rest.client.RestRequest;
+import com.barchart.netty.rest.client.RestResponse;
+import com.barchart.netty.rest.client.RestRequest.Method;
 import com.barchart.netty.server.http.HttpServer;
-import com.barchart.rest.client.RestRequest.Method;
 import com.barchart.util.test.concurrent.TestObserver;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

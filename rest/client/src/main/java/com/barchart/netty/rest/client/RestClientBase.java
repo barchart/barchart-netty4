@@ -1,4 +1,4 @@
-package com.barchart.rest.client;
+package com.barchart.netty.rest.client;
 
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
@@ -15,8 +15,8 @@ import rx.Observable;
 import rx.Observer;
 import rx.util.functions.Func1;
 
-import com.barchart.rest.client.RestRequest.Method;
-import com.barchart.rest.client.transport.URLConnectionTransport;
+import com.barchart.netty.rest.client.RestRequest.Method;
+import com.barchart.netty.rest.client.transport.URLConnectionTransport;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
