@@ -25,6 +25,7 @@ public class WebSocketConnectedNotifier extends
 				evt == WebSocketServerProtocolHandler.ServerHandshakeStateEvent.HANDSHAKE_COMPLETE) {
 
 			ctx.fireChannelActive();
+			ctx.fireUserEventTriggered(evt);
 
 			for (final Object msg : messages)
 				ctx.fireChannelRead(msg);
@@ -32,6 +33,10 @@ public class WebSocketConnectedNotifier extends
 			messages.clear();
 
 			ctx.pipeline().remove(this);
+
+		} else {
+
+			ctx.fireUserEventTriggered(evt);
 
 		}
 

@@ -35,6 +35,39 @@ public class CapabilitiesHandler extends
 
 	}
 
+	/*
+	 * Server can't broadcast before client sends messages due to websocket bug:
+	 *
+	 * https://github.com/netty/netty/issues/2173
+	 */
+
+	// @Override
+	// public void channelActive(final ChannelHandlerContext ctx) throws
+	// Exception {
+	//
+	// ctx.writeAndFlush(new Capabilities() {
+	//
+	// @Override
+	// public Set<String> capabilities() {
+	// return capabilities;
+	// }
+	//
+	// @Override
+	// public Version version() {
+	// return version;
+	// }
+	//
+	// @Override
+	// public Version minVersion() {
+	// return minVersion;
+	// }
+	//
+	// });
+	//
+	// ctx.fireChannelActive();
+	//
+	// }
+
 	@Override
 	public void channelRead(final ChannelHandlerContext ctx,
 			final Object msg) throws Exception {

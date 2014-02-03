@@ -18,7 +18,8 @@ import com.barchart.netty.common.messages.Version;
 public class CapabilitiesRequest extends ChannelInboundHandlerAdapter {
 
 	@Override
-	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
+	public void channelActive(final ChannelHandlerContext ctx) throws
+			Exception {
 
 		ctx.writeAndFlush(new Capabilities() {
 
