@@ -375,11 +375,11 @@ public abstract class ConnectableBase<T extends Connectable<T>> implements
 		public void channelInactive(final ChannelHandlerContext ctx)
 				throws Exception {
 
-			changeState(Connectable.State.DISCONNECTED);
+			channel = null;
 
 			super.channelInactive(ctx);
 
-			channel = null;
+			changeState(Connectable.State.DISCONNECTED);
 
 		}
 
