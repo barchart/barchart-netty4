@@ -45,14 +45,12 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 	protected final ChannelGroup clientChannels = new DefaultChannelGroup(
 			GlobalEventExecutor.INSTANCE);
 
-	private final DefaultPromise<T> shutdownFuture = new DefaultPromise<T>(
-			GlobalEventExecutor.INSTANCE);
-
 	private final ServerShutdownListener shutdownListener =
 			new ServerShutdownListener();
 
 	private final ClientTracker clientTracker = new ClientTracker();
 
+	private DefaultPromise<T> shutdownFuture = null;
 	protected EventLoopGroup defaultGroup = new NioEventLoopGroup();
 	protected PipelineInitializer pipelineInit = null;
 	protected BootstrapInitializer<B> bootstrapInit = null;
@@ -85,6 +83,8 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 
 	@Override
 	public ChannelFuture listen(final SocketAddress address) {
+
+		shutdownFuture = new DefaultPromise<T>(GlobalEventExecutor.INSTANCE);
 
 		final ChannelFuture future = bootstrap().bind(address);
 
