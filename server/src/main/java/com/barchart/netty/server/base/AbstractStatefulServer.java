@@ -57,4 +57,11 @@ public abstract class AbstractStatefulServer<T extends AbstractStatefulServer<T>
 		return listen(new InetSocketAddress("0.0.0.0", port));
 	}
 
+	@Override
+	protected void shutdownEventLoop() {
+		if (childGroup != defaultGroup)
+			childGroup.shutdownGracefully();
+		super.shutdownEventLoop();
+	}
+
 }

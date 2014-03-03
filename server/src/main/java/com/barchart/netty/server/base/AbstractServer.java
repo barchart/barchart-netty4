@@ -129,6 +129,10 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 
 	}
 
+	protected void shutdownEventLoop() {
+		defaultGroup.shutdownGracefully();
+	}
+
 	@Override
 	public boolean running() {
 		return serverChannels.size() > 0;
@@ -198,6 +202,7 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 				throws Exception {
 			try {
 				future.get();
+				shutdownEventLoop();
 				shutdownFuture.setSuccess((T) AbstractServer.this);
 			} catch (final Throwable t) {
 				shutdownFuture.setFailure(t);
