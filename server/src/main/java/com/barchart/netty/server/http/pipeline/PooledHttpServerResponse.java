@@ -17,7 +17,7 @@ import io.netty.handler.codec.http.Cookie;
 import io.netty.handler.codec.http.DefaultCookie;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpContent;
-import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
@@ -57,6 +57,7 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 	private Writer writer;
 
 	private Charset charSet = CharsetUtil.UTF_8;
+	private int chunkSize = 0;
 
 	private boolean started = false;
 	private boolean finished = false;
@@ -84,6 +85,7 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 		keepaliveHelper = keepaliveHelper_;
 
 		charSet = CharsetUtil.UTF_8;
+		chunkSize = 0;
 
 		finished = false;
 		started = false;
@@ -152,24 +154,24 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 	}
 
 	@Override
-	public boolean isChunkedEncoding() {
-		return HttpHeaders.isTransferEncodingChunked(this);
+	public int getChunkSize() {
+		return chunkSize;
 	}
 
 	@Override
-	public void setChunkedEncoding(final boolean chunked) {
+	public void setChunkSize(final int size) {
 
-		if (chunked != isChunkedEncoding()) {
+		if (chunkSize != size) {
 
-			if (chunked) {
+			chunkSize = size;
 
-				HttpHeaders.setTransferEncodingChunked(this);
-				out = new HttpChunkOutputStream(context);
+			if (chunkSize > 0) {
+
+				out = new HttpChunkOutputStream(context, chunkSize);
 				writer = new OutputStreamWriter(out, charSet);
 
 			} else {
 
-				HttpHeaders.removeTransferEncodingChunked(this);
 				out = new ByteBufOutputStream(content());
 				writer = new OutputStreamWriter(out, charSet);
 
@@ -221,26 +223,28 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 
 		checkFinished();
 
-		if (started) {
+		if (started)
 			throw new IllegalStateException("Response already started");
-		}
-
-		// Set headers
-		headers().set(HttpHeaders.Names.SET_COOKIE,
-				ServerCookieEncoder.encode(cookies));
-
-		if (!isChunkedEncoding()) {
-			setContentLength(content().readableBytes());
-		}
-
-		if (HttpHeaders.isKeepAlive(request)) {
-			headers().set(HttpHeaders.Names.CONNECTION,
-					HttpHeaders.Values.KEEP_ALIVE);
-		}
 
 		started = true;
 
-		return context.writeAndFlush(this);
+		// Set headers
+		headers().set(HttpHeaders.Names.SET_COOKIE, ServerCookieEncoder.encode(cookies));
+
+		if (HttpHeaders.isKeepAlive(request)) {
+			headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
+		}
+
+		if (chunkSize > 0) {
+			// Chunked, send initial response that is not a FullHttpResponse
+			final DefaultHttpResponse resp = new DefaultHttpResponse(getProtocolVersion(), getStatus());
+			resp.headers().add(headers());
+			HttpHeaders.setTransferEncodingChunked(resp);
+			return context.writeAndFlush(resp);
+		} else {
+			setContentLength(content().readableBytes());
+			return context.writeAndFlush(this);
+		}
 
 	}
 
@@ -255,12 +259,14 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 		// channel, don't cause unnecessary pipeline exceptions
 		if (context.channel().isOpen()) {
 
-			if (isChunkedEncoding()) {
+			if (chunkSize > 0) {
 
 				if (!started) {
 					log.debug("Warning, empty response");
 					startResponse();
 				}
+
+				out.flush();
 
 				writeFuture =
 						context.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
@@ -320,12 +326,15 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 	 */
 	private class HttpChunkOutputStream extends OutputStream {
 
-		private final ByteBuf content = Unpooled.buffer();
 		private final ChannelHandlerContext context;
+		private final int chunkSize;
+
+		private ByteBuf content = Unpooled.buffer();
 		private long writtenBytes = 0;
 
-		HttpChunkOutputStream(final ChannelHandlerContext context_) {
+		HttpChunkOutputStream(final ChannelHandlerContext context_, final int chunkSize_) {
 			context = context_;
+			chunkSize = chunkSize_;
 		}
 
 		/**
@@ -335,6 +344,32 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 		public void write(final int b) throws IOException {
 			content.writeByte(b);
 			writtenBytes++;
+			if (chunkSize > 0 && content.readableBytes() >= chunkSize)
+				flush();
+		}
+
+		@Override
+		public void write(final byte b[]) throws IOException {
+			write(b, 0, b.length);
+		}
+
+		@Override
+		public void write(final byte b[], final int off, final int len) throws IOException {
+
+			if (chunkSize > 0) {
+				final int avail = chunkSize - content.readableBytes();
+				if (len > avail) {
+					content.writeBytes(b, off, avail);
+					writtenBytes += avail;
+					flush();
+					write(b, off + avail, len - avail);
+					return;
+				}
+			}
+
+			content.writeBytes(b, off, len);
+			writtenBytes += len;
+
 		}
 
 		public long writtenBytes() {
@@ -344,12 +379,19 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 		@Override
 		public void flush() {
 
-			if (!started) {
+			if (!started)
 				startResponse();
+
+			if (content.readableBytes() > 0) {
+				context.writeAndFlush(new DefaultHttpContent(content));
+				content = Unpooled.buffer();
 			}
 
-			final HttpContent chunk = new DefaultHttpContent(content);
-			context.writeAndFlush(chunk);
+		}
+
+		@Override
+		public void close() {
+			throw new UnsupportedOperationException("Cannot close output stream directly, use response.finish()");
 		}
 
 	}

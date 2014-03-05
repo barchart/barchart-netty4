@@ -35,9 +35,12 @@ public interface HttpServerResponse extends HttpServerMessage, HttpResponse {
 	@Override
 	HttpServerResponse setProtocolVersion(HttpVersion version);
 
-	boolean isChunkedEncoding();
+	/**
+	 * Set the default chunk size. 0 disables chunked encoding (default).
+	 */
+	void setChunkSize(final int chunkSize);
 
-	void setChunkedEncoding(final boolean chunked);
+	int getChunkSize();
 
 	/**
 	 * Send a cookie to the client.
@@ -118,7 +121,7 @@ public interface HttpServerResponse extends HttpServerMessage, HttpResponse {
 	/**
 	 * Complete this response, and release any resources associated with it.
 	 * This must be called in every handler to avoid hung connections.
-	 * 
+	 *
 	 * If a handler throws an unchecked exception, it will be finished
 	 * automatically.
 	 */

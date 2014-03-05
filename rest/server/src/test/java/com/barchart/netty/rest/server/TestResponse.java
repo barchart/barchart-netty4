@@ -57,12 +57,12 @@ public class TestResponse implements HttpServerResponse {
 	}
 
 	@Override
-	public boolean isChunkedEncoding() {
-		return false;
+	public int getChunkSize() {
+		return 0;
 	}
 
 	@Override
-	public void setChunkedEncoding(final boolean chunked) {
+	public void setChunkSize(final int chunkSize) {
 
 	}
 

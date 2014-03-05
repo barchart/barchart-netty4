@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
  * Base REST client which hides all HTTP implementation details from the end
  * user and provides helper functions for subclasses to implement service
  * proxies.
- * 
+ *
  * @author jeremy
  */
 public abstract class RestClientBase implements RestClient {
@@ -206,7 +206,7 @@ public abstract class RestClientBase implements RestClient {
 	/**
 	 * JSON request that handles encoding an attachment as JSON in the request
 	 * body.
-	 * 
+	 *
 	 * @param <T> The object type
 	 */
 	protected class JsonRestRequest<T> extends RestRequest<T> {
@@ -235,7 +235,7 @@ public abstract class RestClientBase implements RestClient {
 	/**
 	 * A chain observer for decoding the binary JSON response from the transport
 	 * into an object.
-	 * 
+	 *
 	 * @param <T> The object type
 	 */
 	protected abstract class ResponseDecoder<T> implements
@@ -258,7 +258,7 @@ public abstract class RestClientBase implements RestClient {
 					try {
 						return decode(response.content());
 					} catch (final Exception e) {
-						// log.warn("Could not decode response", e);
+						log.warn("Could not decode response", e);
 						return null;
 					}
 				}
@@ -287,7 +287,7 @@ public abstract class RestClientBase implements RestClient {
 	/**
 	 * A chain observer for transforming the response content from one type to
 	 * another before passing on to the client observer.
-	 * 
+	 *
 	 * @param <S> The response content type
 	 * @param <T> The transformed object type
 	 */
@@ -314,7 +314,7 @@ public abstract class RestClientBase implements RestClient {
 	/**
 	 * A chain observer for unwrapping the RestResponse content and passing it
 	 * to an observer.
-	 * 
+	 *
 	 * @param <T> The response content type
 	 */
 	protected class ResponseUnwrapper<T, S extends T> extends
@@ -333,7 +333,7 @@ public abstract class RestClientBase implements RestClient {
 	/**
 	 * A chain observer for exploding a list of objects into separate
 	 * notifications.
-	 * 
+	 *
 	 * @param <T> The object type
 	 */
 	protected class ListUnwrapper<T, S extends T> extends

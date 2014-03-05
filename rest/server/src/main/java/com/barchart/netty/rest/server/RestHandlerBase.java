@@ -127,7 +127,7 @@ public class RestHandlerBase extends RequestHandlerBase implements RestHandler {
 			response.headers().set(HttpHeaders.Names.CONTENT_TYPE,
 					"application/json");
 			response.setStatus(HttpResponseStatus.OK);
-			response.write(mapper.writeValueAsBytes(value));
+			mapper.writeValue(response.getOutputStream(), value);
 		} catch (final JsonProcessingException jpe) {
 		} catch (final IOException ioe) {
 		} finally {

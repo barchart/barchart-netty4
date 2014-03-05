@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import io.netty.channel.nio.NioEventLoopGroup;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.util.Queue;
@@ -37,6 +38,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.barchart.netty.server.Servers;
+import com.barchart.netty.server.http.request.HttpServerRequest;
+import com.barchart.netty.server.http.request.RequestHandlerBase;
 
 public class TestHttpServer {
 
@@ -54,6 +57,8 @@ public class TestHttpServer {
 
 	private TestRequestHandler serviceHandler;
 	private TestRequestHandler infoHandler;
+
+	private ChunkedRequestHandler chunkedHandler;
 
 	@Before
 	public void setUp() throws Exception {
@@ -74,6 +79,8 @@ public class TestHttpServer {
 		serviceHandler =
 				new TestRequestHandler("service", false, 0, 0, false, false);
 
+		chunkedHandler = new ChunkedRequestHandler("chunked");
+
 		final ServerSocket s = new ServerSocket(0);
 		port = s.getLocalPort();
 		s.close();
@@ -88,6 +95,7 @@ public class TestHttpServer {
 						.requestHandler("/error", error)
 						.requestHandler("/service/info", infoHandler)
 						.requestHandler("/service", serviceHandler)
+						.requestHandler("/chunked", chunkedHandler)
 						.maxConnections(1);
 
 		server.listen(port, "localhost");
@@ -116,6 +124,22 @@ public class TestHttpServer {
 
 			assertEquals("basic", content);
 		}
+	}
+
+	@Test
+	public void testChunkedRequest() throws Exception {
+
+		for (int i = 0; i < 100; i++) {
+			final HttpGet get =
+					new HttpGet("http://localhost:" + port + "/chunked");
+			final HttpResponse response = client.execute(get);
+			final String content =
+					new BufferedReader(new InputStreamReader(response
+							.getEntity().getContent())).readLine().trim();
+
+			assertEquals("chunked", content);
+		}
+
 	}
 
 	@Test
@@ -361,6 +385,23 @@ public class TestHttpServer {
 		for (int i = 0; i < 10000; i++) {
 			testAsyncRequest();
 		}
+	}
+
+	private static class ChunkedRequestHandler extends RequestHandlerBase {
+
+		String data;
+
+		public ChunkedRequestHandler(final String data_) {
+			data = data_;
+		}
+
+		@Override
+		public void handle(final HttpServerRequest request) throws IOException {
+			request.response().setChunkSize(1);
+			request.response().write(data);
+			request.response().finish();
+		}
+
 	}
 
 }
