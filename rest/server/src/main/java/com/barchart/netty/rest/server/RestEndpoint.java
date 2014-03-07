@@ -12,23 +12,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Sorts URL patterns by number of path segments, whether or not they contain
- * embedded parameters, and by pattern length.
+ * Represents a REST endpoint path template. This allows encapsulating path
+ * parsing and generation into common endpoints shared by both client and
+ * server.
  *
- * Example: 2 handlers are defined as:
+ * And endpoint pattern consists of a URI path with optional name parameter
+ * placeholders.
  *
- * <pre>
- * add("/service", handler1);
- * add("/service/info", handler2);
- * add("/service/{id}", handler3);
- * </pre>
- *
- * Routing for the following request URIs would be:
+ * Example:
  *
  * <pre>
- * /service => handler1
- * /service/123 => handler 3 (dynamic parameters)
- * /service/info => handler2 (static URLs take priority over params)
+ * new RestEndpoint("/service");
+ * new RestEndpoint("/service/info");
+ * new RestEndpoint("/service/{id}");
+ * new RestEndpoint("/service/{id}/status");
  * </pre>
  */
 public class RestEndpoint implements Comparable<RestEndpoint> {
@@ -48,6 +45,39 @@ public class RestEndpoint implements Comparable<RestEndpoint> {
 	private final List<String> params;
 	private final boolean isStatic;
 
+	/**
+	 * Create a new REST endpoint.
+	 * 
+	 * URI templates are matched from the start of request URI. You can specify
+	 * named parameters in the URI pattern, which will be parsed out and added
+	 * to the ServerRequest.getParameters() values available to the REST
+	 * handler.
+	 * 
+	 * Trailing slashes are stripped when matching URIs, so the following
+	 * patterns are equivalent:
+	 * 
+	 * <pre>
+	 * /account/create
+	 * /account/create/
+	 * </pre>
+	 * 
+	 * Examples:
+	 * 
+	 * <pre>
+	 * new RestEndpoint("/account");
+	 * new RestEndpoint("/account/create");
+	 * new RestEndpoint("/account/{id}");
+	 * new RestEndpoint("/account/{id}/orders");
+	 * new RestEndpoint("/account/{id}/orders/{order}");
+	 * </pre>
+	 * 
+	 * A request to "/account/1234" would match the third template, and a call
+	 * to parse() would return an "id" parameter equal to "1234".
+	 *
+	 * To match the root path, use "" or "/" as the pattern.
+	 * 
+	 * @param template_ The URI template to match
+	 */
 	public RestEndpoint(final String template_) {
 
 		template = template_;
@@ -91,7 +121,8 @@ public class RestEndpoint implements Comparable<RestEndpoint> {
 	}
 
 	/**
-	 * The named parameters parsed from this URI template.
+	 * The named parameters that are present in this URI template (automatically
+	 * parsed).
 	 */
 	public List<String> params() {
 		return params;
@@ -100,6 +131,18 @@ public class RestEndpoint implements Comparable<RestEndpoint> {
 	/**
 	 * Return a URI string for this endpoint by formatting it with the given
 	 * parameters.
+	 *
+	 * For example, for the following endpoint template:
+	 *
+	 * <code>/service/{id}/status</code>
+	 *
+	 * Calling:
+	 *
+	 * <code>endpoint.format(new HashMap() {{ put("id", "123"); }})</code>
+	 *
+	 * Will return a formatted URI path of:
+	 *
+	 * <code>/service/123/status</code>
 	 */
 	public String format(final Map<String, String> values) {
 
@@ -123,7 +166,7 @@ public class RestEndpoint implements Comparable<RestEndpoint> {
 	}
 
 	/**
-	 * Check if a URI matches this template.
+	 * Check if a request URI matches this endpoint template.
 	 *
 	 * @return True if the given URI matches this endpoint's template
 	 */
@@ -151,7 +194,8 @@ public class RestEndpoint implements Comparable<RestEndpoint> {
 	}
 
 	/**
-	 * Parse a URI against this endpoint's template.
+	 * Parse a URI against this endpoint's template. You should first verify a
+	 * URI with match() to avoid exceptions.
 	 *
 	 * @return A parsed representation of the URI, or null if it does not match
 	 * @throws ParseException If the URI could not be matched
@@ -194,6 +238,21 @@ public class RestEndpoint implements Comparable<RestEndpoint> {
 
 	}
 
+	/**
+	 * Compare to another RestEndpoint. Sort ordering follows the following
+	 * rules in the given order:
+	 *
+	 * 1. The endpoint with the most path segments comes first to ensure more
+	 * detailed URL templates get matched first
+	 *
+	 * 2. If the endpoints have the same number of segments, any endpoint
+	 * without named parameters comes first
+	 *
+	 * 3. If both endpoint have parameters (or don't), order based on pattern
+	 * length
+	 *
+	 * 4. If pattern lengths are the same, fallback to String.compareTo()
+	 */
 	@Override
 	public int compareTo(final RestEndpoint o) {
 

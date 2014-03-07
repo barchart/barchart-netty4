@@ -10,13 +10,23 @@ import com.barchart.netty.server.http.request.RequestHandlerBase;
  * Root module for REST services. Uses a Router internally for request
  * processing. Subclass to create independent OSGI-enabled service modules that
  * have multiple internal REST service endpoints.
- * 
+ *
  * @author jeremy
- * 
+ *
  */
 public class RestServiceBase extends RequestHandlerBase implements RestService {
 
 	private final Router router = new Router();
+
+	@Override
+	public void add(final RestEndpoint endpoint, final RequestHandler handler) {
+		router.add(endpoint, handler);
+	}
+
+	@Override
+	public void remove(final RestEndpoint endpoint) {
+		router.remove(endpoint);
+	}
 
 	@Override
 	public void add(final String pattern, final RequestHandler handler) {

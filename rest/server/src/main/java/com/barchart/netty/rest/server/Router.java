@@ -28,9 +28,9 @@ public class Router implements RequestHandler {
 	}
 
 	/**
-	 * Add a route to this Router. URI patterns must match the entire request
-	 * URI. You can specify named parameters in the URI pattern, which will be
-	 * parsed out and added to the ServerRequest.getParameters() values
+	 * Add a route to this Router. URI patterns must match from the start of
+	 * request URI. You can specify named parameters in the URI pattern, which
+	 * will be parsed out and added to the ServerRequest.getParameters() values
 	 * available to the REST handler.
 	 *
 	 * Trailing slashes are stripped when matching URIs, so the following
