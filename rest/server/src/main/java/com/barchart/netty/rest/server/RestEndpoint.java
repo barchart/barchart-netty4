@@ -47,22 +47,22 @@ public class RestEndpoint implements Comparable<RestEndpoint> {
 
 	/**
 	 * Create a new REST endpoint.
-	 * 
+	 *
 	 * URI templates are matched from the start of request URI. You can specify
 	 * named parameters in the URI pattern, which will be parsed out and added
 	 * to the ServerRequest.getParameters() values available to the REST
 	 * handler.
-	 * 
+	 *
 	 * Trailing slashes are stripped when matching URIs, so the following
 	 * patterns are equivalent:
-	 * 
+	 *
 	 * <pre>
 	 * /account/create
 	 * /account/create/
 	 * </pre>
-	 * 
+	 *
 	 * Examples:
-	 * 
+	 *
 	 * <pre>
 	 * new RestEndpoint("/account");
 	 * new RestEndpoint("/account/create");
@@ -70,12 +70,12 @@ public class RestEndpoint implements Comparable<RestEndpoint> {
 	 * new RestEndpoint("/account/{id}/orders");
 	 * new RestEndpoint("/account/{id}/orders/{order}");
 	 * </pre>
-	 * 
+	 *
 	 * A request to "/account/1234" would match the third template, and a call
 	 * to parse() would return an "id" parameter equal to "1234".
 	 *
 	 * To match the root path, use "" or "/" as the pattern.
-	 * 
+	 *
 	 * @param template_ The URI template to match
 	 */
 	public RestEndpoint(final String template_) {
@@ -83,7 +83,7 @@ public class RestEndpoint implements Comparable<RestEndpoint> {
 		template = template_;
 		segments = template.split("/");
 		params = new ArrayList<String>();
-		isStatic = !PARAM_PATTERN.matcher(segments[segments.length - 1]).matches();
+		isStatic = segments.length == 0 ? true : !PARAM_PATTERN.matcher(segments[segments.length - 1]).matches();
 
 		if (template.contains(PARAM_START)) {
 

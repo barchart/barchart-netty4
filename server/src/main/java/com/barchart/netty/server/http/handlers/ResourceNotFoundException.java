@@ -2,6 +2,8 @@ package com.barchart.netty.server.http.handlers;
 
 public class ResourceNotFoundException extends Exception {
 
+	private static final long serialVersionUID = 1L;
+
 	public String resource;
 
 	ResourceNotFoundException(final String resource_) {

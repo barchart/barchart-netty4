@@ -90,7 +90,7 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 		finished = false;
 		started = false;
 
-		out = new ByteBufOutputStream(content());
+		out = new CloseableByteBufOutputStream(content());
 		writer = new OutputStreamWriter(out, charSet);
 
 	}
@@ -172,7 +172,7 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 
 			} else {
 
-				out = new ByteBufOutputStream(content());
+				out = new CloseableByteBufOutputStream(content());
 				writer = new OutputStreamWriter(out, charSet);
 
 			}
@@ -211,8 +211,8 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 
 	@Override
 	public long writtenBytes() {
-		if (out instanceof ByteBufOutputStream) {
-			return ((ByteBufOutputStream) out).writtenBytes();
+		if (out instanceof CloseableByteBufOutputStream) {
+			return ((CloseableByteBufOutputStream) out).writtenBytes();
 		} else if (out instanceof HttpChunkOutputStream) {
 			return ((HttpChunkOutputStream) out).writtenBytes();
 		}
@@ -322,6 +322,24 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 	}
 
 	/**
+	 * Output stream wrapper that automatically calls response.finish() when
+	 * close() is called.
+	 */
+	private class CloseableByteBufOutputStream extends ByteBufOutputStream {
+
+		public CloseableByteBufOutputStream(final ByteBuf buffer) {
+			super(buffer);
+		}
+
+		@Override
+		public void close() throws IOException {
+			super.close();
+			finish();
+		}
+
+	}
+
+	/**
 	 * Writes messages as HttpChunk objects to the client.
 	 */
 	private class HttpChunkOutputStream extends OutputStream {
@@ -377,7 +395,7 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 		}
 
 		@Override
-		public void flush() {
+		public void flush() throws IOException {
 
 			if (!started)
 				startResponse();
@@ -390,8 +408,8 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 		}
 
 		@Override
-		public void close() {
-			throw new UnsupportedOperationException("Cannot close output stream directly, use response.finish()");
+		public void close() throws IOException {
+			finish();
 		}
 
 	}
