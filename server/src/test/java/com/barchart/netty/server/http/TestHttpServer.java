@@ -84,6 +84,7 @@ public class TestHttpServer {
 		final ServerSocket s = new ServerSocket(0);
 		port = s.getLocalPort();
 		s.close();
+		Thread.sleep(100);
 
 		server =
 				Servers.createHttpServer().requestHandler("/basic", basic)
