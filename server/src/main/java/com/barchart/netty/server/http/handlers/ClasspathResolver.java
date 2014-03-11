@@ -55,7 +55,7 @@ public class ClasspathResolver implements ResourceResolver {
 	@Override
 	public Resource resolve(final String path) throws ResourceNotFoundException {
 
-		final URL res = loader.getResource(prefix + "/" + (path.charAt(0) == '/' ? path.substring(1) : path));
+		final URL res = loader.getResource(prefix + (path.charAt(0) == '/' ? path.substring(1) : path));
 
 		try {
 

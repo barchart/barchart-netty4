@@ -230,6 +230,10 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 
 		// Set headers
 		headers().set(HttpHeaders.Names.SET_COOKIE, ServerCookieEncoder.encode(cookies));
+		// Default content type
+		if (!headers().contains(HttpHeaders.Names.CONTENT_TYPE)) {
+			setContentType("text/html; charset=utf-8");
+		}
 
 		if (HttpHeaders.isKeepAlive(request)) {
 			headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);

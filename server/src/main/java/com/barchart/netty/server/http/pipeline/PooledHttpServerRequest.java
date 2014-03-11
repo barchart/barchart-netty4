@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -221,14 +222,12 @@ public class PooledHttpServerRequest implements HttpServerRequest {
 
 			if (HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED
 					.equals(headers().get(HttpHeaders.Names.CONTENT_TYPE))) {
-				queryStringDecoded =
-						new QueryStringDecoder(nettyRequest.content().toString(
-								getCharacterEncoding()), false).parameters();
+				queryStringDecoded = new QueryStringDecoder(nettyRequest.content().toString(
+						getCharacterEncoding()), false).parameters();
 			} else if (queryString != null) {
-				queryStringDecoded =
-						new QueryStringDecoder(queryString, false).parameters();
+				queryStringDecoded = new QueryStringDecoder(queryString, false).parameters();
 			} else {
-				queryStringDecoded = new HashMap<String, List<String>>();
+				queryStringDecoded = Collections.emptyMap();
 			}
 
 		}

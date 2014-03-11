@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,34 +26,20 @@ public class RoutedRequest implements HttpServerRequest {
 
 	private final HttpServerRequest request;
 	private final String uri;
+	private final Map<String, String> uriParams;
 	private String remoteUser = null;
+
+	private Map<String, List<String>> mergedParams = null;
 
 	public RoutedRequest(final HttpServerRequest request_, final String uri_) {
 		this(request_, uri_, null);
 	}
 
-	@SuppressWarnings("serial")
 	public RoutedRequest(final HttpServerRequest request_, final String uri_,
 			final Map<String, String> params_) {
-
 		request = request_;
 		uri = uri_;
-
-		if (params_ != null) {
-			final Map<String, List<String>> rp = request.getParameters();
-			for (final Map.Entry<String, String> entry : params_.entrySet()) {
-				if (rp.containsKey(entry.getKey())) {
-					rp.get(entry.getKey()).add(entry.getValue());
-				} else {
-					rp.put(entry.getKey(), new ArrayList<String>() {
-						{
-							add(entry.getValue());
-						}
-					});
-				}
-			}
-		}
-
+		uriParams = params_;
 	}
 
 	public HttpServerRequest delegate() {
@@ -69,6 +57,74 @@ public class RoutedRequest implements HttpServerRequest {
 	public void setRemoteUser(final String user_) {
 		remoteUser = user_;
 	}
+
+	@SuppressWarnings("serial")
+	@Override
+	public Map<String, List<String>> getParameters() {
+
+		if (mergedParams == null) {
+
+			if (uriParams != null) {
+
+				final HashMap<String, List<String>> rp = new HashMap<String, List<String>>(request.getParameters());
+
+				for (final Map.Entry<String, String> entry : uriParams.entrySet()) {
+					if (rp.containsKey(entry.getKey())) {
+						rp.get(entry.getKey()).add(entry.getValue());
+					} else {
+						rp.put(entry.getKey(), new ArrayList<String>() {
+							{
+								add(entry.getValue());
+							}
+						});
+					}
+				}
+
+				mergedParams = Collections.unmodifiableMap(rp);
+
+			} else {
+
+				mergedParams = request.getParameters();
+
+			}
+
+		}
+
+		return mergedParams;
+
+	}
+
+	@Override
+	public String getParameter(final String name) {
+
+		final Map<String, List<String>> params = getParameters();
+
+		if (params != null) {
+
+			final List<String> values = params.get(name);
+
+			if (values != null && values.size() > 0) {
+				return values.get(0);
+			}
+
+		}
+
+		return null;
+
+	}
+
+	@Override
+	public List<String> getParameterList(final String name) {
+
+		final Map<String, List<String>> params = getParameters();
+
+		if (params != null) {
+			return params.get(name);
+		}
+
+		return null;
+	}
+
 
 	@Override
 	public String getRemoteUser() {
@@ -163,21 +219,6 @@ public class RoutedRequest implements HttpServerRequest {
 	@Override
 	public boolean isSecure() {
 		return request.isSecure();
-	}
-
-	@Override
-	public Map<String, List<String>> getParameters() {
-		return request.getParameters();
-	}
-
-	@Override
-	public String getParameter(final String name) {
-		return request.getParameter(name);
-	}
-
-	@Override
-	public List<String> getParameterList(final String name) {
-		return request.getParameterList(name);
 	}
 
 	@Override
