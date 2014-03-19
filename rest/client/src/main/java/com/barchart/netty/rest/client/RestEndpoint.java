@@ -1,4 +1,4 @@
-package com.barchart.netty.rest.server;
+package com.barchart.netty.rest.client;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -163,6 +163,14 @@ public class RestEndpoint implements Comparable<RestEndpoint> {
 
 		return formatted;
 
+	}
+
+	/**
+	 * Create a new URL pattern formatter for fluent inline usage as an
+	 * alternative to format().
+	 */
+	public Formatter formatter() {
+		return new Formatter(this);
 	}
 
 	/**
@@ -350,6 +358,31 @@ public class RestEndpoint implements Comparable<RestEndpoint> {
 		 */
 		public String path() {
 			return uri.substring(match.length());
+		}
+
+	}
+
+	/**
+	 * Fluent API for inline construction of formatted URL patterns with
+	 * parameter injection.
+	 */
+	public static final class Formatter {
+
+		private final RestEndpoint endpoint;
+		private final Map<String, String> params;
+
+		private Formatter(final RestEndpoint endpoint_) {
+			endpoint = endpoint_;
+			params = new HashMap<String, String>();
+		}
+
+		public Formatter set(final String key, final String value) {
+			params.put(key, value);
+			return this;
+		}
+
+		public String format() {
+			return endpoint.format(params);
 		}
 
 	}

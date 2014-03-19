@@ -1,5 +1,6 @@
 package com.barchart.netty.rest.server;
 
+import com.barchart.netty.rest.client.RestEndpoint;
 import com.barchart.netty.server.http.request.RequestHandler;
 
 /**

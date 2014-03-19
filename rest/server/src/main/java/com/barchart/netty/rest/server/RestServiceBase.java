@@ -2,6 +2,7 @@ package com.barchart.netty.rest.server;
 
 import java.io.IOException;
 
+import com.barchart.netty.rest.client.RestEndpoint;
 import com.barchart.netty.server.http.request.HttpServerRequest;
 import com.barchart.netty.server.http.request.RequestHandler;
 import com.barchart.netty.server.http.request.RequestHandlerBase;
