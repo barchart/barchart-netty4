@@ -1,18 +1,16 @@
-<!--
+## Netty Client/Server Components
 
-    Copyright (C) 2011-2012 Barchart, Inc. <http://www.barchart.com/>
+Simple APIs for implementing network services with Netty 4.0. Designed to be simple, modular and easy to
+create and destroy for unit testing and on-the-fly updates.
 
-    All rights reserved. Licensed under the OSI BSD License.
+#### Modules
 
-    http://www.opensource.org/licenses/bsd-license.php
+common - Core shared classes for client and server.
 
--->
-## info
+server - Network server implementations for TCP, UDP, UDT, SCTP, Websockets, HTTP.
 
-barchart netty builder libraries
+rest/server - Higher-level REST server APIs for quickly building services on top of the HTTP server.
 
-### repo
+rest/client - REST client API for accessing rest/server services, with pluggable transports.
 
-maven central has
-[latest version of these artifacts]
-(http://search.maven.org/#search%7Cga%7C1%7Ccom.barchart.netty)
+client - Streaming client toolkit for easily assembling a Netty data pipeline behind application-specific APIs.
