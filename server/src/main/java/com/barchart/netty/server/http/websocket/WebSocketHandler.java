@@ -11,6 +11,7 @@ import com.barchart.netty.common.pipeline.PipelineInitializer;
 
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelHandler.Sharable;
 
 /**
  * Convenience class for wrapping an existing server pipeline initializer in a
@@ -23,6 +24,7 @@ import io.netty.channel.ChannelHandlerContext;
  * In particular, this means that wrapped pipelines must not include any TLS
  * negotiation, since websockets leaves that up to HTTP/SSL.
  */
+@Sharable
 public class WebSocketHandler extends ChannelHandlerAdapter {
 
 	PipelineInitializer initializer;
