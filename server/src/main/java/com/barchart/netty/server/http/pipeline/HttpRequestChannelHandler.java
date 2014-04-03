@@ -119,33 +119,16 @@ public class HttpRequestChannelHandler extends
 				handler.handle(request);
 			}
 
+		} catch (final IOException i) {
+
+			// Don't log IOExceptions (mostly client disconnects)
+			sendError(request, i);
+
 		} catch (final Throwable t) {
 
-			// Catch server errors
-			request.response().setStatus(
-					HttpResponseStatus.INTERNAL_SERVER_ERROR);
-
-			try {
-				server.errorHandler().onError(request, t);
-			} catch (final Throwable t2) {
-				request.response()
-						.write(t.getClass()
-								+ " was thrown while processing this request.  Additionally, "
-								+ t2.getClass()
-								+ " was thrown while handling this exception.");
-			}
-
+			// Log unchecked exceptions from handlers
 			server.logger().error(request, t);
-
-			// Force request to end on exception, async handlers cannot allow
-			// unchecked exceptions and still expect to return data
-			try {
-				if (!request.response().isFinished()) {
-					request.response().finish();
-				}
-			} catch (final IOException ioe) {
-				// Pretty likely at this point, swallow it because we don't care
-			}
+			sendError(request, t);
 
 		}
 
@@ -188,13 +171,41 @@ public class HttpRequestChannelHandler extends
 
 	}
 
+	/**
+	 * Attempt to send a server error to the client in response to an unchecked
+	 * exception, swallowing IOExceptions.
+	 */
+	private void sendError(final PooledHttpServerRequest request, final Throwable error) {
+
+		// Catch unchecked exceptions from handlers
+		try {
+
+			request.response().setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+
+			try {
+				server.errorHandler().onError(request, error);
+			} catch (final Throwable t) {
+				request.response().write(error.getClass()
+						+ " was thrown while processing this request.  Additionally, "
+						+ t.getClass() + " was thrown while handling this exception.");
+			}
+
+			// Force request to end on exception, async handlers cannot allow
+			// unchecked exceptions and still expect to return data
+			if (!request.response().isFinished()) {
+				request.response().finish();
+			}
+
+		} catch (final IOException ioe) {
+			// Pretty likely at this point, swallow it because we don't care
+		}
+
+	}
+
 	private void sendServerError(final ChannelHandlerContext ctx,
 			final ServerException cause) throws Exception {
 
 		if (ctx.channel().isActive()) {
-
-			// TODO log error
-			// server.logger().error(request, cause);
 
 			final ByteBuf content = Unpooled.buffer();
 

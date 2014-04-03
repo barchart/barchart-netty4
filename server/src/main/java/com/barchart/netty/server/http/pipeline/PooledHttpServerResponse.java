@@ -219,7 +219,7 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 		return 0;
 	}
 
-	private ChannelFuture startResponse() {
+	private ChannelFuture startResponse() throws IOException {
 
 		checkFinished();
 
@@ -298,10 +298,9 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 
 	}
 
-	private void checkFinished() {
+	private void checkFinished() throws IOException {
 		if (finished) {
-			throw new IllegalStateException(
-					"ServerResponse has already finished");
+			throw new IOException("Response has already finished");
 		}
 	}
 
