@@ -133,8 +133,7 @@ public abstract class RestClientBase implements RestClient {
 				new ResponseDecoder<T>() {
 
 					@Override
-					public final T decode(final byte[] content)
-							throws Exception {
+					public final T decode(final byte[] content) throws Exception {
 						return mapper.readValue(content, responseType);
 					}
 
@@ -266,6 +265,9 @@ public abstract class RestClientBase implements RestClient {
 						return decode(response.content());
 					} catch (final Exception e) {
 						log.warn("Could not decode response", e);
+						if (response.content().length < 1024) {
+							log.debug("Response: " + new String(response.content()));
+						}
 						return null;
 					}
 				}
