@@ -10,7 +10,7 @@ package com.barchart.netty.client.example;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import rx.util.functions.Action1;
+import rx.functions.Action1;
 
 import com.barchart.netty.client.base.AuthenticatingConnectableBase;
 import com.barchart.netty.client.policy.ReconnectPolicy;
@@ -94,13 +94,12 @@ public class ExampleClient extends
 		}
 	};
 
-	final static Action1<StateChange<?>> statePrinter =
-			new Action1<StateChange<?>>() {
-				@Override
-				public void call(final StateChange<?> event) {
-					System.out.println(event.state().getClass().getSimpleName()
-							+ " event: " + event.state().toString());
-				}
-			};
+	final static Action1<StateChange<?>> statePrinter = new Action1<StateChange<?>>() {
+		@Override
+		public void call(final StateChange<?> event) {
+			System.out.println(event.state().getClass().getSimpleName()
+					+ " event: " + event.state().toString());
+		}
+	};
 
 }

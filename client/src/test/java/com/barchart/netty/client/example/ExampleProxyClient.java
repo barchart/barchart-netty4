@@ -10,7 +10,7 @@ package com.barchart.netty.client.example;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import rx.util.functions.Action1;
+import rx.functions.Action1;
 
 import com.barchart.netty.client.Connectable;
 import com.barchart.netty.client.base.ConnectableBase;
@@ -21,9 +21,9 @@ import com.barchart.netty.client.facets.SecureFacet;
 import com.barchart.netty.client.policy.ReconnectPolicy;
 import com.barchart.netty.client.transport.TransportProtocol;
 import com.barchart.netty.common.metadata.AuthenticationAware;
+import com.barchart.netty.common.metadata.AuthenticationAware.AuthState;
 import com.barchart.netty.common.metadata.LatencyAware;
 import com.barchart.netty.common.metadata.SecureAware;
-import com.barchart.netty.common.metadata.AuthenticationAware.AuthState;
 
 /**
  * Example of ExampleClient if it was implemented as a dynamic proxy.
@@ -99,13 +99,12 @@ public class ExampleProxyClient extends ConnectableProxy<ExampleProxyClient> {
 		}
 	};
 
-	final static Action1<StateChange<?>> statePrinter =
-			new Action1<StateChange<?>>() {
-				@Override
-				public void call(final StateChange<?> event) {
-					System.out.println(event.state().getClass().getSimpleName()
-							+ " event: " + event.state().toString());
-				}
-			};
+	final static Action1<StateChange<?>> statePrinter = new Action1<StateChange<?>>() {
+		@Override
+		public void call(final StateChange<?> event) {
+			System.out.println(event.state().getClass().getSimpleName()
+					+ " event: " + event.state().toString());
+		}
+	};
 
 }

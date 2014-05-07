@@ -21,13 +21,12 @@ import java.util.concurrent.Executor;
 import org.apache.commons.io.IOUtils;
 
 import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
+import rx.Subscriber;
 
 import com.barchart.netty.rest.client.RestRequest;
+import com.barchart.netty.rest.client.RestRequest.Method;
 import com.barchart.netty.rest.client.RestResponse;
 import com.barchart.netty.rest.client.RestTransport;
-import com.barchart.netty.rest.client.RestRequest.Method;
 
 public class URLConnectionTransport implements RestTransport {
 
@@ -50,33 +49,24 @@ public class URLConnectionTransport implements RestTransport {
 	@Override
 	public Observable<RestResponse<byte[]>> send(final RestRequest<?> request) {
 
-		return Observable
-				.create(new Observable.OnSubscribeFunc<RestResponse<byte[]>>() {
+		return Observable.create(new Observable.OnSubscribe<RestResponse<byte[]>>() {
 
-					@Override
-					public Subscription onSubscribe(
-							final Observer<? super RestResponse<byte[]>> observer) {
+			@Override
+			public void call(final Subscriber<? super RestResponse<byte[]>> subscriber) {
 
-						if (executor == null) {
-							runnable(request, observer).run();
-						} else {
-							executor.execute(runnable(request, observer));
-						}
+				if (executor == null) {
+					runnable(request, subscriber).run();
+				} else {
+					executor.execute(runnable(request, subscriber));
+				}
 
-						return new Subscription() {
-							@Override
-							public void unsubscribe() {
-							}
-						};
+			}
 
-					}
-
-				});
+		});
 
 	}
 
-	public Runnable runnable(final RestRequest<?> request,
-			final Observer<? super RestResponse<byte[]>> observer) {
+	public Runnable runnable(final RestRequest<?> request, final Subscriber<? super RestResponse<byte[]>> subscriber) {
 
 		return new Runnable() {
 
@@ -88,17 +78,12 @@ public class URLConnectionTransport implements RestTransport {
 					URL url;
 
 					if ((request.method() == Method.GET || request.method() == Method.DELETE)) {
-
 						url = request.urlWithQueryString();
-
 					} else {
-
 						url = request.url();
-
 					}
 
-					final HttpURLConnection conn =
-							(HttpURLConnection) url.openConnection();
+					final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 					conn.setRequestMethod(request.method().name());
 
 					// Set default timeout parameters
@@ -107,8 +92,7 @@ public class URLConnectionTransport implements RestTransport {
 
 					boolean setContentType = false;
 
-					for (final Map.Entry<String, List<String>> entry : request
-							.headers().entrySet()) {
+					for (final Map.Entry<String, List<String>> entry : request.headers().entrySet()) {
 
 						if (entry.getKey().equalsIgnoreCase("Content-Type")) {
 							setContentType = true;
@@ -120,31 +104,23 @@ public class URLConnectionTransport implements RestTransport {
 
 					}
 
-					if (request.data() == null
-							&& request.method() == Method.POST
-							&& request.params().size() > 0) {
+					if (request.data() == null && request.method() == Method.POST && request.params().size() > 0) {
 
 						if (!setContentType) {
-							conn.setRequestProperty("Content-Type",
-									"application/x-www-form-urlencoded");
+							conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 						}
 
 						final StringBuilder sb = new StringBuilder();
 
 						String join = "";
 
-						for (final Map.Entry<String, List<String>> entry : request
-								.params().entrySet()) {
+						for (final Map.Entry<String, List<String>> entry : request.params().entrySet()) {
 
 							sb.append(join);
 
 							for (final String value : entry.getValue()) {
-								sb.append(
-										URLEncoder.encode(entry.getKey(),
-												"UTF-8"))
-										.append('=')
-										.append(URLEncoder.encode(value,
-												"UTF-8"));
+								sb.append(URLEncoder.encode(entry.getKey(), "UTF-8")).append('=')
+										.append(URLEncoder.encode(value, "UTF-8"));
 							}
 
 							join = "&";
@@ -167,13 +143,13 @@ public class URLConnectionTransport implements RestTransport {
 						out.close();
 					}
 
-					observer.onNext(new URLConnectionResponse(conn));
+					subscriber.onNext(new URLConnectionResponse(conn));
 
-					observer.onCompleted();
+					subscriber.onCompleted();
 
 				} catch (final IOException ioe) {
 
-					observer.onError(ioe);
+					subscriber.onError(ioe);
 
 				}
 

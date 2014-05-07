@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import rx.Observable;
 import rx.Observer;
-import rx.util.functions.Func1;
+import rx.functions.Func1;
 
 import com.barchart.netty.rest.client.RestRequest.Method;
 import com.barchart.netty.rest.client.transport.URLConnectionTransport;
@@ -244,8 +244,7 @@ public abstract class RestClientBase implements RestClient {
 	 *
 	 * @param <T> The object type
 	 */
-	protected abstract class ResponseDecoder<T> implements
-			Func1<RestResponse<byte[]>, RestResponse<T>> {
+	protected abstract class ResponseDecoder<T> implements Func1<RestResponse<byte[]>, RestResponse<T>> {
 
 		public abstract T decode(byte[] content) throws Exception;
 
@@ -300,8 +299,7 @@ public abstract class RestClientBase implements RestClient {
 	 * @param <S> The response content type
 	 * @param <T> The transformed object type
 	 */
-	protected abstract class ResponseTransformer<S, T> implements
-			Func1<RestResponse<S>, Observable<T>> {
+	protected abstract class ResponseTransformer<S, T> implements Func1<RestResponse<S>, Observable<T>> {
 
 		protected abstract Observable<T> transform(S content);
 
@@ -345,8 +343,7 @@ public abstract class RestClientBase implements RestClient {
 	 *
 	 * @param <T> The object type
 	 */
-	protected class ListUnwrapper<T, S extends T> extends
-			ResponseTransformer<List<S>, T> {
+	protected class ListUnwrapper<T, S extends T> extends ResponseTransformer<List<S>, T> {
 
 		public ListUnwrapper() {
 		}
@@ -358,8 +355,7 @@ public abstract class RestClientBase implements RestClient {
 
 	}
 
-	protected static <T> Func1<RestResponse<?>, Observable<T>> replace(
-			final T value) {
+	protected static <T> Func1<RestResponse<?>, Observable<T>> replace(final T value) {
 
 		return new Func1<RestResponse<?>, Observable<T>>() {
 			@Override
