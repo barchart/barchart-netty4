@@ -19,7 +19,7 @@
 
 	<groupId>com.barchart.netty</groupId>
 	<artifactId>barchart-netty-server</artifactId>
-	<version>1.0.16-SNAPSHOT</version>
+	<version>1.0.17-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<scm>
