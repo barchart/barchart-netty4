@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (C) 2011-2014 Barchart, Inc. <http://www.barchart.com/>
+    Copyright (C) 2011-2014 Barchart, Inc. <http://www.barchart.com />
 
     All rights reserved. Licensed under the OSI BSD License.
 
@@ -19,7 +19,7 @@
 
 	<groupId>com.barchart.netty</groupId>
 	<artifactId>barchart-netty-common</artifactId>
-	<version>1.0.8-SNAPSHOT</version>
+	<version>1.0.9-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<scm>
