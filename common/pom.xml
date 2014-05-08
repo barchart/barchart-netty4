@@ -19,14 +19,14 @@
 
 	<groupId>com.barchart.netty</groupId>
 	<artifactId>barchart-netty-common</artifactId>
-	<version>1.0.9</version>
+	<version>1.0.10-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<scm>
 		<url>https://github.com/barchart/barchart-netty4</url>
 		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
-		<tag>barchart-netty-common-1.0.9</tag>
+		<tag>master</tag>
 	</scm>
 
 	<properties>
