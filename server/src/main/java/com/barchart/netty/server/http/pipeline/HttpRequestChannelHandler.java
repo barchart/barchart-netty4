@@ -269,6 +269,8 @@ public class HttpRequestChannelHandler extends
 
 			}
 
+		} else {
+			sendServerError(ctx, new ServerException(HttpResponseStatus.INTERNAL_SERVER_ERROR, exception));
 		}
 
 		ctx.fireExceptionCaught(exception);
