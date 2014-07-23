@@ -12,10 +12,9 @@ import java.net.URLEncoder;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
-import javax.xml.bind.DatatypeConverter;
-
 import com.barchart.netty.rest.client.Credentials;
 import com.barchart.netty.rest.client.RestRequest;
+import com.barchart.util.common.encoding.Base64;
 
 public class UsernamePasswordCredentials implements Credentials {
 
@@ -50,7 +49,7 @@ public class UsernamePasswordCredentials implements Credentials {
 				secondBytes.length);
 
 		request.header("Authorization",
-				"Basic " + DatatypeConverter.printBase64Binary(concat));
+				"Basic " + Base64.decode(concat));
 
 	}
 }
