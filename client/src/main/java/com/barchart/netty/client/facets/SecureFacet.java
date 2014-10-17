@@ -14,8 +14,7 @@ import com.barchart.netty.client.pipeline.SecureFlowHandler;
 import com.barchart.netty.common.metadata.SecureAware;
 
 /**
- * Connectable proxy facet that implements the SecureAware interface and
- * associated functionality.
+ * Connectable proxy facet that implements the SecureAware interface and associated functionality.
  */
 public class SecureFacet implements ConnectableFacet<SecureAware>, SecureAware {
 

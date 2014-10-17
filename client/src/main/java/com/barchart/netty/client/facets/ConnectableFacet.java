@@ -12,7 +12,7 @@ import com.barchart.netty.common.pipeline.PipelineInitializer;
 /**
  * A facet for dynamically constructing client proxies with pluggable
  * functionality.
- * 
+ *
  * @See com.barchart.netty.client.base.ConnectableProxy
  */
 public interface ConnectableFacet<U> extends PipelineInitializer {

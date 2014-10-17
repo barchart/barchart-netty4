@@ -19,13 +19,13 @@ import com.barchart.netty.common.pipeline.PingHandler;
  * provide this functionality, this facet provides a connection heartbeat both
  * for keeping the connection alive (preventing read timeouts) and measuring
  * latency and clock skew between peers.
- * 
+ *
  * Proper functionality of this facet requires that:
- * 
+ *
  * 1) The client and host both understand Ping and Pong messages
- * 
+ *
  * 2) The host returns a Pong message immediately on receipt of a Ping
- * 
+ *
  * @see com.barchart.netty.common.messages.Ping
  * @see com.barchart.netty.common.messages.Pong
  */

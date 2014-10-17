@@ -49,12 +49,12 @@ public abstract class KeepaliveConnectableBase<T extends KeepaliveConnectableBas
 		@Override
 		protected C configure(final C client) {
 			super.configure(client);
-			client.facet = new KeepaliveFacet(interval, unit);
+			client.keepaliveFacet = new KeepaliveFacet(interval, unit);
 			return client;
 		}
 	}
 
-	protected KeepaliveFacet facet = null;
+	protected KeepaliveFacet keepaliveFacet = null;
 
 	protected KeepaliveConnectableBase(final TransportProtocol transport_) {
 		super(transport_);
@@ -63,31 +63,31 @@ public abstract class KeepaliveConnectableBase<T extends KeepaliveConnectableBas
 	@Override
 	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
 		super.initPipeline(pipeline);
-		facet.initPipeline(pipeline);
+		keepaliveFacet.initPipeline(pipeline);
 	}
 
 	protected void interval(final long interval_, final TimeUnit unit_) {
-		facet.interval(interval_, unit_);
+		keepaliveFacet.interval(interval_, unit_);
 	}
 
 	@Override
 	public double averageLatency() {
-		return facet.averageLatency();
+		return keepaliveFacet.averageLatency();
 	}
 
 	@Override
 	public long latency() {
-		return facet.latency();
+		return keepaliveFacet.latency();
 	}
 
 	@Override
 	public long clockSkew() {
-		return facet.clockSkew();
+		return keepaliveFacet.clockSkew();
 	}
 
 	@Override
 	public long peerTime() {
-		return facet.peerTime();
+		return keepaliveFacet.peerTime();
 	}
 
 }

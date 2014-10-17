@@ -35,12 +35,12 @@ public abstract class SecureConnectableBase<T extends SecureConnectableBase<T>>
 		@Override
 		protected C configure(final C client) {
 			super.configure(client);
-			client.facet = new SecureFacet(security);
+			client.secureFacet = new SecureFacet(security);
 			return client;
 		}
 	}
 
-	protected SecureFacet facet = null;
+	protected SecureFacet secureFacet = null;
 
 	protected SecureConnectableBase(final TransportProtocol transport_) {
 		super(transport_);
@@ -48,12 +48,12 @@ public abstract class SecureConnectableBase<T extends SecureConnectableBase<T>>
 
 	@Override
 	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
-		facet.initPipeline(pipeline);
+		secureFacet.initPipeline(pipeline);
 	}
 
 	@Override
 	public boolean secure() {
-		return facet.secure();
+		return secureFacet.secure();
 	}
 
 }

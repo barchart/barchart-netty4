@@ -31,8 +31,7 @@ import com.barchart.util.flow.api.State;
 import com.barchart.util.flow.provider.Provider;
 
 /**
- * Flow state machine for activating TLS on connect. Not sharable between
- * multiple connections.
+ * Flow state machine for activating TLS on connect. Not sharable between multiple connections.
  */
 public class SecureFlowHandler extends MessageFlowHandler<TLSEvent, TLSState>
 		implements SecureAware {
@@ -167,25 +166,27 @@ public class SecureFlowHandler extends MessageFlowHandler<TLSEvent, TLSState>
 
 			final ChannelHandlerContext ctx = context.attachment();
 
-			if (ctx.pipeline().get(SslHandler.class) == null) {
+			if (ctx.pipeline().get(SslHandler.class) != null) {
 
-				if (require
-						&& !capabilities.capabilities().contains(
-								Capabilities.ENC_TLS)) {
-					throw new UnsupportedOperationException(
-							"TLS required but not supported by peer");
-				}
+				// SSL already active
+				context.fire(TLSEvent.PASS);
+
+			} else if (capabilities.capabilities().contains(Capabilities.ENC_TLS)) {
 
 				// Start TLS handshake
-				ctx.write(new StartTLS() {
+				ctx.writeAndFlush(new StartTLS() {
 				});
-				ctx.flush();
 
 				// Fire event to advance state machine
 				context.fire(TLSEvent.START_TLS);
 
 			} else {
 
+				if (require) {
+					throw new UnsupportedOperationException("TLS required but not supported by peer");
+				}
+
+				// Optional, skip
 				context.fire(TLSEvent.PASS);
 
 			}

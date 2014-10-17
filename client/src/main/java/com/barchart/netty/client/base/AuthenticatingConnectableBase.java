@@ -42,13 +42,13 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 		@Override
 		protected C configure(final C client) {
 			super.configure(client);
-			client.facet = new AuthenticationFacet<D>(authenticatorBuilder);
+			client.authFacet = new AuthenticationFacet<D>(authenticatorBuilder);
 			return client;
 		}
 
 	}
 
-	protected AuthenticationFacet<A> facet = null;
+	protected AuthenticationFacet<A> authFacet = null;
 
 	protected AuthenticatingConnectableBase(final TransportProtocol transport_) {
 		super(transport_);
@@ -57,22 +57,22 @@ public abstract class AuthenticatingConnectableBase<T extends AuthenticatingConn
 	@Override
 	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
 		super.initPipeline(pipeline);
-		facet.initPipeline(pipeline);
+		authFacet.initPipeline(pipeline);
 	}
 
 	@Override
 	public Observable<AuthState> authStateChanges() {
-		return facet.authStateChanges();
+		return authFacet.authStateChanges();
 	}
 
 	@Override
 	public AuthState authState() {
-		return facet.authState();
+		return authFacet.authState();
 	}
 
 	@Override
 	public A account() {
-		return facet.account();
+		return authFacet.account();
 	}
 
 }
