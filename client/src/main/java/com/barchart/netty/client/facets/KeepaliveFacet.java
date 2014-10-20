@@ -15,9 +15,8 @@ import com.barchart.netty.common.metadata.LatencyAware;
 import com.barchart.netty.common.pipeline.PingHandler;
 
 /**
- * A Connectable proxy facet that implements the LatencyAware interface. To
- * provide this functionality, this facet provides a connection heartbeat both
- * for keeping the connection alive (preventing read timeouts) and measuring
+ * A Connectable proxy facet that implements the LatencyAware interface. To provide this functionality, this facet
+ * provides a connection heartbeat both for keeping the connection alive (preventing read timeouts) and measuring
  * latency and clock skew between peers.
  *
  * Proper functionality of this facet requires that:
@@ -50,20 +49,33 @@ public class KeepaliveFacet implements ConnectableFacet<LatencyAware>,
 	@Override
 	public void initPipeline(final ChannelPipeline pipeline) throws Exception {
 
-		if (interval > 0) {
-			pingHandler = new PingHandler(interval, unit);
-			pipeline.addLast(pingHandler);
+		synchronized (this) {
+
+			if (interval > 0) {
+				// Timed ping initiator
+				pingHandler = new PingHandler(interval, unit);
+				pipeline.addLast(pingHandler);
+			} else {
+				// Response-only handler
+				pingHandler = new PingHandler();
+				pipeline.addLast(pingHandler);
+			}
+
 		}
 
 	}
 
 	public void interval(final long interval_, final TimeUnit unit_) {
 
-		interval = interval_;
-		unit = unit_;
+		synchronized (this) {
 
-		if (pingHandler != null) {
-			pingHandler.interval(interval_, unit_);
+			interval = interval_;
+			unit = unit_;
+
+			if (pingHandler != null) {
+				pingHandler.interval(interval_, unit_);
+			}
+
 		}
 
 	}
