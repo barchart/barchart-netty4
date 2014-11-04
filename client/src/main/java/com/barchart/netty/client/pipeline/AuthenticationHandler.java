@@ -8,7 +8,6 @@
 package com.barchart.netty.client.pipeline;
 
 import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
 
 import com.barchart.netty.common.metadata.AuthenticationAware;
 
@@ -19,10 +18,6 @@ import com.barchart.netty.common.metadata.AuthenticationAware;
  * @see com.barchart.netty.client.base.AuthenticatingConnectableBase
  */
 public interface AuthenticationHandler<A> extends AuthenticationAware<A>, ChannelHandler {
-
-	void authenticate(ChannelHandlerContext ctx);
-
-	A response(Object ctx);
 
 	interface Builder<B> {
 

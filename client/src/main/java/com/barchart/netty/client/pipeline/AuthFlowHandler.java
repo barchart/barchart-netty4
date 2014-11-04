@@ -107,6 +107,10 @@ public abstract class AuthFlowHandler<A> extends
 
 	}
 
+	protected abstract void authenticate(ChannelHandlerContext ctx);
+
+	protected abstract A response(Object ctx);
+
 	@Override
 	public void channelActive(final ChannelHandlerContext ctx) throws Exception {
 		context = flow.contextBuilder().build(ctx);
