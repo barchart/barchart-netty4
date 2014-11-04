@@ -168,17 +168,9 @@ public abstract class AuthFlowHandler<A> extends
 				throw new IllegalStateException("Capabilities not received yet");
 			}
 
-			final ChannelHandlerContext ctx = context.attachment();
-
-			if (!capabilities.capabilities().contains(
-					Capabilities.AUTH_PASSWORD)) {
-				throw new UnsupportedOperationException(
-						"Password authentication not supported by peer");
-			}
-
 			authStateChanges.onNext(AuthenticationAware.AuthState.AUTHENTICATING);
 
-			authenticate(ctx);
+			authenticate(context.attachment());
 
 			// Fire event to advance state machine
 			context.fire(AuthEvent.AUTH_REQUEST);
