@@ -1,7 +1,6 @@
 package com.barchart.netty.guice.http;
 
 import static org.junit.Assert.assertEquals;
-import io.netty.channel.ChannelPipeline;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,8 +17,10 @@ import org.junit.Test;
 
 import com.barchart.netty.server.http.request.HttpServerRequest;
 import com.barchart.util.guice.Component;
+import com.barchart.util.guice.ConfigResources;
 import com.barchart.util.guice.GuiceConfigBuilder;
 import com.barchart.util.guice.StringResources;
+import com.google.inject.Injector;
 
 public class TestHttpServiceProvider {
 
@@ -46,14 +47,13 @@ public class TestHttpServiceProvider {
 				+ "{\n"
 				+ "type = \"http.handler\"\n"
 				+ "}\n"
-				+ "{\n"
-				+ "type = \"websocket.handler\"\n"
-				+ "}\n"
 				+ "]";
 
-		service = GuiceConfigBuilder.create()
-				.setConfigResources(new StringResources(config)).build()
-				.getInstance(HttpServiceProvider.class);
+		final ConfigResources resources = new StringResources(config);
+
+		final Injector injector = GuiceConfigBuilder.create().setConfigResources(resources).build();
+
+		service = injector.getInstance(HttpServiceProvider.class);
 
 	}
 
@@ -93,23 +93,6 @@ public class TestHttpServiceProvider {
 		@Override
 		public String path() {
 			return "/test";
-		}
-
-	}
-
-	@Component("websocket.handler")
-	protected static class TestWebSocketHandler extends AbstractWebSocketRequestHandler {
-
-		long requests = 0;
-
-		@Override
-		public String path() {
-			return "/ws";
-		}
-
-		@Override
-		public void initPipeline(final ChannelPipeline pipeline) throws Exception {
-			// TODO Auto-generated method stub
 		}
 
 	}
