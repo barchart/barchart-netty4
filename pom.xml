@@ -38,6 +38,9 @@ Layout Project.
 		<module>client</module>
 		<module>server</module>
 
+		<!-- Guice-configured HTTP service -->
+		<module>http-guice</module>
+
 		<!-- REST -->
 		<module>rest/server</module>
 		<module>rest/client</module>
