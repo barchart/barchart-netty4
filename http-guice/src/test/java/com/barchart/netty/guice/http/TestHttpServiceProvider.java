@@ -40,7 +40,7 @@ public class TestHttpServiceProvider {
 
 		final String config = "component = [\n"
 				+ "{\n"
-				+ "type = \"" + HttpServiceProvider.NAME + "\"\n"
+				+ "type = \"com.barchart.netty.guice.http\"\n"
 				+ "local-address = \"0.0.0.0:" + port + "\"\n"
 				+ "max-connections = -1\n"
 				+ "}\n"

@@ -7,9 +7,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import java.net.SocketAddress;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +20,12 @@ import com.barchart.netty.server.http.request.RequestHandler;
 import com.barchart.netty.server.util.SingleHandlerFactory;
 import com.barchart.util.guice.Activatable;
 import com.barchart.util.guice.Component;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.typesafe.config.Config;
 
-@Component(HttpServiceProvider.NAME)
+@Component("com.barchart.netty.guice.http")
 public class HttpServiceProvider implements HttpService, Activatable {
-
-	public static final String NAME = "barchart.osgi.http.service";
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -49,14 +46,14 @@ public class HttpServiceProvider implements HttpService, Activatable {
 				.errorHandler(errorHandler());
 	}
 
-	@Inject
+	@Inject(optional = true)
 	protected void httpServices(final Set<HttpRequestHandler> services) {
 		for (final HttpRequestHandler hs : services) {
 			registerHandler(hs.path(), new SingleHandlerFactory<RequestHandler>(hs));
 		}
 	}
 
-	@Inject
+	@Inject(optional = true)
 	protected void webSocketServices(final Set<WebSocketRequestHandler> services) {
 		for (final WebSocketRequestHandler ws : services) {
 			registerWebSocket(ws.path(), new SingleHandlerFactory<ChannelHandler>(ws));
