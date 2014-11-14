@@ -11,12 +11,8 @@ import com.barchart.netty.rest.client.RestEndpoint;
 import com.barchart.netty.server.http.request.RequestHandler;
 
 /**
- * Root module for REST services. Uses a Router internally for request
- * processing. Subclass to create independent OSGI-enabled service modules that
- * have multiple internal REST service endpoints.
- *
- * @author jeremy
- *
+ * Root module for REST services. Uses a Router internally for request processing. Subclass to create independent
+ * injectable service modules that have multiple internal REST service endpoints.
  */
 public interface RestService extends RequestHandler {
 

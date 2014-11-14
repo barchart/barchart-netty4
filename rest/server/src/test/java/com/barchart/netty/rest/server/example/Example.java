@@ -17,11 +17,8 @@ import com.barchart.netty.server.http.request.HttpServerRequest;
 import com.barchart.netty.server.http.request.RequestHandlerBase;
 
 /**
- * Example of a REST module that registers multiple sub-handlers for routing.
- * This would be registered with the core netty-http server (preferably
- * automatically via barchart-osgi-http).
- * 
- * @author jeremy
+ * Example of a REST module that registers multiple sub-handlers for routing. This would be registered with the core
+ * netty-http server.
  */
 public class Example extends RestServiceBase {
 
