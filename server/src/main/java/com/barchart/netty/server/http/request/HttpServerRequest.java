@@ -20,12 +20,9 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
-import aQute.bnd.annotation.ProviderType;
-
 /**
  * Information about an inbound request.
  */
-@ProviderType
 public interface HttpServerRequest extends HttpServerMessage, HttpRequest {
 
 	/* Request metadata */

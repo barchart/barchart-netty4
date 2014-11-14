@@ -9,14 +9,11 @@ package com.barchart.netty.server.http.error;
 
 import java.io.IOException;
 
-import aQute.bnd.annotation.ConsumerType;
-
 import com.barchart.netty.server.http.request.HttpServerRequest;
 
 /**
  * Error handler for failed requests.
  */
-@ConsumerType
 public interface ErrorHandler {
 
 	/**

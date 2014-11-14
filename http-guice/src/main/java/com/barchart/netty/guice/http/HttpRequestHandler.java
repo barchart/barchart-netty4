@@ -3,7 +3,7 @@ package com.barchart.netty.guice.http;
 import com.barchart.netty.server.http.request.RequestHandler;
 
 /**
- * OSGI injectable HTTP request handler.
+ * Injectable HTTP request handler.
  */
 public interface HttpRequestHandler extends RequestHandler {
 

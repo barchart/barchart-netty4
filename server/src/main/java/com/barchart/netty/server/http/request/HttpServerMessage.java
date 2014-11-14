@@ -10,12 +10,10 @@ package com.barchart.netty.server.http.request;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpVersion;
-import aQute.bnd.annotation.ProviderType;
 
 /**
  * Information about an inbound request.
  */
-@ProviderType
 public interface HttpServerMessage extends HttpMessage {
 
 	@Override

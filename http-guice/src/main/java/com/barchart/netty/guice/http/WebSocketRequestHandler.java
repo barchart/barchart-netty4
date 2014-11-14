@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandler;
 import com.barchart.netty.common.pipeline.PipelineInitializer;
 
 /**
- * OSGI injectable HTTP request handler.
+ * Injectable web socket request handler.
  */
 public interface WebSocketRequestHandler extends ChannelHandler, PipelineInitializer {
 

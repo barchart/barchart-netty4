@@ -5,9 +5,8 @@ import io.netty.channel.ChannelPipeline;
 
 
 /**
- * OSGI injectable websocket service handler. This is a "throwaway handler"
- * whose only purpose is to setup a pipeline for the real processing when a
- * websocket request comes in.
+ * Injectable websocket service handler. This is a "throwaway handler" whose only purpose is to setup a pipeline for the
+ * real processing when a websocket request comes in.
  */
 public abstract class AbstractWebSocketRequestHandler implements WebSocketRequestHandler {
 

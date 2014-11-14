@@ -18,12 +18,9 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
-import aQute.bnd.annotation.ProviderType;
-
 /**
  * Encapsulates a response to an inbound ServerRequest.
  */
-@ProviderType
 public interface HttpServerResponse extends HttpServerMessage, HttpResponse {
 
 	@Override
