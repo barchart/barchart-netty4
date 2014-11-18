@@ -11,23 +11,34 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Representation of a REST request
- * 
+ *
  * @param <T> The body data type
  */
-public class RestRequest<T> {
+public class RestRequest {
 
 	public static enum Method {
 		GET, POST, PUT, DELETE
 	};
 
+	private static Set<String> UNCACHED_HEADERS = new HashSet<String>() {
+		{
+			add("DATE");
+			add("AUTHORIZATION");
+		}
+	};
+
 	private final Map<String, List<String>> params;
 	private final Map<String, List<String>> headers;
+	private final Map<String, List<String>> cacheableHeaders;
 
 	private byte[] data = null;
 
@@ -48,6 +59,7 @@ public class RestRequest<T> {
 
 		params = new HashMap<String, List<String>>();
 		headers = new HashMap<String, List<String>>();
+		cacheableHeaders = new HashMap<String, List<String>>();
 
 	}
 
@@ -110,7 +122,7 @@ public class RestRequest<T> {
 	/**
 	 * Set a request parameter.
 	 */
-	public RestRequest<T> param(final String param, final String value) {
+	public RestRequest param(final String param, final String value) {
 
 		List<String> values = params.get(param);
 
@@ -135,7 +147,7 @@ public class RestRequest<T> {
 	/**
 	 * Set a request header.
 	 */
-	public RestRequest<T> header(final String header, final String value) {
+	public RestRequest header(final String header, final String value) {
 
 		List<String> values = headers.get(header);
 
@@ -145,6 +157,10 @@ public class RestRequest<T> {
 		}
 
 		values.add(value);
+
+		if (!UNCACHED_HEADERS.contains(header.toUpperCase())) {
+			cacheableHeaders.put(header, values);
+		}
 
 		return this;
 
@@ -160,7 +176,7 @@ public class RestRequest<T> {
 	/**
 	 * Set the request body data.
 	 */
-	public RestRequest<T> data(final byte[] data_) {
+	public RestRequest data(final byte[] data_) {
 		data = data_;
 		return this;
 	}
@@ -170,6 +186,55 @@ public class RestRequest<T> {
 	 */
 	public byte[] data() {
 		return data;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(data);
+		result = prime * result + ((cacheableHeaders == null) ? 0 : cacheableHeaders.hashCode());
+		result = prime * result + ((method == null) ? 0 : method.hashCode());
+		result = prime * result + ((params == null) ? 0 : params.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final RestRequest other = (RestRequest) obj;
+		if (!Arrays.equals(data, other.data))
+			return false;
+		if (cacheableHeaders == null) {
+			if (other.cacheableHeaders != null)
+				return false;
+		} else if (!cacheableHeaders.equals(other.cacheableHeaders))
+			return false;
+		if (method != other.method)
+			return false;
+		if (params == null) {
+			if (other.params != null)
+				return false;
+		} else if (!params.equals(other.params))
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "RestRequest [method=" + method + ", url=" + url + ", params=" + params + ", headers=" + headers
+				+ ", data=" + Arrays.toString(data) + "]";
 	}
 
 }

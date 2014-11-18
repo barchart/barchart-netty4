@@ -7,9 +7,7 @@
  */
 package com.barchart.netty.rest.client;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.net.ServerSocket;
@@ -21,9 +19,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.barchart.netty.rest.client.RestClientBase;
-import com.barchart.netty.rest.client.RestRequest;
-import com.barchart.netty.rest.client.RestResponse;
 import com.barchart.netty.rest.client.RestRequest.Method;
 import com.barchart.netty.server.http.HttpServer;
 import com.barchart.util.test.concurrent.TestObserver;
@@ -45,7 +40,7 @@ public class TestRestClientBase {
 
 		handler.output = "out".getBytes("UTF-8");
 
-		final RestRequest<Void> request = client.request(Method.GET, "/test");
+		final RestRequest request = client.request(Method.GET, "/test");
 
 		final TestObserver<RestResponse<byte[]>> observer =
 				new TestObserver<RestResponse<byte[]>>();
@@ -62,7 +57,7 @@ public class TestRestClientBase {
 
 		handler.output = "out".getBytes("UTF-8");
 
-		final RestRequest<Void> request = client.request(Method.GET, "/test");
+		final RestRequest request = client.request(Method.GET, "/test");
 
 		final TestObserver<RestResponse<byte[]>> observer =
 				new TestObserver<RestResponse<byte[]>>();
@@ -96,8 +91,7 @@ public class TestRestClientBase {
 
 		handler.output = acctJson;
 
-		final RestRequest<Map<String, Object>> request =
-				client.request(Method.GET, "/test", input);
+		final RestRequest request = client.request(Method.GET, "/test", input);
 
 		final TestObserver<RestResponse<Map<String, Object>>> observer =
 				new TestObserver<RestResponse<Map<String, Object>>>();

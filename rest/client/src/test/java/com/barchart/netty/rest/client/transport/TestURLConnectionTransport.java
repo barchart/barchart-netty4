@@ -7,9 +7,7 @@
  */
 package com.barchart.netty.rest.client.transport;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
@@ -20,9 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.barchart.netty.rest.client.RestRequest;
-import com.barchart.netty.rest.client.RestResponse;
 import com.barchart.netty.rest.client.RestRequest.Method;
-import com.barchart.netty.rest.client.transport.URLConnectionTransport;
+import com.barchart.netty.rest.client.RestResponse;
 import com.barchart.netty.server.Servers;
 import com.barchart.netty.server.http.HttpServer;
 import com.barchart.netty.server.http.request.HttpServerRequest;
@@ -38,8 +35,8 @@ public class TestURLConnectionTransport {
 
 		final URLConnectionTransport transport = new URLConnectionTransport();
 
-		final RestRequest<Void> request =
-				new RestRequest<Void>(Method.GET, "http://localhost:" + port
+		final RestRequest request =
+				new RestRequest(Method.GET, "http://localhost:" + port
 						+ "/test");
 
 		final TestObserver<RestResponse<byte[]>> observer =
@@ -61,8 +58,8 @@ public class TestURLConnectionTransport {
 
 		final URLConnectionTransport transport = new URLConnectionTransport();
 
-		final RestRequest<Void> request =
-				new RestRequest<Void>(Method.POST, "http://localhost:" + port
+		final RestRequest request =
+				new RestRequest(Method.POST, "http://localhost:" + port
 						+ "/test");
 		request.data("testing".getBytes("UTF-8"));
 

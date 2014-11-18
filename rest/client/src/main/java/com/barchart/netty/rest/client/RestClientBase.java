@@ -45,9 +45,10 @@ public abstract class RestClientBase implements RestClient {
 
 	private final SimpleModule module;
 	private final RestTransport transport;
-
 	private final String baseUrl;
+
 	private Credentials credentials = null;
+	private RestResponseCache cache = null;
 
 	public RestClientBase(final String baseUrl_) {
 		this(baseUrl_, new URLConnectionTransport());
@@ -77,7 +78,26 @@ public abstract class RestClientBase implements RestClient {
 	 */
 	@Override
 	public void credentials(final Credentials credentials_) {
+
 		credentials = credentials_;
+
+		if (cache != null)
+			cache.clear();
+
+	}
+
+	/**
+	 * Set the response cache
+	 */
+	protected void cache(final RestResponseCache cache_) {
+		cache = cache_;
+	}
+
+	/**
+	 * The response cache.
+	 */
+	protected RestResponseCache cache() {
+		return cache;
 	}
 
 	public boolean authenticated() {
@@ -98,7 +118,7 @@ public abstract class RestClientBase implements RestClient {
 
 	}
 
-	protected RestRequest<?> authenticate(final RestRequest<?> request) {
+	protected RestRequest authenticate(final RestRequest request) {
 
 		if (request.method() == Method.POST
 				&& !request.headers().containsKey("Content-Type")) {
@@ -116,9 +136,15 @@ public abstract class RestClientBase implements RestClient {
 	/**
 	 * Send a request with no response processing.
 	 */
-	protected Observable<RestResponse<byte[]>> send(final RestRequest<?> request) {
+	protected Observable<RestResponse<byte[]>> send(final RestRequest request) {
 
-		return transport.send(authenticate(request));
+		final Observable<RestResponse<byte[]>> response = transport.send(authenticate(request));
+
+		if (cache != null) {
+			return cache.intercept(request, response);
+		}
+
+		return response;
 
 	}
 
@@ -127,9 +153,9 @@ public abstract class RestClientBase implements RestClient {
 	 * type.
 	 */
 	protected <T> Observable<RestResponse<T>> send(
-			final RestRequest<?> request, final Class<? extends T> responseType) {
+			final RestRequest request, final Class<? extends T> responseType) {
 
-		return transport.send(authenticate(request)).map(
+		final Observable<RestResponse<T>> response = transport.send(authenticate(request)).map(
 				new ResponseDecoder<T>() {
 
 					@Override
@@ -139,6 +165,12 @@ public abstract class RestClientBase implements RestClient {
 
 				});
 
+		if (cache != null) {
+			return cache.intercept(request, response);
+		}
+
+		return response;
+
 	}
 
 	/**
@@ -146,10 +178,10 @@ public abstract class RestClientBase implements RestClient {
 	 * type reference.
 	 */
 	protected <T> Observable<RestResponse<T>> send(
-			final RestRequest<?> request,
+			final RestRequest request,
 			final TypeReference<? extends T> responseType) {
 
-		return transport.send(authenticate(request)).map(
+		final Observable<RestResponse<T>> response = transport.send(authenticate(request)).map(
 				new ResponseDecoder<T>() {
 
 					@Override
@@ -160,17 +192,20 @@ public abstract class RestClientBase implements RestClient {
 
 				});
 
+		return response;
+
 	}
 
 	/**
 	 * Create a new request.
 	 */
-	protected RestRequest<Void> request(final Method method_, final String path_) {
-		final RestRequest<Void> request =
-				new RestRequest<Void>(method_, baseUrl + path_);
+	protected RestRequest request(final Method method_, final String path_) {
+
+		final RestRequest request = new RestRequest(method_, baseUrl + path_);
 
 		// Manually set date for HMAC signing
 		request.header("Date", httpDate(new Date()));
+
 		return request;
 
 	}
@@ -179,7 +214,7 @@ public abstract class RestClientBase implements RestClient {
 	 * Create a new request, with the specified content object encoded as JSON
 	 * in the request body.
 	 */
-	protected <T> RestRequest<T> request(final Method method_,
+	protected <T> RestRequest request(final Method method_,
 			final String path_, final T content_) {
 
 		try {
@@ -215,7 +250,7 @@ public abstract class RestClientBase implements RestClient {
 	 *
 	 * @param <T> The object type
 	 */
-	protected class JsonRestRequest<T> extends RestRequest<T> {
+	protected class JsonRestRequest<T> extends RestRequest {
 
 		public JsonRestRequest(final Method method_, final String url_)
 				throws MalformedURLException {
@@ -226,7 +261,7 @@ public abstract class RestClientBase implements RestClient {
 		 * Attach the specified object as a JSON-encoded request body.
 		 * Automatically sets the Content-Type header to "application/json".
 		 */
-		public RestRequest<T> attach(final T object_) {
+		public RestRequest attach(final T object_) {
 			try {
 				data(mapper.writeValueAsBytes(object_));
 				header("Content-Type", "application/json");

@@ -47,7 +47,7 @@ public class URLConnectionTransport implements RestTransport {
 	}
 
 	@Override
-	public Observable<RestResponse<byte[]>> send(final RestRequest<?> request) {
+	public <T> Observable<RestResponse<byte[]>> send(final RestRequest request) {
 
 		return Observable.create(new Observable.OnSubscribe<RestResponse<byte[]>>() {
 
@@ -66,7 +66,7 @@ public class URLConnectionTransport implements RestTransport {
 
 	}
 
-	public Runnable runnable(final RestRequest<?> request, final Subscriber<? super RestResponse<byte[]>> subscriber) {
+	public Runnable runnable(final RestRequest request, final Subscriber<? super RestResponse<byte[]>> subscriber) {
 
 		return new Runnable() {
 

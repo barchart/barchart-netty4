@@ -17,6 +17,6 @@ public interface RestTransport {
 	/**
 	 * Send a request to the remote server.
 	 */
-	Observable<RestResponse<byte[]>> send(final RestRequest<?> request);
+	<T> Observable<RestResponse<byte[]>> send(final RestRequest request);
 
 }

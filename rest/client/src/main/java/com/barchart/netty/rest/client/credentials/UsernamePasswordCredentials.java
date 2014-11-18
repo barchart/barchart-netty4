@@ -30,7 +30,7 @@ public class UsernamePasswordCredentials implements Credentials {
 	}
 
 	@Override
-	public void authenticate(final RestRequest<?> request) {
+	public void authenticate(final RestRequest request) {
 
 		byte[] firstBytes;
 		try {
