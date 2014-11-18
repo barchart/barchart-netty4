@@ -18,14 +18,14 @@ import com.barchart.netty.server.http.error.DefaultErrorHandler;
 import com.barchart.netty.server.http.error.ErrorHandler;
 import com.barchart.netty.server.http.request.RequestHandler;
 import com.barchart.netty.server.util.SingleHandlerFactory;
-import com.barchart.util.guice.Activatable;
+import com.barchart.util.guice.Activate;
 import com.barchart.util.guice.Component;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.typesafe.config.Config;
 
 @Component("com.barchart.netty.guice.http")
-public class HttpServiceProvider implements HttpService, Activatable {
+public class HttpServiceProvider implements HttpService {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -61,7 +61,7 @@ public class HttpServiceProvider implements HttpService, Activatable {
 	}
 
 
-	@Override
+	@Activate
 	public void activate() throws Exception {
 
 		if (config.hasPath("max-request-size")) {
