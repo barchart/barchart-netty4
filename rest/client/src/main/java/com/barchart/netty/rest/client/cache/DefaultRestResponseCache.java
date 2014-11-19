@@ -9,6 +9,7 @@ import rx.functions.Action1;
 
 import com.barchart.netty.rest.client.RestEndpoint;
 import com.barchart.netty.rest.client.RestRequest;
+import com.barchart.netty.rest.client.RestRequest.Method;
 import com.barchart.netty.rest.client.RestResponse;
 import com.barchart.netty.rest.client.RestResponseCache;
 import com.google.common.cache.Cache;
@@ -29,6 +30,10 @@ public class DefaultRestResponseCache implements RestResponseCache {
 	public <T> Observable<RestResponse<T>> intercept(final RestRequest request, final Observable<RestResponse<T>> remote) {
 
 		Observable<RestResponse<T>> response;
+
+		// Only cache GET requests
+		if (request.method() != Method.GET)
+			return remote;
 
 		// Check for successful response cache, or passthrough and cache responses
 		if ((response = tryCache(responses, request, remote, false)) != null)

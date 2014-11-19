@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import rx.Observer;
 import rx.functions.Func1;
 
 import com.barchart.netty.rest.client.RestRequest.Method;
+import com.barchart.netty.rest.client.cache.DefaultRestResponseCache;
 import com.barchart.netty.rest.client.transport.URLConnectionTransport;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
@@ -48,7 +50,7 @@ public abstract class RestClientBase implements RestClient {
 	private final String baseUrl;
 
 	private Credentials credentials = null;
-	private RestResponseCache cache = null;
+	private DefaultRestResponseCache cache = null;
 
 	public RestClientBase(final String baseUrl_) {
 		this(baseUrl_, new URLConnectionTransport());
@@ -87,10 +89,30 @@ public abstract class RestClientBase implements RestClient {
 	}
 
 	/**
-	 * Set the response cache
+	 * Set the response cache for a path, using the same cache rules for successful responses and failures. The path
+	 * specified can contain {placeholder} strings. @see RestEndpoint
 	 */
-	protected void cache(final RestResponseCache cache_) {
-		cache = cache_;
+	public void cache(final String path_, final int size, final long expiration, final TimeUnit units) {
+		cache(path_, size, expiration, units, 0, 0, null);
+	}
+
+	/**
+	 * Set the response cache for a path, using separate rules for successful responses and failures. The path specified
+	 * can contain {placeholder} strings. @see RestEndpoint
+	 */
+	public void cache(final String path_,
+			final int successSize, final long successExpiration, final TimeUnit successUnits,
+			final int failSize, final long failExpiration, final TimeUnit failUnits) {
+
+		if (cache == null)
+			cache = new DefaultRestResponseCache();
+
+		if (successSize > 0)
+			cache.cache(baseUrl + path_, successSize, successExpiration, successUnits);
+
+		if (failSize > 0)
+			cache.failure(baseUrl + path_, failSize, failExpiration, failUnits);
+
 	}
 
 	/**
