@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
-import org.apache.commons.io.IOUtils;
-
 import rx.Observable;
 import rx.Subscriber;
 
@@ -27,6 +25,7 @@ import com.barchart.netty.rest.client.RestRequest;
 import com.barchart.netty.rest.client.RestRequest.Method;
 import com.barchart.netty.rest.client.RestResponse;
 import com.barchart.netty.rest.client.RestTransport;
+import com.google.common.io.ByteStreams;
 
 public class URLConnectionTransport implements RestTransport {
 
@@ -173,7 +172,7 @@ public class URLConnectionTransport implements RestTransport {
 					status < 400 ? conn.getInputStream() : conn
 							.getErrorStream();
 			if (in != null) {
-				content = IOUtils.toByteArray(in);
+				content = ByteStreams.toByteArray(in);
 			} else {
 				content = new byte[] {};
 			}
