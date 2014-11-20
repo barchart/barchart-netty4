@@ -24,8 +24,10 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.typesafe.config.Config;
 
-@Component("com.barchart.netty.guice.http")
+@Component(HttpServiceProvider.TYPE)
 public class HttpServiceProvider implements HttpService {
+
+	public static final String TYPE = "com.barchart.netty.guice.http";
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -107,9 +109,7 @@ public class HttpServiceProvider implements HttpService {
 			log.debug("Stopping HTTP server");
 
 			try {
-				server.kill().sync();
-				bossGroup.shutdownGracefully().sync();
-				workerGroup.shutdownGracefully().sync();
+				server.shutdown().sync();
 			} catch (final Throwable t) {
 				log.error("Could not shutdown HTTP server", t);
 			}
