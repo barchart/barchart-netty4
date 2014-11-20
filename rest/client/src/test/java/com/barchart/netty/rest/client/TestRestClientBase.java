@@ -136,7 +136,7 @@ public class TestRestClientBase {
 
 	@AfterClass
 	public static void destroy() throws Exception {
-		server.shutdown().sync();
+		server.kill().sync();
 	}
 
 }

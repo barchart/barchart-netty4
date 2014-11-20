@@ -324,20 +324,20 @@ public class TestHttpServer {
 
 		final AtomicBoolean pass = new AtomicBoolean(false);
 
-		executor.schedule(new Runnable() {
+		final Thread t = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 
 				try {
-					server.shutdown().sync();
+					Thread.sleep(1000);
+					server.shutdown();
 				} catch (final InterruptedException e1) {
 					e1.printStackTrace();
 				}
 
 				try {
-					client.execute(new HttpGet("http://localhost:" + port
-							+ "/basic"));
+					client.execute(new HttpGet("http://localhost:" + port + "/basic"));
 				} catch (final HttpHostConnectException hhce) {
 					pass.set(true);
 				} catch (final Exception e) {
@@ -346,13 +346,18 @@ public class TestHttpServer {
 
 			}
 
-		}, 1000, TimeUnit.MILLISECONDS);
+		});
+
+		t.start();
 
 		final HttpGet get = new HttpGet("http://localhost:" + port + "/client-disconnect");
 		final HttpResponse response = client.execute(get);
 		EntityUtils.consume(response.getEntity());
 		assertEquals(200, response.getStatusLine().getStatusCode());
-		// assertTrue(pass.get());
+
+		t.join();
+
+		assertTrue(pass.get());
 
 	}
 
