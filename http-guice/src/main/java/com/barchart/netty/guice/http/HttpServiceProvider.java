@@ -109,7 +109,7 @@ public class HttpServiceProvider implements HttpService {
 			log.debug("Stopping HTTP server");
 
 			try {
-				server.shutdown().sync();
+				server.kill().sync();
 			} catch (final Throwable t) {
 				log.error("Could not shutdown HTTP server", t);
 			}

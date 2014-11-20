@@ -176,6 +176,8 @@ public class URLConnectionTransport implements RestTransport {
 			} else {
 				content = new byte[] {};
 			}
+			// TODO: configure keepalive handling
+			// conn.disconnect();
 		}
 
 		@Override
