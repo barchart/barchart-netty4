@@ -7,7 +7,6 @@
  */
 package com.barchart.netty.server.http;
 
-import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -16,10 +15,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -72,19 +69,6 @@ public class HttpServer extends AbstractStatefulServer<HttpServer> {
 
 	public HttpServer() {
 		channelHandler = new HttpRequestChannelHandler(this);
-	}
-
-	@Override
-	protected ServerBootstrap bootstrap() {
-
-		return new ServerBootstrap() //
-				.group(defaultGroup) //
-				.channel(NioServerSocketChannel.class) //
-				.childHandler(new ServerChannelInitializer()) //
-				.option(ChannelOption.SO_REUSEADDR, true) //
-				.option(ChannelOption.SO_SNDBUF, 262144) //
-				.option(ChannelOption.SO_RCVBUF, 262144);
-
 	}
 
 	@Override

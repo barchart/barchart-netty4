@@ -8,6 +8,7 @@
 package com.barchart.netty.server.base;
 
 import io.netty.bootstrap.AbstractBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,7 +16,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.ChannelGroupFuture;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -27,26 +27,27 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import com.barchart.netty.common.pipeline.PipelineInitializer;
 import com.barchart.netty.server.Server;
 import com.barchart.netty.server.ServerBuilder;
+import com.barchart.netty.server.util.TimeoutPromiseGroup;
 
 /**
- * Base abstract server that functions as its own builder to allow for runtime
- * configuration changes.
+ * Base abstract server that functions as its own builder to allow for runtime configuration changes.
  */
 public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends AbstractBootstrap<B, ?>>
 		implements Server<T>, ServerBuilder<T, B, T>, PipelineInitializer {
 
-	protected final ChannelGroup serverChannels = new DefaultChannelGroup(
+	protected final DefaultChannelGroup serverChannels = new DefaultChannelGroup(
 			GlobalEventExecutor.INSTANCE);
 
-	protected final ChannelGroup clientChannels = new DefaultChannelGroup(
+	protected final DefaultChannelGroup clientChannels = new DefaultChannelGroup(
 			GlobalEventExecutor.INSTANCE);
-
-	private final ServerShutdownListener shutdownListener =
-			new ServerShutdownListener();
 
 	private final ClientTracker clientTracker = new ClientTracker();
 
@@ -102,7 +103,7 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 		}
 
 		final ChannelGroupFuture future = serverChannels.close();
-		future.addListener(shutdownListener);
+		future.addListener(new ServerGroupCloseListener());
 
 		return shutdownFuture;
 
@@ -123,14 +124,14 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 		serverChannels.addAll(clientChannels);
 
 		final ChannelGroupFuture future = serverChannels.close();
-		future.addListener(shutdownListener);
+		future.addListener(new AllGroupCloseListener());
 
 		return shutdownFuture;
 
 	}
 
-	protected void shutdownEventLoop() {
-		defaultGroup.shutdownGracefully();
+	protected Future<?> shutdownEventLoop() {
+		return defaultGroup.shutdownGracefully(0, 0, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
@@ -166,8 +167,7 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 	protected class ServerChannelInitializer extends
 			ChannelInitializer<SocketChannel> {
 
-		public ServerChannelInitializer() {
-		}
+		public ServerChannelInitializer() {}
 
 		@Override
 		public void initChannel(final SocketChannel ch) throws Exception {
@@ -193,20 +193,80 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 
 	}
 
-	private class ServerShutdownListener implements
-			GenericFutureListener<ChannelGroupFuture> {
+	private class AllGroupCloseListener implements GenericFutureListener<Future<Void>> {
 
-		@SuppressWarnings("unchecked")
 		@Override
-		public void operationComplete(final ChannelGroupFuture future)
-				throws Exception {
+		public void operationComplete(final Future<Void> future) throws Exception {
+
 			try {
 				future.get();
-				shutdownEventLoop();
-				shutdownFuture.setSuccess((T) AbstractServer.this);
+			} catch (final ExecutionException ee) {
+				shutdownFuture.setFailure(ee.getCause());
 			} catch (final Throwable t) {
 				shutdownFuture.setFailure(t);
 			}
+
+			shutdownEventLoop().addListener(new EventLoopShutdownListener());
+
+		}
+	}
+
+	private class ServerGroupCloseListener implements GenericFutureListener<Future<Void>> {
+
+		@Override
+		public void operationComplete(final Future<Void> future) throws Exception {
+
+			final AllGroupCloseListener cl = new AllGroupCloseListener();
+
+			try {
+
+				future.get();
+
+				if (clientChannels.size() == 0) {
+
+					cl.operationComplete(future);
+
+				} else {
+
+					final List<Future<?>> futures = new ArrayList<Future<?>>();
+
+					for (final Channel c : clientChannels) {
+						futures.add(c.closeFuture());
+					}
+
+					new TimeoutPromiseGroup(GlobalEventExecutor.INSTANCE, 2, TimeUnit.SECONDS, futures)
+							.addListener(cl);
+
+				}
+
+			} catch (final Throwable t) {
+				cl.operationComplete(future);
+			}
+
+		}
+
+	}
+
+	private class EventLoopShutdownListener implements GenericFutureListener<Future<Object>> {
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public void operationComplete(final Future<Object> future) throws Exception {
+
+			// Previous shutdown errors may have completed the future, and now we're just cleaning up
+			if (!shutdownFuture.isDone()) {
+
+				try {
+					future.get();
+					shutdownFuture.setSuccess((T) AbstractServer.this);
+				} catch (final ExecutionException ee) {
+					shutdownFuture.setFailure(ee.getCause());
+				} catch (final Throwable t) {
+					shutdownFuture.setFailure(t);
+				}
+
+			}
+
 		}
 
 	}

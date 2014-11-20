@@ -7,10 +7,7 @@
  */
 package com.barchart.netty.server.http;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 
 import java.io.BufferedReader;
@@ -25,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.HttpHostConnectException;
@@ -44,7 +40,8 @@ import com.barchart.netty.server.http.request.RequestHandlerBase;
 public class TestHttpServer {
 
 	private HttpServer server;
-	private HttpClient client;
+	private DefaultHttpClient client;
+	private PoolingClientConnectionManager connMgr;
 
 	private int port;
 
@@ -99,14 +96,16 @@ public class TestHttpServer {
 						.requestHandler("/chunked", chunkedHandler)
 						.maxConnections(1);
 
-		server.listen(port, "localhost");
+		server.listen(port, "localhost").sync();
 
-		client = new DefaultHttpClient(new PoolingClientConnectionManager());
+		connMgr = new PoolingClientConnectionManager();
+		client = new DefaultHttpClient(connMgr);
 
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		connMgr.shutdown();
 		if (server.running()) {
 			server.shutdown().sync();
 		}
@@ -125,6 +124,7 @@ public class TestHttpServer {
 
 			assertEquals("basic", content);
 		}
+
 	}
 
 	@Test
@@ -348,8 +348,7 @@ public class TestHttpServer {
 
 		}, 1000, TimeUnit.MILLISECONDS);
 
-		final HttpGet get =
-				new HttpGet("http://localhost:" + port + "/client-disconnect");
+		final HttpGet get = new HttpGet("http://localhost:" + port + "/client-disconnect");
 		final HttpResponse response = client.execute(get);
 		EntityUtils.consume(response.getEntity());
 		assertEquals(200, response.getStatusLine().getStatusCode());

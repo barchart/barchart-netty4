@@ -13,8 +13,13 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.ServerChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
+
+import com.barchart.netty.server.util.TimeoutPromiseGroup;
 
 /**
  * Abstract implementation of a stateful server over various protocols, with
@@ -65,10 +70,15 @@ public abstract class AbstractStatefulServer<T extends AbstractStatefulServer<T>
 	}
 
 	@Override
-	protected void shutdownEventLoop() {
+	protected Future<?> shutdownEventLoop() {
+
 		if (childGroup != defaultGroup)
-			childGroup.shutdownGracefully();
-		super.shutdownEventLoop();
+			return new TimeoutPromiseGroup(GlobalEventExecutor.INSTANCE,
+					childGroup.shutdownGracefully(0, 0, TimeUnit.MILLISECONDS),
+					super.shutdownEventLoop());
+
+		return super.shutdownEventLoop();
+
 	}
 
 }
