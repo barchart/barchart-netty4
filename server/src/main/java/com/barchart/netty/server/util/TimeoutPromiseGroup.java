@@ -89,6 +89,9 @@ public class TimeoutPromiseGroup extends DefaultPromise<Void> {
 			log.debug("fail sync");
 			if (!done) {
 				done = true;
+				if (timeoutFuture != null) {
+					timeoutFuture.cancel(true);
+				}
 				setFailure(t);
 			}
 		}
