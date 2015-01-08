@@ -114,12 +114,14 @@ public class TestHttpServer {
 
 	@After
 	public void tearDown() throws Exception {
-		log.debug("Shutting down");
+		log.debug("Shutting down client");
 		connMgr.shutdown();
+		log.debug("Client shutdown complete");
 		if (server.running()) {
+			log.debug("Shutting down server");
 			server.shutdown().sync();
+			log.debug("Server shutdown complete");
 		}
-		log.debug("Shutdown complete");
 	}
 
 	@Test
