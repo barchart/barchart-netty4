@@ -32,16 +32,12 @@ import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.server.Servers;
 import com.barchart.netty.server.http.request.HttpServerRequest;
 import com.barchart.netty.server.http.request.RequestHandlerBase;
 
 public class TestHttpServer {
-
-	private Logger log = LoggerFactory.getLogger(TestHttpServer.class);
 
 	private HttpServer server;
 	private DefaultHttpClient client;
@@ -82,12 +78,9 @@ public class TestHttpServer {
 
 		chunkedHandler = new ChunkedRequestHandler("chunked");
 
-		log.debug("Opening server socket");
 		final ServerSocket s = new ServerSocket(0);
 		port = s.getLocalPort();
-		log.debug("Got port: " + port);
 		s.close();
-		log.debug("Socket closed");
 		Thread.sleep(100);
 
 		server =
@@ -103,9 +96,7 @@ public class TestHttpServer {
 						.requestHandler("/chunked", chunkedHandler)
 						.maxConnections(1);
 
-		log.debug("Starting server");
 		server.listen(port, "localhost").sync();
-		log.debug("Server started");
 
 		connMgr = new PoolingClientConnectionManager();
 		client = new DefaultHttpClient(connMgr);
@@ -114,20 +105,15 @@ public class TestHttpServer {
 
 	@After
 	public void tearDown() throws Exception {
-		log.debug("Shutting down client");
 		connMgr.shutdown();
-		log.debug("Client shutdown complete");
 		if (server.running()) {
-			log.debug("Shutting down server");
 			server.shutdown().sync();
-			log.debug("Server shutdown complete");
 		}
 	}
 
 	@Test
 	public void testBasicRequest() throws Exception {
 
-		log.debug("testBasicRequest");
 		for (int i = 0; i < 100; i++) {
 			final HttpGet get =
 					new HttpGet("http://localhost:" + port + "/basic");
@@ -144,7 +130,6 @@ public class TestHttpServer {
 	@Test
 	public void testChunkedRequest() throws Exception {
 
-		log.debug("testChunkedRequest");
 		for (int i = 0; i < 100; i++) {
 			final HttpGet get =
 					new HttpGet("http://localhost:" + port + "/chunked");
@@ -161,7 +146,6 @@ public class TestHttpServer {
 	@Test
 	public void testPostRequest() throws Exception {
 
-		log.debug("testPostRequest");
 		for (int i = 0; i < 100; i++) {
 			final HttpPost post =
 					new HttpPost("http://localhost:" + port + "/basic");
@@ -184,7 +168,6 @@ public class TestHttpServer {
 	@Test
 	public void testAsyncRequest() throws Exception {
 
-		log.debug("testAsyncRequest");
 		final HttpGet get = new HttpGet("http://localhost:" + port + "/async");
 		final HttpResponse response = client.execute(get);
 		final String content =
@@ -200,7 +183,6 @@ public class TestHttpServer {
 	@Test
 	public void testAsyncDelayedRequest() throws Exception {
 
-		log.debug("testAsyncDelayedRequest");
 		final HttpGet get =
 				new HttpGet("http://localhost:" + port + "/async-delayed");
 		final HttpResponse response = client.execute(get);
@@ -217,7 +199,6 @@ public class TestHttpServer {
 	@Test
 	public void testUnknownHandler() throws Exception {
 
-		log.debug("testUnknownHandler");
 		final HttpGet get =
 				new HttpGet("http://localhost:" + port + "/unknown");
 		final HttpResponse response = client.execute(get);
@@ -229,7 +210,6 @@ public class TestHttpServer {
 	@Test
 	public void testServerError() throws Exception {
 
-		log.debug("testServerError");
 		final HttpGet get = new HttpGet("http://localhost:" + port + "/error");
 		final HttpResponse response = client.execute(get);
 		EntityUtils.consume(response.getEntity());
@@ -240,7 +220,6 @@ public class TestHttpServer {
 	@Test
 	public void testReuseRequest() throws Exception {
 
-		log.debug("testReuseRequest");
 		// Parameters were being remembered between requests in pooled objects
 		HttpGet get =
 				new HttpGet("http://localhost:" + port + "/basic?field=value");
@@ -264,7 +243,6 @@ public class TestHttpServer {
 	@Test
 	public void testMultipleRequests() throws Exception {
 
-		log.debug("testMultipleRequests");
 		// New Beta3 was failing on second request due to shared buffer use
 		for (int i = 0; i < 100; i++) {
 			final HttpGet get =
@@ -279,7 +257,6 @@ public class TestHttpServer {
 	@Test
 	public void testPatternRequests() throws Exception {
 
-		log.debug("testPatternRequests");
 		{
 			final HttpGet get =
 					new HttpGet("http://localhost:" + port + "/service/info/10");
@@ -307,7 +284,6 @@ public class TestHttpServer {
 	@Test
 	public void testTooManyConnections() throws Exception {
 
-		log.debug("testTooManyConnections");
 		final Queue<Integer> status = new LinkedBlockingQueue<Integer>();
 
 		final Runnable r = new Runnable() {
@@ -343,7 +319,6 @@ public class TestHttpServer {
 	@Test
 	public void testShutdown() throws Exception {
 
-		log.debug("testShutdown");
 		final ScheduledExecutorService executor =
 				Executors.newScheduledThreadPool(1);
 
@@ -389,7 +364,6 @@ public class TestHttpServer {
 	@Test(expected = HttpHostConnectException.class)
 	public void testKill() throws Exception {
 
-		log.debug("testKill");
 		final ScheduledExecutorService executor =
 				Executors.newScheduledThreadPool(1);
 

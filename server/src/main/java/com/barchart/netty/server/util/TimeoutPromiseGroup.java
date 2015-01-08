@@ -13,12 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class TimeoutPromiseGroup extends DefaultPromise<Void> {
-
-	private final static Logger log = LoggerFactory.getLogger(TimeoutPromiseGroup.class);
 
 	private final int expected;
 	private final AtomicInteger complete = new AtomicInteger(0);
@@ -49,7 +44,6 @@ public class TimeoutPromiseGroup extends DefaultPromise<Void> {
 
 		if (expected == 0) {
 
-			log.debug("no futures passed, succeeding");
 			done = true;
 			setSuccess(null);
 
@@ -70,9 +64,7 @@ public class TimeoutPromiseGroup extends DefaultPromise<Void> {
 	}
 
 	private void success() {
-		log.debug("success");
 		synchronized (this) {
-			log.debug("success sync");
 			if (!done && complete.incrementAndGet() == expected) {
 				done = true;
 				if (timeoutFuture != null) {
@@ -81,13 +73,10 @@ public class TimeoutPromiseGroup extends DefaultPromise<Void> {
 				setSuccess(null);
 			}
 		}
-		log.debug("success out");
 	}
 
 	private void fail(final Throwable t) {
-		log.debug("fail");
 		synchronized (this) {
-			log.debug("fail sync");
 			if (!done) {
 				done = true;
 				if (timeoutFuture != null) {
@@ -96,23 +85,18 @@ public class TimeoutPromiseGroup extends DefaultPromise<Void> {
 				setFailure(t);
 			}
 		}
-		log.debug("fail out");
 	}
 
 	class FutureListener implements GenericFutureListener<Future<Object>> {
 
 		@Override
 		public void operationComplete(final Future<Object> future) throws Exception {
-			log.debug("FutureListener");
 			try {
 				future.get();
-				log.debug("FutureListener success");
 				success();
 			} catch (final InterruptedException ie) {
-				log.debug("FutureListener fail", ie);
 				fail(ie);
 			} catch (final ExecutionException ee) {
-				log.debug("FutureListener fail", ee);
 				fail(ee.getCause());
 			}
 		}
@@ -123,9 +107,7 @@ public class TimeoutPromiseGroup extends DefaultPromise<Void> {
 
 		@Override
 		public void run() {
-			log.debug("TimeoutHandler, expected=" + expected);
 			if (complete.get() != expected) {
-				log.debug("TimeoutHandler expired");
 				fail(new TimeoutException("Timeout expired before promises completed"));
 			}
 		}

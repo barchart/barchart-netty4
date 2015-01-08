@@ -32,9 +32,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.barchart.netty.common.pipeline.PipelineInitializer;
 import com.barchart.netty.server.Server;
 import com.barchart.netty.server.ServerBuilder;
@@ -45,8 +42,6 @@ import com.barchart.netty.server.util.TimeoutPromiseGroup;
  */
 public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends AbstractBootstrap<B, ?>>
 		implements Server<T>, ServerBuilder<T, B, T>, PipelineInitializer {
-
-	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	protected final DefaultChannelGroup serverChannels = new DefaultChannelGroup(
 			GlobalEventExecutor.INSTANCE);
@@ -203,7 +198,6 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 		@Override
 		public void operationComplete(final Future<Void> future) throws Exception {
 
-			log.debug("AllGroupCloseListener enter");
 			try {
 				future.get();
 			} catch (final ExecutionException ee) {
@@ -222,7 +216,6 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 		@Override
 		public void operationComplete(final Future<Void> future) throws Exception {
 
-			log.debug("ServerGroupCloseListener enter");
 			final AllGroupCloseListener cl = new AllGroupCloseListener();
 
 			try {
@@ -231,12 +224,10 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 
 				if (clientChannels.size() == 0) {
 
-					log.debug("No clients");
 					cl.operationComplete(future);
 
 				} else {
 
-					log.debug("Client shutdown, size=" + clientChannels.size());
 					final List<Future<?>> futures = new ArrayList<Future<?>>();
 
 					for (final Channel c : clientChannels) {
@@ -249,7 +240,6 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 				}
 
 			} catch (final Throwable t) {
-				log.debug("ServerGroupCloseListener exception", t);
 				cl.operationComplete(future);
 			}
 
