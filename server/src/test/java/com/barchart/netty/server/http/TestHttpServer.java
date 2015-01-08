@@ -32,12 +32,16 @@ import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.server.Servers;
 import com.barchart.netty.server.http.request.HttpServerRequest;
 import com.barchart.netty.server.http.request.RequestHandlerBase;
 
 public class TestHttpServer {
+
+	private Logger log = LoggerFactory.getLogger(TestHttpServer.class);
 
 	private HttpServer server;
 	private DefaultHttpClient client;
@@ -78,9 +82,12 @@ public class TestHttpServer {
 
 		chunkedHandler = new ChunkedRequestHandler("chunked");
 
+		log.debug("Opening server socket");
 		final ServerSocket s = new ServerSocket(0);
 		port = s.getLocalPort();
+		log.debug("Got port: " + port);
 		s.close();
+		log.debug("Socket closed");
 		Thread.sleep(100);
 
 		server =
@@ -96,7 +103,9 @@ public class TestHttpServer {
 						.requestHandler("/chunked", chunkedHandler)
 						.maxConnections(1);
 
+		log.debug("Starting server");
 		server.listen(port, "localhost").sync();
+		log.debug("Server started");
 
 		connMgr = new PoolingClientConnectionManager();
 		client = new DefaultHttpClient(connMgr);
