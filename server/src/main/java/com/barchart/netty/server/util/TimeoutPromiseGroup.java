@@ -110,7 +110,7 @@ public class TimeoutPromiseGroup extends DefaultPromise<Void> {
 
 		@Override
 		public void run() {
-			log.debug("TimeoutHandler");
+			log.debug("TimeoutHandler, expected=" + expected);
 			if (complete.get() != expected) {
 				log.debug("TimeoutHandler expired");
 				fail(new TimeoutException("Timeout expired before promises completed"));

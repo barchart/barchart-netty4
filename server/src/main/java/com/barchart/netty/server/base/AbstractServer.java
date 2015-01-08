@@ -8,7 +8,6 @@
 package com.barchart.netty.server.base;
 
 import io.netty.bootstrap.AbstractBootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -27,8 +26,6 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import com.barchart.netty.common.pipeline.PipelineInitializer;
 import com.barchart.netty.server.Server;
 import com.barchart.netty.server.ServerBuilder;
-import com.barchart.netty.server.util.TimeoutPromiseGroup;
+import com.barchart.netty.server.util.TimeoutPromise;
 
 /**
  * Base abstract server that functions as its own builder to allow for runtime configuration changes.
@@ -236,15 +233,19 @@ public abstract class AbstractServer<T extends AbstractServer<T, B>, B extends A
 
 				} else {
 
-					log.debug("Client shutdown");
-					final List<Future<?>> futures = new ArrayList<Future<?>>();
+					log.debug("Client shutdown, size=" + clientChannels.size());
 
-					for (final Channel c : clientChannels) {
-						futures.add(c.closeFuture());
-					}
-
-					new TimeoutPromiseGroup(GlobalEventExecutor.INSTANCE, 2, TimeUnit.SECONDS, futures)
+					new TimeoutPromise(GlobalEventExecutor.INSTANCE, 2, TimeUnit.SECONDS, clientChannels.close())
 							.addListener(cl);
+
+					// final List<Future<?>> futures = new ArrayList<Future<?>>();
+					//
+					// for (final Channel c : clientChannels) {
+					// futures.add(c.closeFuture());
+					// }
+					//
+					// new TimeoutPromiseGroup(GlobalEventExecutor.INSTANCE, 2, TimeUnit.SECONDS, futures)
+					// .addListener(cl);
 
 				}
 
