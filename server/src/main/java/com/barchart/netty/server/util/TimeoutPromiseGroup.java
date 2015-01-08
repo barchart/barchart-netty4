@@ -50,7 +50,8 @@ public class TimeoutPromiseGroup extends DefaultPromise<Void> {
 		if (expected == 0) {
 
 			log.debug("no futures passed, succeeding");
-			success();
+			done = true;
+			setSuccess(null);
 
 		} else {
 
