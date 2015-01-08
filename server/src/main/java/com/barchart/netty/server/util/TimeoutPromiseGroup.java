@@ -47,14 +47,23 @@ public class TimeoutPromiseGroup extends DefaultPromise<Void> {
 
 		expected = futures.size();
 
-		final FutureListener pl = new FutureListener();
+		if (expected == 0) {
 
-		for (final Future<?> future : futures) {
-			future.addListener(pl);
-		}
+			log.debug("no futures passed, succeeding");
+			success();
 
-		if (timeout > 0) {
-			timeoutFuture = executor.schedule(new TimeoutHandler(), timeout, units);
+		} else {
+
+			final FutureListener pl = new FutureListener();
+
+			for (final Future<?> future : futures) {
+				future.addListener(pl);
+			}
+
+			if (timeout > 0) {
+				timeoutFuture = executor.schedule(new TimeoutHandler(), timeout, units);
+			}
+
 		}
 
 	}
