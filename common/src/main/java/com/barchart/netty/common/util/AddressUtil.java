@@ -7,14 +7,21 @@
  */
 package com.barchart.netty.common.util;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Network utilities.
  */
 public final class AddressUtil {
+
+	private static final Logger log = LoggerFactory.getLogger(AddressUtil.class);
 
 	public static Pattern ADDRESS_REGEX = Pattern
 			.compile("([^:/\\s]*)([:/\\s]*)([^:/\\s]*)");
@@ -56,20 +63,36 @@ public final class AddressUtil {
 	}
 
 	/**
-	 * Validate the given port is in a valid range, returning 0 if it is
-	 * invalid.
+	 * Validate the given port is in a valid range, returning 0 if it is invalid.
 	 */
 	public static int safePort(final String port) {
+
 		try {
+
+			if ("*".equals(port)) {
+				return randomPort();
+			}
+
 			final int number = Integer.parseInt(port);
+
 			if (number < 0 || number > 65535) {
 				return 0;
 			} else {
 				return number;
 			}
+
 		} catch (final Throwable e) {
 			return 0;
 		}
+
+	}
+
+	private static int randomPort() throws IOException {
+		// Find an open local port
+		final ServerSocket ss = new ServerSocket(0);
+		final int port = ss.getLocalPort();
+		ss.close();
+		return port;
 	}
 
 }

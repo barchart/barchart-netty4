@@ -90,12 +90,12 @@ public class HttpServiceProvider implements HttpService {
 
 			final SocketAddress address = AddressUtil.parseAddress(config.getString("local-address"));
 
-			log.debug("Starting HTTP server on " + address);
+			log.info("HTTP server listening on " + address);
 			server.listen(address).sync();
 
 		} else {
 
-			log.debug("Starting HTTP server on *:8080");
+			log.info("HTTP server listening on *:8080");
 			server.listen(8080).sync();
 
 		}
