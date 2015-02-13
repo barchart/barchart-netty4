@@ -129,4 +129,9 @@ public interface HttpServerResponse extends HttpServerMessage, HttpResponse {
 	 */
 	boolean isFinished();
 
+	/**
+	 * Mark this request as failed and pass back to server for logging and response.
+	 */
+	void fail(HttpResponseStatus status, Throwable t);
+
 }

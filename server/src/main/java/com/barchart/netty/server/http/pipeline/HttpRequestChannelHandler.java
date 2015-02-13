@@ -183,6 +183,7 @@ public class HttpRequestChannelHandler extends
 			request.response().setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
 			try {
+				server.logger().error(request, error);
 				server.errorHandler().onError(request, error);
 			} catch (final Throwable t) {
 				request.response().write(error.getClass()
@@ -254,6 +255,7 @@ public class HttpRequestChannelHandler extends
 
 					response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
+					server.logger().error(request, exception);
 					server.errorHandler().onError(request, exception);
 
 					// Bad handler, forgot to finish

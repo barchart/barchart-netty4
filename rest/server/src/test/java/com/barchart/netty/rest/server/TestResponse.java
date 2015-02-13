@@ -153,4 +153,8 @@ public class TestResponse implements HttpServerResponse {
 	public boolean isFinished() {
 		return false;
 	}
+
+	@Override
+	public void fail(final HttpResponseStatus status, final Throwable t) {}
+
 }

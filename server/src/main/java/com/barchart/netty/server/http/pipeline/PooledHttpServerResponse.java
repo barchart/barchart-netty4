@@ -417,4 +417,10 @@ public class PooledHttpServerResponse extends DefaultFullHttpResponse implements
 
 	}
 
+	@Override
+	public void fail(final HttpResponseStatus status, final Throwable t) {
+		setStatus(status);
+		context.fireExceptionCaught(t);
+	}
+
 }
