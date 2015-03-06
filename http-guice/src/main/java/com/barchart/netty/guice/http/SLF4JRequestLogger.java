@@ -4,11 +4,14 @@ import io.netty.handler.codec.http.HttpHeaders;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.barchart.netty.server.http.logging.RequestLogger;
 import com.barchart.netty.server.http.request.HttpServerRequest;
@@ -19,7 +22,8 @@ public class SLF4JRequestLogger implements RequestLogger {
 	Logger errorLogger = null;
 
 	InetAddress localhost;
-	SimpleDateFormat dateFormatter;
+	final DateTimeFormatter httpFormat = DateTimeFormat.forPattern("dd/MMM/yyyy:HH:mm:ss Z");
+	final DateTimeFormatter iso8601Format = ISODateTimeFormat.dateTime();
 
 	public SLF4JRequestLogger(final String request, final String error) {
 
@@ -37,8 +41,6 @@ public class SLF4JRequestLogger implements RequestLogger {
 			localhost = InetAddress.getLoopbackAddress();
 		}
 
-		dateFormatter = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss Z");
-
 	}
 
 	@Override
@@ -47,40 +49,60 @@ public class SLF4JRequestLogger implements RequestLogger {
 		if (requestLogger != null) {
 
 			final StringBuilder sb = new StringBuilder();
-			// Client address
-			sb.append(request.getRemoteAddress().getHostString()).append(" ");
-			// User ident
-			sb.append("- ");
-			// Username
-			sb.append(dashIfNull(request.getRemoteUser())).append(" ");
-			// Date
-			sb.append("[").append(dateFormatter.format(new Date()))
-					.append("] ");
-			// Request URL
-			sb.append("\"").append(request.getMethod().toString()).append(" ")
-					.append(request.getUri()).append(" ")
-					.append(request.getProtocolVersion().toString())
-					.append("\" ");
-			// Status code
-			sb.append(request.response().getStatus().code()).append(" ");
-			// Content length
-			sb.append(request.response().writtenBytes()).append(" ");
-			// Request duration
+
+			final String remoteAddress = request.getRemoteAddress().getHostString();
+			MDC.put("clientip", remoteAddress);
+			sb.append(remoteAddress).append(" ");
+
+			final String remoteUserIdent = "-";
+			MDC.put("ident", remoteUserIdent);
+			sb.append(remoteUserIdent).append(" ");
+
+			final String remoteUser = dashIfNull(request.getRemoteUser());
+			MDC.put("user", remoteUser);
+			sb.append(remoteUser).append(" ");
+
+			final DateTime timestamp = new DateTime();
+			MDC.put("timestamp", iso8601Format.print(timestamp));
+			sb.append("[").append(httpFormat.print(timestamp)).append("] ");
+
+			final String method = request.getMethod().toString();
+			final String protocol = request.getProtocolVersion().toString();
+			final String uri = request.getUri();
+			MDC.put("method", method);
+			MDC.put("protocol", protocol);
+			MDC.put("request", uri);
+			sb.append("\"").append(method).append(" ").append(uri).append(" ").append(protocol).append("\" ");
+
+			final int statusCode = request.response().getStatus().code();
+			MDC.put("status", Integer.toString(statusCode));
+			sb.append(statusCode).append(" ");
+
+			final long contentLength = request.response().writtenBytes();
+			MDC.put("bytes", Long.toString(contentLength));
+			sb.append(contentLength).append(" ");
+
 			sb.append(duration).append(" ");
-			// Referrer
-			sb.append("\"")
-					.append(dashIfNull(request.headers().get(
-							HttpHeaders.Names.REFERER))).append("\" ");
-			// User-agent
-			sb.append("\"")
-					.append(dashIfNull(request.headers().get(
-							HttpHeaders.Names.USER_AGENT))).append("\" ");
-			// Host header
-			sb.append(dashIfNull(request.getServerHost())).append(" ");
-			// Host address
-			sb.append(request.getServerAddress().getHostString());
+			MDC.put("duration", Long.toString(duration));
+
+			final String referrer = dashIfNull(request.headers().get(HttpHeaders.Names.REFERER));
+			MDC.put("referrer", referrer);
+			sb.append("\"").append(referrer).append("\" ");
+
+			final String userAgent = dashIfNull(request.headers().get(HttpHeaders.Names.USER_AGENT));
+			MDC.put("agent", userAgent);
+			sb.append("\"").append(userAgent).append("\" ");
+
+			final String serverHost = dashIfNull(request.getServerHost());
+			MDC.put("serverhost", serverHost);
+			sb.append(serverHost).append(" ");
+
+			final String serverAddress = request.getServerAddress().getHostString();
+			MDC.put("serverip", serverAddress);
+			sb.append(serverAddress);
 
 			requestLogger.info(sb.toString());
+			MDC.clear();
 
 		}
 
