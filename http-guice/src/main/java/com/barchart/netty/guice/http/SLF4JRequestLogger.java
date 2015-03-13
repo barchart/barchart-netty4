@@ -50,6 +50,10 @@ public class SLF4JRequestLogger implements RequestLogger {
 
 			final StringBuilder sb = new StringBuilder();
 
+			for (final String name : request.headers().names()) {
+				requestLogger.info(name + ": " + request.headers().get(name));
+			}
+
 			final String forwardedFor = request.headers().get("X-Forwarded-For");
 			if (forwardedFor != null && !forwardedFor.isEmpty()) {
 				MDC.put("clientip", forwardedFor);
