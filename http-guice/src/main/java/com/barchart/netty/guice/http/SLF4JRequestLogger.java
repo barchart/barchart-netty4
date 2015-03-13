@@ -52,12 +52,12 @@ public class SLF4JRequestLogger implements RequestLogger {
 
 			final String forwardedFor = request.headers().get("X-Forwarded-For");
 			if (forwardedFor != null && !forwardedFor.isEmpty()) {
+				MDC.put("clientip", forwardedFor);
+				sb.append(forwardedFor).append(" ");
+			} else {
 				final String remoteAddress = request.getRemoteAddress().getHostString();
 				MDC.put("clientip", remoteAddress);
 				sb.append(remoteAddress).append(" ");
-			} else {
-				MDC.put("clientip", forwardedFor);
-				sb.append(forwardedFor).append(" ");
 			}
 
 			final String remoteUserIdent = "-";
