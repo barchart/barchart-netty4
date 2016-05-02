@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.barchart.netty.server.http.request.HttpServerRequest;
 import com.barchart.netty.server.http.request.HttpServerResponse;
-import com.google.common.base.Joiner;
 
 /**
  * Very basic default error handler.
@@ -34,10 +33,7 @@ public class DefaultErrorHandler implements ErrorHandler {
 
 			
 			log.warn("Uncaught exception thrown in request", cause);
-			log.error("Additional details: " +
-					Joiner.on("\n").join("", request.getQueryString(), request.getServerHost(), request.getPathInfo(), request.getMethod())
-					
-					);
+			log.error("Additional details: " + request.getQueryString() +", " +  request.getServerHost() +", " +   request.getPathInfo()+", " +   request.getMethod());
 			try {
 				stackTrace();
 			} catch (IllegalStateException e) {
