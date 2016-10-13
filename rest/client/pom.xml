@@ -19,14 +19,14 @@
 
 	<groupId>com.barchart.netty</groupId>
 	<artifactId>barchart-netty-rest-client</artifactId>
-	<version>1.0.11</version>
+	<version>1.0.12-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<scm>
 		<url>https://github.com/barchart/barchart-netty4</url>
 		<connection>scm:git:git://github.com/barchart/barchart-netty4.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-netty4.git</developerConnection>
-		<tag>barchart-netty-rest-client-1.0.11</tag>
+		<tag>master</tag>
 	</scm>
 
 	<properties>
