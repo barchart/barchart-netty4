@@ -20,11 +20,11 @@ import com.yammer.metrics.core.Histogram;
 import com.yammer.metrics.core.MetricsRegistry;
 
 public class PingHandler extends SimpleChannelInboundHandler<Object> implements
-		LatencyAware {
+LatencyAware {
 
 	// Latency sample histogram
 	private final Histogram latencySampler = new MetricsRegistry()
-			.newHistogram(getClass(), "peer-latency", true);
+	.newHistogram(getClass(), "peer-latency", true);
 
 	// Latest peer clock / latency measurements
 	private long clockSkew = 0;
@@ -98,10 +98,11 @@ public class PingHandler extends SimpleChannelInboundHandler<Object> implements
 			clockSkew = pong.timestamp() - (now - latency);
 			latencySampler.update(latency);
 
-		}
+		} else {
 
-		// Send upstream
-		ctx.fireChannelRead(msg);
+			// Send upstream
+			ctx.fireChannelRead(msg);
+		}
 
 	}
 
